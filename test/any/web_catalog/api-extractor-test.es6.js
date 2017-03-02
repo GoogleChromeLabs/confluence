@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 
-const objectGraph = require('object-graph-js').ObjectGraph;
-
 require('../../../lib/web_catalog/api_extractor.es6.js');
+const objectGraph = require('object-graph-js').ObjectGraph;
 
 let extractor = com.web.catalog.apiExtractor.create({});
 const types = {
