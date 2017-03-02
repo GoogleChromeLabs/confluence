@@ -19,15 +19,23 @@
 // Run all tests in Karma continuously.
 
 const base = require('./karma.conf.js');
+const webpack = base.webpackConfig;
+const files = base.deps
+  .concat(base.helpers)
+  .concat(base.units)
+  .concat(base.integrations);
+const wp = ['webpack'];
+const preprocessors = base.helpers.reduce((acc, key) => {
+  acc[key] = wp;
+  return acc;
+}, {});
 
 module.exports = function(config) {
   base(config);
   config.set({
-    files: base.deps
-      .concat(base.entries)
-      .concat(base.helpers)
-      .concat(base.units)
-      .concat(base.integrations),
+    files,
+    preprocessors,
+    webpack,
     singleRun: false,
     autoWatch: true,
   });

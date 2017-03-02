@@ -4,7 +4,7 @@
   "description": "Web API Confluence Dashboard",
   "main": "index.js",
   "scripts": {
-    "test": "JASMINE_CONFIG_PATH=config/jasmine.json jasmine"
+    "test": "karma start ./config/karma.all.conf.js "
   },
   "repository": {
     "type": "git",
