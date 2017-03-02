@@ -15,11 +15,17 @@
  * limitations under the License.
  */
 'use strict';
+const FOAM_DIR = `${__dirname}/../node_modules/foam2`;
+const execSync = require('child_process').execSync;
+execSync(`node ${FOAM_DIR}/tools/build.js web`);
 
 // Run all tests in Karma.
 
 const basePath = `${__dirname}/../test`;
-const deps = [];
+
+const files = [
+  `${__dirname}/../node_modules/foam2/foam-bin.js`,
+];
 const entries = [
   '../main/*.js',
 ];
@@ -28,12 +34,10 @@ const helpers = [
   'browser/**/*-helper*.js',
 ];
 const units = [
-  'any/**/*-test*.js',
-  'browser/**/*-test*.js',
+  '**/*-test*.js',
 ];
 const integrations = [
-  'any/**/*-integration*.js',
-  'browser/**/*-integration*.js',
+  '**/*-integration*.js',
 ];
 const reporters = ['progress'];
 const preprocessors = entries.reduce((acc, key) => {
@@ -51,7 +55,7 @@ function configurator(config) {
     frameworks: ['jasmine'],
 
     // list of files / patterns to load in the browser
-    files: deps,
+    files,
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -92,7 +96,34 @@ function configurator(config) {
   });
 };
 
-configurator.deps = deps;
+configurator.srcGlobs = [
+  '../lib/**/*.js',
+];
+
+configurator.webpackConfig = {
+  module: {
+    loaders: [
+      {
+        test: /\.es6\.js$/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015'],
+          plugins: ['transform-runtime'],
+        },
+      },
+      {
+        test: /\.json$/,
+        loader: 'json-loader',
+      },
+    ],
+  },
+  node: {
+    fs: 'empty',
+    dns: 'empty',
+  },
+};
+
+configurator.deps = files;
 configurator.entries = entries;
 configurator.helpers = helpers;
 configurator.units = units;
