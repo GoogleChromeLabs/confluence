@@ -1,0 +1,30 @@
+{
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "extends": ["google"],
+  "rules": {
+    "comma-dangle": ["error", {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "never"
+    }],
+    "no-unused-vars": ["error", {
+      "vars": "all",
+      "args": "after-used",
+      "argsIgnorePattern": "^(var_args|opt_[a-z][a-zA-Z]*)$"
+    }],
+    "new-cap": ["error", {
+    	"capIsNew": false
+    }],
+    "max-len": ["error", 80],
+    "prefer-rest-params": "off"
+  },
+  "globals": {
+    "foam": false
+  },
+  "parser": "babel-eslint"
+}
