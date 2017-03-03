@@ -16,6 +16,13 @@
  */
 
 /**
+ * This helper program loads all files under libs using webpack.
+ * Then exports objects needed in test as global objects.
+ * Thus, libraries like ObjectGraph will not be executed twice in karma.
+ */
+
+
+/**
   @param {webpack-context} r - all files in the context will be loaded.
 */
 function importAll(r) {

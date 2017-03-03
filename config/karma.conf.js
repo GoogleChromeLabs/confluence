@@ -42,10 +42,10 @@ const integrations = [
   'browser/**/*-integration*.js',
 ];
 const reporters = ['progress'];
-const preprocessors = entries.reduce((acc, key) => {
-  acc[key] = ['webpack'];
-  return acc;
-}, {});
+const wp = ['webpack'];
+const preprocessors = {
+  'browser/webpack-helper.js': wp,
+};
 
 function configurator(config) {
   config.set({
