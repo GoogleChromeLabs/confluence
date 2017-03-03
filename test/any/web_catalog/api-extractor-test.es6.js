@@ -16,8 +16,8 @@
  */
 'use strict';
 
-(function() {
-  let objectGraph = global.objectGraph;
+describe('API extractor', function() {
+  let objectGraph = global.ObjectGraph;
   let extractor = com.web.catalog.apiExtractor.create({});
   const types = {
     'boolean': 2,
@@ -29,7 +29,7 @@
     'undefined': 1,
   };
 
-  describe('Method getObjectProperties', function() {
+  describe('getObjectProperties', function() {
     let og = objectGraph.fromJSON({
       'data': {
         '10000': {
@@ -38,7 +38,7 @@
           'nonOwnProperty': 3,
           'property': 3,
           'object': 7,
-          'buildInProperty': 3,
+          'builtInProperty': 3,
         },
       },
       'metadata': {
@@ -55,7 +55,7 @@
           'object': {
             writable: 1,
           },
-          'buildInProperty': {
+          'builtInProperty': {
             writable: 1,
           },
         },
@@ -63,7 +63,7 @@
       types,
     });
     let properties = extractor.getObjectProperties_(og, 10000);
-    extractor.buildInObjectProperties = ['buildInProperty'];
+    extractor.builtInObjectProperties = ['builtInProperty'];
     it('captures non-constant properties', function() {
       expect(properties).toContain('property');
     });
@@ -76,11 +76,11 @@
     it('excludes non-own-property', function() {
       expect(properties).not.toContain('nonOwnProperty');
     });
-    it('does not filter build-in properties', function() {
-      expect(properties).toContain('buildInProperty');
+    it('does not filter built-in properties', function() {
+      expect(properties).toContain('builtInProperty');
     });
-    // Turn on retainConstantMembers flag.
-    extractor.defaults.retainConstantMembers = true;
+    // Need to test retaining constant members case separately.
+    extractor.retainConstantMembers = true;
     let propertiesWithConst = extractor.getObjectProperties_(og, 10000);
     it('contains constant property if retainConstantMembers is true',
     function() {
@@ -88,29 +88,29 @@
     });
   });
 
-  describe('Method cleanUp', function() {
-    it('remves all + and $ characters', function() {
-      expect(extractor.cleanUp_('+toString+')).toEqual('toString');
-      expect(extractor.cleanUp_('$prototype$')).toEqual('prototype');
+  describe('cleanUp', function() {
+    it('removes all + and $ characters', function() {
+      expect(extractor.cleanUp_('+toString+')).toBe('toString');
+      expect(extractor.cleanUp_('$prototype$')).toBe('prototype');
     });
   });
 
-  describe('Method isPosotiveInt', function() {
-    it('correctly identify a number string to be true', function() {
-      expect(extractor.isPosotiveInt_('0')).toEqual(true);
-      expect(extractor.isPosotiveInt_('1')).toEqual(true);
-      expect(extractor.isPosotiveInt_('2')).toEqual(true);
-      expect(extractor.isPosotiveInt_('3')).toEqual(true);
-      expect(extractor.isPosotiveInt_('10')).toEqual(true);
-      expect(extractor.isPosotiveInt_('999')).toEqual(true);
+  describe('isPositiveInt', function() {
+    it('correctly identifies a number string to be true', function() {
+      expect(extractor.isPositiveInt_('0')).toBe(true);
+      expect(extractor.isPositiveInt_('1')).toBe(true);
+      expect(extractor.isPositiveInt_('2')).toBe(true);
+      expect(extractor.isPositiveInt_('3')).toBe(true);
+      expect(extractor.isPositiveInt_('10')).toBe(true);
+      expect(extractor.isPositiveInt_('999')).toBe(true);
     });
-    it('will not identify a non-number string to be false', function() {
-      expect(extractor.isPosotiveInt_('$1')).toEqual(false);
-      expect(extractor.isPosotiveInt_('toString')).toEqual(false);
+    it('does not identify a non-number string to be false', function() {
+      expect(extractor.isPositiveInt_('$1')).toBe(false);
+      expect(extractor.isPositiveInt_('toString')).toBe(false);
     });
   });
 
-  describe('Method arrayMerge', function() {
+  describe('arrayMerge', function() {
     it('merges arrays into first array with no duplicates', function() {
       let array1 = ['a', 'b'];
       let array2 = ['a', 'c', 'd'];
@@ -118,22 +118,22 @@
       extractor.arrayMerge_(array1, array2, array3);
       expect(array1).toEqual(['a', 'b', 'c', 'd', 'f']);
     });
-    it('filter out number(index) when merge', function() {
+    it('filters out number(index) on merge', function() {
       let array1 = ['a', 'b'];
       let array2 = ['1', '2', 'd'];
       let array3 = ['3', '5', 'f'];
       extractor.arrayMerge_(array1, array2, array3);
       expect(array1).toEqual(['a', 'b', 'd', 'f']);
     });
-    it('clean up for strings when merge', function() {
+    it('cleans up for strings on merge', function() {
       let array1 = ['a', 'b'];
       let array2 = ['$a$', '$c$'];
       let array3 = ['+c+', '+b+', '+f+'];
       extractor.arrayMerge_(array1, array2, array3);
       expect(array1).toEqual(['a', 'b', 'c', 'f']);
     });
-    it('filter out build-in functions', function() {
-      extractor.buildInObjectProperties = ['c', 'd'];
+    it('filters out built-in functions', function() {
+      extractor.builtInObjectProperties = ['c', 'd'];
       let array1 = ['a', 'b'];
       let array2 = ['$a$', '$c$', 'd'];
       let array3 = ['+c+', '+b+', '+f+'];
@@ -142,8 +142,8 @@
     });
   });
 
-  describe('Method setMinus', function() {
-    it('correctly find set minus between two arrays', function() {
+  describe('setMinus', function() {
+    it('correctly finds set minus between two arrays', function() {
       let array1 = ['a', 'b', 'c'];
       let array2 = ['b', 'd'];
       expect(extractor.setMinus_(array1, array2)).toEqual(['a', 'c']);
@@ -151,7 +151,7 @@
       let array4 = ['b', 'd', 'a', 'c', 'e'];
       expect(extractor.setMinus_(array3, array4)).toEqual([]);
     });
-    it('clean up for string.', function() {
+    it('cleans up for string.', function() {
       let array1 = ['$a$', '$b$', '$c$', '+d+'];
       let array2 = ['b', 'd'];
       expect(extractor.setMinus_(array1, array2)).toEqual(['a', 'c']);
@@ -161,7 +161,7 @@
     });
   });
 
-  describe('Method getFunctionBuildInProperties', function() {
+  describe('getFunctionBuiltInProperties', function() {
     let og = objectGraph.fromJSON({
       'data': {
         '10000': {
@@ -180,19 +180,19 @@
       types,
       'root': 10000,
     });
-    it('obtain Function build-in properties correctly', function() {
-      extractor.getFunctionBuildInProperties_(og);
-      expect(extractor.buildInFunctionProperties.sort())
+    it('obtains Function built-in properties correctly', function() {
+      extractor.getFunctionBuiltInProperties_(og);
+      expect(extractor.builtInFunctionProperties.sort())
         .toEqual(['prototype', 'caller', 'arguments', 'length', 'toString']
         .sort());
     });
-    it('clean up string for properties', function() {
-      extractor.getFunctionBuildInProperties_(og);
-      expect(extractor.buildInFunctionProperties).toContain('toString');
+    it('cleans up string for properties', function() {
+      extractor.getFunctionBuiltInProperties_(og);
+      expect(extractor.builtInFunctionProperties).toContain('toString');
     });
   });
 
-  describe('Method getObjectBuildInProperties', function() {
+  describe('getObjectBuiltInProperties', function() {
     let og = objectGraph.fromJSON({
       'data': {
         '10000': {
@@ -204,22 +204,22 @@
         '10002': {
           '+toString+': 3,
           '+valueOf+': 6,
-          '+constructor': 6,
+          '+constructor+': 6,
         },
       },
       types,
       'root': 10000,
     });
-    it('obtain cleaned up Object build-in properties correctly', function() {
-      extractor.getObjectBuildInProperties_(og);
-      expect(extractor.buildInObjectProperties.sort())
+    it('obtains cleaned up Object built-in properties correctly', function() {
+      extractor.getObjectBuiltInProperties_(og);
+      expect(extractor.builtInObjectProperties.sort())
         .toEqual(['toString', 'valueOf', 'constructor']
         .sort());
     });
   });
 
-  describe('Method getClassName', function() {
-    it('obtain class name of object\'s proto is its class', function() {
+  describe('getClassName', function() {
+    it("obtains class name of object's proto is its class", function() {
       let og = objectGraph.fromJSON({
         'data': {
           '10010': {
@@ -233,14 +233,14 @@
           '10010': '10020',
         },
         'functions': {
-          '10030': 'class',
+          '10030': 'hiddenClass',
         },
         types,
       });
-      expect(extractor.getClassName_(10010, og)).toEqual('class');
+      expect(extractor.getClassName_(10010, og)).toBe('hiddenClass');
     });
-    it('obtain class name if it is the class is deep in the prototype chain',
-    function() {
+    it('obtains class name if the class is deep in the prototype chain',
+      function() {
       let og = objectGraph.fromJSON({
         'data': {
           '10010': {
@@ -263,13 +263,13 @@
           '10020': 'noClass',
           '10030': 'noClass',
           '10040': 'classPrototype',
-          '10050': 'class',
+          '10050': 'hiddenClass',
         },
         types,
       });
-      expect(extractor.getClassName_(10010, og)).toEqual('class');
+      expect(extractor.getClassName_(10010, og)).toBe('hiddenClass');
     });
-      it('return null if cannot find class', function() {
+    it('returns null if cannot find class', function() {
       let og = objectGraph.fromJSON({
         'data': {
           '10010': {
@@ -293,9 +293,18 @@
       });
       expect(extractor.getClassName_(10010, og)).toBeNull();
     });
+    it('returns null if id is not object id', function() {
+      let og = objectGraph.fromJSON({
+        'data': {
+          '10000': {},
+        },
+        types,
+      });
+      expect(extractor.getClassName_(4, og)).toBeNull();
+    });
   });
 
-  describe('Method postProcess', function() {
+  describe('postProcess', function() {
     let og = objectGraph.fromJSON({
       'functions': {
         '10001': 'Function',
@@ -303,24 +312,24 @@
       },
       types,
     });
-    extractor.buildInFunctionProperties = ['toString', 'caller', 'arguments'];
-    extractor.buildInObjectProperties = ['toString', 'valueOf', 'constructor'];
-    extractor.metadata.functionId = 10001;
-    extractor.metadata.objectId = 10002;
+    extractor.builtInFunctionProperties = ['toString', 'caller', 'arguments'];
+    extractor.builtInObjectProperties = ['toString', 'valueOf', 'constructor'];
+    extractor.functionId = 10001;
+    extractor.objectId = 10002;
     extractor.blacklistProperties = ['nonInterface'];
     let apiCatalogs = {
       'interface': ['API1', 'API2'],
       'nonInterface': ['API'],
     };
     extractor.postProcess_(apiCatalogs, og);
-    it('filtered blacklisted properties', function() {
+    it('filters blacklisted properties', function() {
       expect(apiCatalogs.nonInterface).toBeUndefined();
     });
-    it('add build-in properties for Function', function() {
+    it('adds built-in properties for Function', function() {
       expect(apiCatalogs.Function)
         .toEqual(['toString', 'caller', 'arguments']);
     });
-    it('add build-in properties for Object', function() {
+    it('adds built-in properties for Object', function() {
       expect(apiCatalogs.Object)
         .toEqual(['toString', 'valueOf', 'constructor']);
     });
@@ -328,4 +337,4 @@
       expect(apiCatalogs.interface).toEqual(['API1', 'API2']);
     });
   });
-}());
+});

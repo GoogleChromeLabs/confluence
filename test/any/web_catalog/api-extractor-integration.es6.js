@@ -16,8 +16,21 @@
  */
 'use strict';
 
-(function() {
-  let objectGraph = global.objectGraph;
+/**
+ *  The integration test is to test if the api-extractior are able to
+ *  extract interface and api correctly from a small but complete object graph.
+ *  This object graph is manually created to test corner cases, including:
+ *      - Objects and Functions with prototype that have meaningful properties.
+ *      - Object libraries.
+ *      - Constant properties.
+ *      - Different properties reference to the same object.
+ *      - Hidden interfaces in __proto__ chain.
+ *      - Hiden properties in instances.
+ */
+
+// Integration tests.
+describe('API extractor', function() {
+  let objectGraph = global.ObjectGraph;
   let og = objectGraph.fromJSON(
   {
     'data': {
@@ -327,69 +340,66 @@
   });
   let extractor = com.web.catalog.apiExtractor.create({});
 
-  // Integration tests.
-  describe('API extractor', function() {
-    let apiCatalog = extractor.extractWebCatalog(og);
-    it('correctly extract every first level apis for Window interface.',
-      function() {
-        expect(apiCatalog.Window.sort()).toEqual(['Function', 'Object',
-          'FunctionInterface', 'DuplicateFunctionInterface', 'ObjectInterface',
-          'ObjectLibrary', 'nonObjectLibrary', 'FunctionNonInterface',
-          'constant'].sort());
-      });
-    it('extract api for Object and Function without filter build-in apis.',
-      function() {
-        expect(apiCatalog.Object.sort()).toEqual(['arguments',
-          'constructor', 'toLocaleString', 'toString', 'valueOf'].sort());
-        expect(apiCatalog.Function.sort()).toEqual([
-          'prototype', 'caller', 'length', 'name'].sort());
-      });
-    it('only includes Function/Object with meaningful properties.', function() {
-      expect(apiCatalog.FunctionNonInterface).toBeUndefined();
-      expect(apiCatalog.FunctionInterface).toBeDefined();
-      expect(apiCatalog.nonObjectLibrary).toBeUndefined();
-      expect(apiCatalog.ObjectLibrary).toBeDefined();
-      expect(apiCatalog.ObjectInterface).toBeDefined();
+  let apiCatalog = extractor.extractWebCatalog(og);
+  it('correctly extracts every first level APIs for Window interface.',
+    function() {
+      expect(apiCatalog.Window.sort()).toEqual(['Function', 'Object',
+        'FunctionInterface', 'DuplicateFunctionInterface', 'ObjectInterface',
+        'ObjectLibrary', 'nonObjectLibrary', 'FunctionNonInterface',
+        'constant'].sort());
     });
-    it('filter build-in apis for non-special cases.', function() {
-      expect(apiCatalog.FunctionNonInterface).not.toContain('caller');
-      expect(apiCatalog.FunctionNonInterface).not.toContain('length');
-      expect(apiCatalog.FunctionNonInterface).not.toContain('name');
-      expect(apiCatalog.ObjectInterface).not.toContain('constructor');
-      expect(apiCatalog.ObjectInterface).not.toContain('toString');
-      expect(apiCatalog.ObjectInterface).not.toContain('toLocaleString');
-      expect(apiCatalog.ObjectInterface).not.toContain('valueOf');
-      expect(apiCatalog.ObjectLibrary).not.toContain('constructor');
-      expect(apiCatalog.ObjectLibrary).not.toContain('toString');
-      expect(apiCatalog.ObjectLibrary).not.toContain('toLocaleString');
-      expect(apiCatalog.ObjectLibrary).not.toContain('valueOf');
+  it('extracts api for Object and Function without filter built-in APIs.',
+    function() {
+      expect(apiCatalog.Object.sort()).toEqual(['arguments',
+        'constructor', 'toLocaleString', 'toString', 'valueOf'].sort());
+      expect(apiCatalog.Function.sort()).toEqual([
+        'prototype', 'caller', 'length', 'name'].sort());
     });
-    it('extract interfeaces even they are same object.', function() {
-      expect(apiCatalog.FunctionInterface).toBeDefined();
-      expect(apiCatalog.DuplicateFunctionInterface).toBeDefined();
-        expect(apiCatalog.DuplicateFunctionInterface).toEqual(
-          apiCatalog.FunctionInterface);
-    });
-    it('extract __proto__ as interface if it includes meaningful apis',
-      function() {
-        expect(apiCatalog.ProtoInterface).toBeDefined();
-        expect(apiCatalog.ProtoInterface).toContain('meaningfulAPI');
-      }
-    );
-    it('add instances\' api to its class if class is not Object', function() {
-      expect(apiCatalog.HiddenInterface).toBeDefined();
-      expect(apiCatalog.HiddenInterface).toEqual(['hiddenAPI']);
-      // If instances class is Object, do not add it to Object interface.
-      expect(apiCatalog.Object).not.toContain('hiddenAPI');
-    });
-    it('only includes own properties.', function() {
-      expect(apiCatalog.HiddenInterface).not.toContain('notwnProperty');
-    });
-    it('const primitive are filtered, constant object are not.', function() {
-      expect(apiCatalog.ObjectLibrary).toContain('property');
-      expect(apiCatalog.ObjectLibrary).toContain('constObjectProperty');
-      expect(apiCatalog.ObjectLibrary).not.toContain('constantNumber');
-    });
+  it('only includes Function/Object with meaningful properties.', function() {
+    expect(apiCatalog.FunctionNonInterface).toBeUndefined();
+    expect(apiCatalog.FunctionInterface).toBeDefined();
+    expect(apiCatalog.nonObjectLibrary).toBeUndefined();
+    expect(apiCatalog.ObjectLibrary).toBeDefined();
+    expect(apiCatalog.ObjectInterface).toBeDefined();
   });
-}());
-
+  it('filters built-in APIs for non-special cases.', function() {
+    expect(apiCatalog.FunctionNonInterface).not.toContain('caller');
+    expect(apiCatalog.FunctionNonInterface).not.toContain('length');
+    expect(apiCatalog.FunctionNonInterface).not.toContain('name');
+    expect(apiCatalog.ObjectInterface).not.toContain('constructor');
+    expect(apiCatalog.ObjectInterface).not.toContain('toString');
+    expect(apiCatalog.ObjectInterface).not.toContain('toLocaleString');
+    expect(apiCatalog.ObjectInterface).not.toContain('valueOf');
+    expect(apiCatalog.ObjectLibrary).not.toContain('constructor');
+    expect(apiCatalog.ObjectLibrary).not.toContain('toString');
+    expect(apiCatalog.ObjectLibrary).not.toContain('toLocaleString');
+    expect(apiCatalog.ObjectLibrary).not.toContain('valueOf');
+  });
+  it('extracts separate interfaces for two first level properties ' +
+    'reference to the same object.', function() {
+    expect(apiCatalog.FunctionInterface).toBeDefined();
+    expect(apiCatalog.DuplicateFunctionInterface).toBeDefined();
+      expect(apiCatalog.DuplicateFunctionInterface).toEqual(
+        apiCatalog.FunctionInterface);
+  });
+  it('extracts __proto__ as interface if it includes meaningful APIs',
+    function() {
+      expect(apiCatalog.ProtoInterface).toBeDefined();
+      expect(apiCatalog.ProtoInterface).toContain('meaningfulAPI');
+    }
+  );
+  it('adds instances\' api to its class if class is not Object', function() {
+    expect(apiCatalog.HiddenInterface).toBeDefined();
+    expect(apiCatalog.HiddenInterface).toEqual(['hiddenAPI']);
+    // If instances class is Object, do not add it to Object interface.
+    expect(apiCatalog.Object).not.toContain('hiddenAPI');
+  });
+  it('only includes own properties.', function() {
+    expect(apiCatalog.HiddenInterface).not.toContain('notwnProperty');
+  });
+  it('filters out const primitives, but not const objects.', function() {
+    expect(apiCatalog.ObjectLibrary).toContain('property');
+    expect(apiCatalog.ObjectLibrary).toContain('constObjectProperty');
+    expect(apiCatalog.ObjectLibrary).not.toContain('constantNumber');
+  });
+});
