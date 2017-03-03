@@ -34,10 +34,12 @@ const helpers = [
   'browser/**/*-helper*.js',
 ];
 const units = [
-  '**/*-test*.js',
+  'any/**/*-test*.js',
+  'browser/**/*-test*.js',
 ];
 const integrations = [
-  '**/*-integration*.js',
+  'any/**/*-integration*.js',
+  'browser/**/*-integration*.js',
 ];
 const reporters = ['progress'];
 const preprocessors = entries.reduce((acc, key) => {
@@ -110,10 +112,6 @@ configurator.webpackConfig = {
           presets: ['es2015'],
           plugins: ['transform-runtime'],
         },
-      },
-      {
-        test: /\.json$/,
-        loader: 'json-loader',
       },
     ],
   },

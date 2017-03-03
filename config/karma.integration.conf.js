@@ -23,10 +23,9 @@ const files = base.deps
   .concat(base.helpers)
   .concat(base.integrations);
 const wp = ['webpack'];
-const preprocessors = base.helpers.reduce((acc, key) => {
-  acc[key] = wp;
-  return acc;
-}, {});
+const preprocessors = {
+  'browser/webpack-helper.js': wp,
+};
 
 module.exports = function(config) {
   base(config);

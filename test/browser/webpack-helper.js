@@ -27,7 +27,7 @@ importAll(require.context(`${__dirname}/../../lib`, true, /\.js$/));
 
 // Require external libraries.
 let libs = {
-  objectGraph: require('object-graph-js').ObjectGraph,
+  ObjectGraph: require('object-graph-js').ObjectGraph,
 };
 
 // Add external libraries to global object.
