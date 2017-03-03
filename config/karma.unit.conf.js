@@ -22,16 +22,11 @@ const webpack = base.webpackConfig;
 const files = base.deps
   .concat(base.helpers)
   .concat(base.units);
-const wp = ['webpack'];
-const preprocessors = {
-  'browser/webpack-helper.js': wp,
-};
 
 module.exports = function(config) {
   base(config);
   config.set({
     files,
-    preprocessors,
     webpack,
   });
 };
