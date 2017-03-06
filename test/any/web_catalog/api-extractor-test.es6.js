@@ -29,7 +29,7 @@ describe('API extractor', function() {
     'undefined': 1,
   };
 
-  describe('getObjectProperties', function() {
+  describe('getObjectProperties()', function() {
     let og = objectGraph.fromJSON({
       'data': {
         '10000': {
@@ -88,14 +88,14 @@ describe('API extractor', function() {
     });
   });
 
-  describe('cleanUp', function() {
+  describe('cleanUp()', function() {
     it('removes all + and $ characters', function() {
       expect(extractor.cleanUp_('+toString+')).toBe('toString');
       expect(extractor.cleanUp_('$prototype$')).toBe('prototype');
     });
   });
 
-  describe('isPositiveInt', function() {
+  describe('isPositiveInt()', function() {
     it('correctly identifies a number string to be true', function() {
       expect(extractor.isPositiveInt_('0')).toBe(true);
       expect(extractor.isPositiveInt_('1')).toBe(true);
@@ -110,7 +110,7 @@ describe('API extractor', function() {
     });
   });
 
-  describe('arrayMerge', function() {
+  describe('arrayMerge()', function() {
     it('merges arrays into first array with no duplicates', function() {
       let array1 = ['a', 'b'];
       let array2 = ['a', 'c', 'd'];
@@ -142,7 +142,7 @@ describe('API extractor', function() {
     });
   });
 
-  describe('setMinus', function() {
+  describe('setMinus()', function() {
     it('correctly finds set minus between two arrays', function() {
       let array1 = ['a', 'b', 'c'];
       let array2 = ['b', 'd'];
@@ -161,7 +161,7 @@ describe('API extractor', function() {
     });
   });
 
-  describe('getFunctionBuiltInProperties', function() {
+  describe('getFunctionBuiltInProperties()', function() {
     let og = objectGraph.fromJSON({
       'data': {
         '10000': {
@@ -192,7 +192,7 @@ describe('API extractor', function() {
     });
   });
 
-  describe('getObjectBuiltInProperties', function() {
+  describe('getObjectBuiltInProperties()', function() {
     let og = objectGraph.fromJSON({
       'data': {
         '10000': {
@@ -218,7 +218,7 @@ describe('API extractor', function() {
     });
   });
 
-  describe('getClassName', function() {
+  describe('getClassName()', function() {
     it("obtains class name of object's proto is its class", function() {
       let og = objectGraph.fromJSON({
         'data': {
@@ -304,7 +304,7 @@ describe('API extractor', function() {
     });
   });
 
-  describe('postProcess', function() {
+  describe('postProcess()', function() {
     let og = objectGraph.fromJSON({
       'functions': {
         '10001': 'Function',

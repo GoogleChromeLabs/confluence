@@ -26,6 +26,7 @@
  *      - Different properties reference to the same object.
  *      - Hidden interfaces in __proto__ chain.
  *      - Hiden properties in instances.
+ *      - __proto__ of some object is a property of another object.
  */
 
 // Integration tests.
@@ -39,7 +40,7 @@ describe('API extractor', function() {
         'Object': 10003,
         'FunctionInterface': 10005,
         'DuplicateFunctionInterface': 10005,
-        'ObjectInterface': 10007,
+        'AnObjectInterface': 10007,
         'ObjectLibrary': 10009,
         'nonObjectLibrary': 10010,
         'FunctionNonInterface': 10011,
@@ -73,10 +74,15 @@ describe('API extractor', function() {
         'caller': 7,
         'length': 3,
       },
-      '10007': {  // ObjectInterface
+      '10007': {  // AnObjectInterface
         'prototype': 10008,
+        'protoProperty': 10016,
+        // AnObjectInterface.protoProperty is __proto__ of
+        // FunctionInterface and it cantains meaningfull APIs.
+        // Without __proto__ revisiting,
+        // FunctionInterface.__proto__ will be missed.
       },
-      '10008': {  // ObjectInterface.prototype
+      '10008': {  // AnObjectInterface.prototype
         'meaningfulAPI': 6,
         '+valueOf+': 6,
       },
@@ -147,7 +153,7 @@ describe('API extractor', function() {
         'DuplicateFunctionInterface': {
           'writable': 1,
         },
-        'ObjectInterface': {
+        'AnObjectInterface': {
           'writable': 1,
         },
         'ObjectLibrary': {
@@ -231,6 +237,9 @@ describe('API extractor', function() {
       },
       '10007': {  // ObjectInterface
         'prototype': {
+          'writable': 1,
+        },
+        'protoProperty': {
           'writable': 1,
         },
       },
@@ -341,46 +350,56 @@ describe('API extractor', function() {
   let extractor = com.web.catalog.apiExtractor.create({});
 
   let apiCatalog = extractor.extractWebCatalog(og);
-  it('correctly extracts every first level APIs for Window interface.',
-    function() {
+
+  describe('First level interfaec', function() {
+    it('is included if it contains meaningful properties', function() {
+      expect(apiCatalog.FunctionNonInterface).toBeUndefined();
+      expect(apiCatalog.FunctionInterface).toBeDefined();
+      expect(apiCatalog.nonObjectLibrary).toBeUndefined();
+      expect(apiCatalog.ObjectLibrary).toBeDefined();
+      expect(apiCatalog.AnObjectInterface).toBeDefined();
+      expect(apiCatalog.FunctionInterface.sort()).toEqual(
+        ['meaningfulAPI'].sort());
+      expect(apiCatalog.ObjectLibrary.sort()).toEqual(
+        ['functionAPI', 'InterfaceInstance',
+        'ObejectInstanceA', 'property', 'constObjectProperty'].sort());
+      expect(apiCatalog.AnObjectInterface.sort()).toEqual(
+        ['protoProperty', 'meaningfulAPI'].sort());
+    });
+    it('has separate interfaces even two first level interfaces' +
+    ' reference to the same object.', function() {
+      expect(apiCatalog.FunctionInterface).toBeDefined();
+      expect(apiCatalog.DuplicateFunctionInterface).toBeDefined();
+        expect(apiCatalog.DuplicateFunctionInterface.sort()).toEqual(
+          apiCatalog.FunctionInterface.sort());
+    });
+    it('is contained in Window interface as API', function() {
       expect(apiCatalog.Window.sort()).toEqual(['Function', 'Object',
-        'FunctionInterface', 'DuplicateFunctionInterface', 'ObjectInterface',
+        'FunctionInterface', 'DuplicateFunctionInterface', 'AnObjectInterface',
         'ObjectLibrary', 'nonObjectLibrary', 'FunctionNonInterface',
         'constant'].sort());
     });
-  it('extracts api for Object and Function without filter built-in APIs.',
+  });
+
+  it('extracts api for Object and Function without filtering built-in APIs.',
     function() {
       expect(apiCatalog.Object.sort()).toEqual(['arguments',
         'constructor', 'toLocaleString', 'toString', 'valueOf'].sort());
       expect(apiCatalog.Function.sort()).toEqual([
         'prototype', 'caller', 'length', 'name'].sort());
     });
-  it('only includes Function/Object with meaningful properties.', function() {
-    expect(apiCatalog.FunctionNonInterface).toBeUndefined();
-    expect(apiCatalog.FunctionInterface).toBeDefined();
-    expect(apiCatalog.nonObjectLibrary).toBeUndefined();
-    expect(apiCatalog.ObjectLibrary).toBeDefined();
-    expect(apiCatalog.ObjectInterface).toBeDefined();
-  });
   it('filters built-in APIs for non-special cases.', function() {
     expect(apiCatalog.FunctionNonInterface).not.toContain('caller');
     expect(apiCatalog.FunctionNonInterface).not.toContain('length');
     expect(apiCatalog.FunctionNonInterface).not.toContain('name');
-    expect(apiCatalog.ObjectInterface).not.toContain('constructor');
-    expect(apiCatalog.ObjectInterface).not.toContain('toString');
-    expect(apiCatalog.ObjectInterface).not.toContain('toLocaleString');
-    expect(apiCatalog.ObjectInterface).not.toContain('valueOf');
+    expect(apiCatalog.AnObjectInterface).not.toContain('constructor');
+    expect(apiCatalog.AnObjectInterface).not.toContain('toString');
+    expect(apiCatalog.AnObjectInterface).not.toContain('toLocaleString');
+    expect(apiCatalog.AnObjectInterface).not.toContain('valueOf');
     expect(apiCatalog.ObjectLibrary).not.toContain('constructor');
     expect(apiCatalog.ObjectLibrary).not.toContain('toString');
     expect(apiCatalog.ObjectLibrary).not.toContain('toLocaleString');
     expect(apiCatalog.ObjectLibrary).not.toContain('valueOf');
-  });
-  it('extracts separate interfaces for two first level properties ' +
-    'reference to the same object.', function() {
-    expect(apiCatalog.FunctionInterface).toBeDefined();
-    expect(apiCatalog.DuplicateFunctionInterface).toBeDefined();
-      expect(apiCatalog.DuplicateFunctionInterface).toEqual(
-        apiCatalog.FunctionInterface);
   });
   it('extracts __proto__ as interface if it includes meaningful APIs',
     function() {
