@@ -95,8 +95,20 @@ function configurator(config) {
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: Infinity,
+
+    // Custom Chrome launcher for travis CI.
+    customLaunchers: {
+      Chrome_travis_ci: {
+        base: 'Chrome',
+        flags: ['--no-sandbox'],
+      },
+    },
   });
 };
+
+if(process.env.TRAVIS) {
+  configurator.browsers = ['Chrome_travis_ci'];
+}
 
 configurator.srcGlobs = [
   '../lib/**/*.js',
