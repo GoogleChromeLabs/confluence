@@ -98,8 +98,8 @@ function configurator(config) {
 
     // Custom Chrome launcher for travis CI.
     customLaunchers: {
-      Chrome_travis_ci: {
-        base: 'Chrome',
+      Firefox_launcher: {
+        base: 'Firefox',
         flags: ['--no-sandbox'],
       },
     },
@@ -107,7 +107,7 @@ function configurator(config) {
 };
 
 if(process.env.TRAVIS) {
-  configurator.browsers = ['Chrome_travis_ci'];
+  configurator.browsers = ['Firefox_launcher'];
 }
 
 configurator.srcGlobs = [
