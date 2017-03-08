@@ -82,7 +82,8 @@ function configurator(config) {
     // start these browsers
     // available browser launchers:
     // https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    // If run in travisCI, use firefox, otherwise, use Chrome.
+    browsers: process.env.TRAVIS ? ['Firefox'] : ['Chrome'],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
@@ -96,19 +97,8 @@ function configurator(config) {
     // how many browser should be started simultaneous
     concurrency: Infinity,
 
-    // Custom Chrome launcher for travis CI.
-    customLaunchers: {
-      Firefox_launcher: {
-        base: 'Firefox',
-        flags: ['--no-sandbox'],
-      },
-    },
   });
 };
-
-if(process.env.TRAVIS) {
-  configurator.browsers = ['Firefox_launcher'];
-}
 
 configurator.srcGlobs = [
   '../lib/**/*.js',
