@@ -37,7 +37,7 @@ describe('WebAPIs', function() {
         M.EQ(com.web.api.Browser.BROWSER_NAME, 'Chrome'),
         M.EQ(com.web.api.Browser.BROWSER_VERSION, '56.0.2924.87'),
         M.EQ(com.web.api.Browser.OS, 'OSX'),
-        M.EQ(com.web.api.Browser.OSVERSION, '10.12.2'))).select()
+        M.EQ(com.web.api.Browser.OS_VERSION, '10.12.2'))).select()
       .then((arrayDAO) => {
         expect(arrayDAO.a.length).toBe(1);
         done();
@@ -72,8 +72,8 @@ describe('WebAPIs', function() {
       let browserId = com.web.api.Browser.create({
         browserName: 'Chrome',
         browserVersion: '56.0.2924.87',
-        OS: 'OSX',
-        OSVersion: '10.12.2',
+        os: 'OSX',
+        osVersion: '10.12.2',
       }).id;
       let interfaceIds = [
         com.web.api.WebInterface.create({
