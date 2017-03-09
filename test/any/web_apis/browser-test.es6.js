@@ -22,28 +22,28 @@ describe('Browser', function() {
       let chromeA = com.web.api.Browser.create({
         browserName: 'Chrome',
         browserVersion: '56',
-        OS: 'Windows',
-        OSVersion: '10',
+        os: 'Windows',
+        osVersion: '10',
       }).id;
       let chromeB = com.web.api.Browser.create({
         browserName: 'Chrome',
         browserVersion: '56',
-        OS: 'Windows',
-        OSVersion: '10',
+        os: 'Windows',
+        osVersion: '10',
       }).id;
       expect(chromeA).toBe(chromeB);
 
       let firefoxA = com.web.api.Browser.create({
         browserName: 'Firefox',
         browserVersion: '50',
-        OS: 'OSX',
-        OSVersion: '10.11',
+        os: 'OSX',
+        osVersion: '10.11',
       }).id;
       let firefoxB = com.web.api.Browser.create({
         browserName: 'Firefox',
         browserVersion: '50',
-        OS: 'OSX',
-        OSVersion: '10.11',
+        os: 'OSX',
+        osVersion: '10.11',
       }).id;
       expect(firefoxA).toBe(firefoxB);
     });
@@ -53,24 +53,24 @@ describe('Browser', function() {
       let chrome57Key = com.web.api.Browser.create({
         browserName: 'Chrome',
         browserVersion: '57',
-        OS: 'OSX',
-        OSVersion: '10.11',
+        os: 'OSX',
+        osVersion: '10.11',
       }).getBrowserKey();
       expect(chrome57Key).toBe('Chrome_57_OSX_10.11');
 
       let Safari602Key = com.web.api.Browser.create({
         browserName: 'Safari',
         browserVersion: '602.4.8',
-        OS: 'OSX',
-        OSVersion: '10.12.3',
+        os: 'OSX',
+        osVersion: '10.12.3',
       }).getBrowserKey();
       expect(Safari602Key).toBe('Safari_602.4.8_OSX_10.12.3');
 
       let Edge12Key = com.web.api.Browser.create({
         browserName: 'Edge',
         browserVersion: '12',
-        OS: 'Windows',
-        OSVersion: '10',
+        os: 'Windows',
+        osVersion: '10',
       }).getBrowserKey();
       expect(Edge12Key).toBe('Edge_12_Windows_10');
     });
