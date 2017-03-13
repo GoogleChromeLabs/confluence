@@ -27,6 +27,9 @@ for (let i = 0; i < ogFiles.length; i += 1) {
   let stat = fs.statSync(filePath);
   if (stat.isFile()) {
     let fileName = ogFiles[i].slice(0, -5);
+    //
+    // if (fileName.split('_')[1] !== 'Edge') continue;
+    //
     interfaceMaps[fileName] = extractor.extractWebCatalog(objectGraph
       .fromJSON(JSON.parse(fs.readFileSync(filePath))));
   }
@@ -59,6 +62,7 @@ webAPIsNumId.toCSV([
   'Firefox_36.0_OSX_10.11',
   'Firefox_36.0_Windows_10.0',
 ]).then((csv) => {
+  // console.log('###numeric id###', csv);
   console.timeEnd('numeric-id-total-time');
 
   // 3 tables with string array id. (Get interface name from interface id).
@@ -85,6 +89,7 @@ webAPIsNumId.toCSV([
     'Firefox_36.0_OSX_10.11',
     'Firefox_36.0_Windows_10.0',
   ]).then((csv) => {
+    // console.log('###stirng array id###', csv);
     console.timeEnd('string-array-id-total-time');
 
     // One table implementation.
@@ -111,8 +116,8 @@ webAPIsNumId.toCSV([
       'Firefox_36.0_OSX_10.11',
       'Firefox_36.0_Windows_10.0',
     ]).then((csv) => {
+      // console.log('###one table###',csv);
       console.timeEnd('one-table-total-time');
     });
-
   });
 });
