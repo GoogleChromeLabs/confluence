@@ -80,12 +80,12 @@ describe('WebAPIs', function() {
       'Array': ['find'],
       'Audio': ['stop'],
     }).then(() => {
-      webAPIs.importAPI('Edge', '14', 'Window', '10', {
+      return webAPIs.importAPI('Edge', '14', 'Window', '10', {
         'Array': ['find'],
         'Audio': ['play'],
       });
     }).then(() => {
-      webAPIs.importAPI('Safari', '10', 'OSX', '601', {
+      return webAPIs.importAPI('Safari', '10', 'OSX', '601', {
         'ApplePay': ['about'],
         'Audio': ['play', 'stop'],
         'Array': ['find'],
@@ -176,12 +176,12 @@ describe('WebAPIs', function() {
       'Array': ['find'],
       'Audio': ['stop'],
     }).then(() => {
-      webAPIs.importAPI('Edge', '14', 'Window', '10', {
+      return webAPIs.importAPI('Edge', '14', 'Window', '10', {
         'Array': ['find'],
         'Audio': ['play'],
       });
     }).then(() => {
-      webAPIs.importAPI('Safari', '10', 'OSX', '601', {
+      return webAPIs.importAPI('Safari', '10', 'OSX', '601', {
         'ApplePay': ['about'],
         'Audio': ['play', 'stop'],
         'Array': ['find'],
@@ -263,12 +263,12 @@ describe('WebAPIs', function() {
       'Array': ['find'],
       'Audio': ['stop'],
     }).then(() => {
-      webAPIs.importAPI('Edge', '14', 'Window', '10', {
+      return webAPIs.importAPI('Edge', '14', 'Window', '10', {
         'Array': ['find'],
         'Audio': ['play'],
       });
     }).then(() => {
-      webAPIs.importAPI('Safari', '10', 'OSX', '601', {
+      return webAPIs.importAPI('Safari', '10', 'OSX', '601', {
         'ApplePay': ['about'],
         'Audio': ['play', 'stop'],
         'Array': ['find'],
