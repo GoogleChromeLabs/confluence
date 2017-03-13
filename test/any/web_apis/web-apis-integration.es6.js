@@ -28,17 +28,19 @@ describe('WebAPI and api extractor', function() {
 	let edge14 = global.DATA.edge14;
 	let safari602 = global.DATA.safari602;
   let og = global.ObjectGraph;
-  let extractor = com.web.catalog.apiExtractor.create({});
-  let webAPIs = com.web.api.WebAPIs.create();
+  let extractor = org.chromium.apis.web.apiExtractor.create({});
+  let webAPIs = org.chromium.apis.web.WebAPIs.create();
 
   webAPIs.importAPI('Chrome', '56', 'Windows', '10',
-    extractor.extractWebCatalog(og.fromJSON(chrome56)));
-  webAPIs.importAPI('Edge', '14', 'Windows', '10',
-    extractor.extractWebCatalog(og.fromJSON(edge14)));
-  webAPIs.importAPI('Safari', '602', 'OSX', '10',
-    extractor.extractWebCatalog(og.fromJSON(safari602)));
-
-  webAPIs.toMap(['Chrome_56_Windows_10', 'Edge_14_Windows_10',
+    extractor.extractWebCatalog(og.fromJSON(chrome56)))
+  .then(() => {
+    return webAPIs.importAPI('Edge', '14', 'Windows', '10',
+      extractor.extractWebCatalog(og.fromJSON(edge14)));
+  }).then(() => {
+    return webAPIs.importAPI('Safari', '602', 'OSX', '10',
+      extractor.extractWebCatalog(og.fromJSON(safari602)));
+  }).then(() => {
+    webAPIs.toMap(['Chrome_56_Windows_10', 'Edge_14_Windows_10',
     'Safari_602_OSX_10']).then((webCatalogMap) => {
       it('filters out constant primitive properties', function(done) {
         expect(webCatalogMap.CSSRule.CHARSET_RULE).toBeUndefined();
@@ -89,9 +91,17 @@ describe('WebAPI and api extractor', function() {
       });
       it('captures built-in properties for Function and Object',
       function(done) {
-        console.log(webCatalogMap.Function);
-        console.log(webCatalogMap.Object);
+        expect(webCatalogMap.Function.bind).toEqual([true, true, true]);
+        expect(webCatalogMap.Function.apply).toEqual([true, true, true]);
+        expect(webCatalogMap.Function.call).toEqual([true, true, true]);
+        expect(webCatalogMap.Function.length).toEqual([true, true, true]);
+        expect(webCatalogMap.Function.name).toEqual([true, true, true]);
+        expect(webCatalogMap.Object.__defineGetter__).toEqual([true, true, true]);
+        expect(webCatalogMap.Object.hasOwnProperty).toEqual([true, true, true]);
+        expect(webCatalogMap.Object.toString).toEqual([true, true, true]);
+        expect(webCatalogMap.Object.constructor).toEqual([true, true, true]);
         done();
       });
     });
+  });
 });
