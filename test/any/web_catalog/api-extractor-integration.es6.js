@@ -347,7 +347,7 @@ describe('API extractor', function() {
     },
     'key': 'window',
   });
-  let extractor = com.web.catalog.apiExtractor.create({});
+  let extractor = org.chromium.apis.web.apiExtractor.create({});
 
   let apiCatalog = extractor.extractWebCatalog(og);
 
