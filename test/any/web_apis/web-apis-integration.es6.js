@@ -24,9 +24,9 @@
  **/
 
 describe('WebAPI and api extractor', function() {
-	let chrome56 = global.DATA.chrome56;
-	let edge14 = global.DATA.edge14;
-	let safari602 = global.DATA.safari602;
+  let chrome56 = global.DATA.chrome56;
+  let edge14 = global.DATA.edge14;
+  let safari602 = global.DATA.safari602;
   let og = global.ObjectGraph;
   let extractor = org.chromium.apis.web.apiExtractor.create({});
   let webAPIs = org.chromium.apis.web.WebAPIs.create();
