@@ -116,6 +116,3 @@ webAPIsNumId.toCSV([
 
   });
 });
-
-
-
