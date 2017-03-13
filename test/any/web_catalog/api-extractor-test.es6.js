@@ -18,7 +18,7 @@
 
 describe('API extractor', function() {
   let objectGraph = global.ObjectGraph;
-  let extractor = com.web.catalog.apiExtractor.create({});
+  let extractor = org.chromium.apis.web.apiExtractor.create({});
   const types = {
     'boolean': 2,
     'exception': 7,
