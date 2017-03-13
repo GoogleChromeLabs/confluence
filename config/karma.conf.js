@@ -95,6 +95,8 @@ function configurator(config) {
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: Infinity,
+
+    browserNoActivityTimeout: 30000,
   });
 };
 
@@ -112,6 +114,10 @@ configurator.webpackConfig = {
           presets: ['es2015'],
           plugins: ['transform-runtime'],
         },
+      },
+      {
+        test: /\.json$/,
+        loader: 'json-loader',
       },
     ],
   },

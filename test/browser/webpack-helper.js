@@ -28,6 +28,11 @@ require('../../lib/web_apis/web_apis.es6');
 // Require external libraries.
 let libs = {
   ObjectGraph: require('object-graph-js').ObjectGraph,
+  DATA: {
+	chrome56: require('../data/window_Chrome_56_Windows_10.0.json'),
+	edge14: require('../data/window_Edge_14_Windows_10.0.json'),
+	safari602: require('../data/window_Safari_602_OSX_10.12.3.json'),
+  },
 };
 
 // Add external libraries to global object.
