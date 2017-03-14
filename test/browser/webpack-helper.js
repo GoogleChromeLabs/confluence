@@ -23,7 +23,9 @@
 
 // Import libraries to test.
 require('../../lib/web_catalog/api_extractor.es6');
-require('../../lib/web_apis/web_apis.es6');
+require('../../lib/web_apis/browser_api.es6');
+require('../../lib/web_apis/api_importer.es6');
+require('../../lib/client/api_matrix.es6');
 
 // Require external libraries.
 let libs = {
