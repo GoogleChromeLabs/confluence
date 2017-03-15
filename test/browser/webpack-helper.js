@@ -25,12 +25,10 @@
 /**
   @param {webpack-context} r - all files in the context will be loaded.
 */
-function importAll(r) {
-  r.keys().forEach(r);
-}
 
-// Import all libraries from lib directory.
-importAll(require.context(`${__dirname}/../../lib`, true, /\.js$/));
+// Import libraries to test.
+require('../../lib/web_catalog/api_extractor.es6');
+require('../../lib/web_apis_num_id/web_apis.es6');
 
 // Require external libraries.
 let libs = {
