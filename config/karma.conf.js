@@ -96,7 +96,6 @@ function configurator(config) {
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: Infinity,
-
   });
 };
 
