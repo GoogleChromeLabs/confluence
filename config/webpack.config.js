@@ -9,7 +9,7 @@ const rootDir = path.resolve(__dirname, '..');
 
 const FOAM_DIR = `${__dirname}/../node_modules/foam2`;
 const execSync = require('child_process').execSync;
-execSync(`node ${FOAM_DIR}/tools/build.js web`);
+execSync(`node ${FOAM_DIR}/tools/build.js  web,gcloud`);
 
 module.exports = {
   entry: {
