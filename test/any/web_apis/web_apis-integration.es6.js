@@ -89,7 +89,6 @@ describe('WebAPI and api extractor', function() {
         done();
       });
       it('does not contain non-interface object', function(done) {
-        console.log(webCatalogMap.Window.FontFaceSet);
         // Chrome does not expose FontFase as global interface.
         expect(webCatalogMap.Window.FontFaceSet.
           Chrome_56_Windows_10).toBeUndefined;
