@@ -41,7 +41,7 @@ module.exports = {
       filename: 'index.html',
       inject: 'body',
       template: path.resolve(rootDir, 'static', 'index.html'),
-    })
+    }),
   ],
   resolve: {
     extensions: ['.js'],
