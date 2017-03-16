@@ -32,40 +32,48 @@ describe('ApiImporter', function() {
 
   apiImporter.import('Chrome', '56.0.2924.87',
     'OSX', '10.12.2', webCatalog);
-  it('correctly imports browserAPIs to MDAO', function(done) {
-    let interfaces = [
-      {
-        interfaceName: 'Window',
-        apiName: 'Function',
-      },
-      {
-        interfaceName: 'Window',
-        apiName: 'property',
-      },
-      {
-        interfaceName: 'Function',
-        apiName: 'arguments',
-      },
-      {
-        interfaceName: 'Function',
-        apiName: 'caller',
-      },
+  it('correctly imports browserAPIs to DAO', function(done) {
+    let promises = [
+      apiImporter.browserAPIs.find([
+        'Chrome',
+        '56.0.2924.87',
+        'OSX',
+        '10.12.2',
+        'Window',
+        'Function',
+      ]),
+      apiImporter.browserAPIs.find([
+        'Chrome',
+        '56.0.2924.87',
+        'OSX',
+        '10.12.2',
+        'Window',
+        'property',
+      ]),
+      apiImporter.browserAPIs.find([
+        'Chrome',
+        '56.0.2924.87',
+        'OSX',
+        '10.12.2',
+        'Function',
+        'arguments',
+      ]),
+      apiImporter.browserAPIs.find([
+        'Chrome',
+        '56.0.2924.87',
+        'OSX',
+        '10.12.2',
+        'Function',
+        'caller',
+      ]),
     ];
-    let promises = interfaces.map((intface) => {
-      return apiImporter.browserAPIs.where(mlang.AND(
-          mlang.EQ(org.chromium.apis.web.BrowserAPI.BROWSER_NAME, 'Chrome'),
-          mlang.EQ(org.chromium.apis.web.BrowserAPI.BROWSER_VERSION, '56.0.2924.87'),
-          mlang.EQ(org.chromium.apis.web.BrowserAPI.OS_NAME, 'OSX'),
-          mlang.EQ(org.chromium.apis.web.BrowserAPI.OS_VERSION, '10.12.2'),
-          mlang.EQ(org.chromium.apis.web.BrowserAPI.INTERFACE_NAME,
-            intface.interfaceName),
-          mlang.EQ(org.chromium.apis.web.BrowserAPI.API_NAME, intface.apiName)
-        )).select();
-    });
     Promise.all(promises).then((results) => {
-      results.forEach((defaultArrayDAO) => {
-        expect(defaultArrayDAO.a.length).toBe(1);
+      results.forEach((browserAPI) => {
+        expect(browserAPI).not.toBeNull();
       });
+      return apiImporter.browserAPIs.select(mlang.COUNT());
+    }).then((countSink) => {
+      expect(countSink.value).toBe(promises.length);
       done();
     });
   });

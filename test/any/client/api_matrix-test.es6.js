@@ -17,91 +17,161 @@
 'use strict';
 
 describe('ApiMatrix', function() {
+  let apiMatrix;
+  beforeEach(function() {
+    let browserApiDao = foam.dao.EasyDAO.create({
+      name: 'browserApiDao',
+      of: org.chromium.apis.web.BrowserAPI,
+      daoType: 'MDAO',
+    });
+    browserApiDao.put(org.chromium.apis.web.BrowserAPI.create({
+      browserName: 'Chrome',
+      browserVersion: '55',
+      osName: 'Window',
+      osVersion: '10',
+      interfaceName: 'Array',
+      apiName: 'find',
+    }));
+    browserApiDao.put(org.chromium.apis.web.BrowserAPI.create({
+      browserName: 'Chrome',
+      browserVersion: '55',
+      osName: 'Window',
+      osVersion: '10',
+      interfaceName: 'Audio',
+      apiName: 'stop',
+    }));
+    browserApiDao.put(org.chromium.apis.web.BrowserAPI.create({
+      browserName: 'Edge',
+      browserVersion: '14',
+      osName: 'Window',
+      osVersion: '10',
+      interfaceName: 'Array',
+      apiName: 'find',
+    }));
+    browserApiDao.put(org.chromium.apis.web.BrowserAPI.create({
+      browserName: 'Edge',
+      browserVersion: '14',
+      osName: 'Window',
+      osVersion: '10',
+      interfaceName: 'Audio',
+      apiName: 'play',
+    }));
+    browserApiDao.put(org.chromium.apis.web.BrowserAPI.create({
+      browserName: 'Safari',
+      browserVersion: '10',
+      osName: 'OSX',
+      osVersion: '601',
+      interfaceName: 'ApplePay',
+      apiName: 'about',
+    }));
+    browserApiDao.put(org.chromium.apis.web.BrowserAPI.create({
+      browserName: 'Safari',
+      browserVersion: '10',
+      osName: 'OSX',
+      osVersion: '601',
+      interfaceName: 'Audio',
+      apiName: 'play',
+    }));
+    browserApiDao.put(org.chromium.apis.web.BrowserAPI.create({
+      browserName: 'Safari',
+      browserVersion: '10',
+      osName: 'OSX',
+      osVersion: '601',
+      interfaceName: 'Audio',
+      apiName: 'stop',
+    }));
+    browserApiDao.put(org.chromium.apis.web.BrowserAPI.create({
+      browserName: 'Safari',
+      browserVersion: '10',
+      osName: 'OSX',
+      osVersion: '601',
+      interfaceName: 'Array',
+      apiName: 'find',
+    }));
+    apiMatrix = org.chromium.apis.web.ApiMatrix.create({
+      browserAPIs: browserApiDao,
+    });
+  });
+
   describe('toMatrix()', function() {
-    let apiImporter = org.chromium.apis.web.ApiImporter.create();
-    let apiMatrix = org.chromium.apis.web.ApiMatrix.create({
-      browserAPIs: apiImporter.browserAPIs,
-    });
-    apiImporter.import('Chrome', '55', 'Window', '10', {
-      'Array': ['find'],
-      'Audio': ['stop'],
-    });
-    apiImporter.import('Edge', '14', 'Window', '10', {
-      'Array': ['find'],
-      'Audio': ['play'],
-    });
-    apiImporter.import('Safari', '10', 'OSX', '601', {
-      'ApplePay': ['about'],
-      'Audio': ['play', 'stop'],
-      'Array': ['find'],
-    });
     it(`contains correct interface and API information, when all browsers
-    are selected`, function(done) {
-      apiMatrix.toMatrix([
-        'Chrome_55_Window_10',
-        'Edge_14_Window_10',
-        'Safari_10_OSX_601',
-      ]).then((interfaceMap) => {
-        expect(interfaceMap.ApplePay.about).toEqual({
-          Safari_10_OSX_601: true,
+      are selected`, function() {
+        apiMatrix.toMatrix([
+          'Chrome_55_Window_10',
+          'Edge_14_Window_10',
+          'Safari_10_OSX_601',
+        ]).then((interfaceMatrix) => {
+          expect(interfaceMatrix.ApplePay.about).toEqual({
+            Safari_10_OSX_601: true,
+          });
+          expect(interfaceMatrix.ApplePay.about.Chrome_55_Window_10)
+            .toBeUndefined();
+          expect(interfaceMatrix.ApplePay.about.Edge_14_Window_10)
+            .toBeUndefined();
+          expect(interfaceMatrix.Array.find).toEqual({
+            Chrome_55_Window_10: true,
+            Edge_14_Window_10: true,
+            Safari_10_OSX_601: true,
+          });
+          expect(interfaceMatrix.Audio.play).toEqual({
+            Edge_14_Window_10: true,
+            Safari_10_OSX_601: true,
+          });
+          expect(interfaceMatrix.Audio.stop).toEqual({
+            Chrome_55_Window_10: true,
+            Safari_10_OSX_601: true,
+          });
         });
-        expect(interfaceMap.Array.find).toEqual({
-          Chrome_55_Window_10: true,
-          Edge_14_Window_10: true,
-          Safari_10_OSX_601: true,
-        });
-        expect(interfaceMap.Audio.play).toEqual({
-          Edge_14_Window_10: true,
-          Safari_10_OSX_601: true,
-        });
-        expect(interfaceMap.Audio.stop).toEqual({
-          Chrome_55_Window_10: true,
-          Safari_10_OSX_601: true,
-        });
-        done();
       });
-    });
     it(`contains correct interface and API information, when part of
-    keys are selected.`, function(done) {
-      apiMatrix.toMatrix([
-        'Chrome_55_Window_10',
-        'Edge_14_Window_10',
-      ]).then((interfaceMap) => {
-        expect(interfaceMap.Array.find).toEqual({
-          Chrome_55_Window_10: true,
-          Edge_14_Window_10: true,
+      keys are selected.`, function() {
+        apiMatrix.toMatrix([
+          'Chrome_55_Window_10',
+          'Edge_14_Window_10',
+        ]).then((interfaceMatrix) => {
+          expect(interfaceMatrix.Array.find).toEqual({
+            Chrome_55_Window_10: true,
+            Edge_14_Window_10: true,
+          });
+          expect(interfaceMatrix.Audio.play).toEqual({
+            Edge_14_Window_10: true,
+          });
+          expect(interfaceMatrix.Audio.stop).toEqual({
+            Chrome_55_Window_10: true,
+          });
         });
-        expect(interfaceMap.Audio.play).toEqual({
-          Edge_14_Window_10: true,
-        });
-        expect(interfaceMap.Audio.stop).toEqual({
-          Chrome_55_Window_10: true,
-        });
-        done();
       });
+    it('returns empty object when given array of browser keys is empty.',
+      function() {
+        apiMatrix.toMatrix([]).then((interfaceMatrix) => {
+          expect(interfaceMatrix).toEqual({});
+        });
+    });
+    it('produces correct result when unknown browser key is given.',
+      function() {
+        apiMatrix.toMatrix([
+          'Chrome_55_Window_10',
+          'IE_10_Window_8',
+        ]).then((interfaceMatrix) => {
+          expect(interfaceMatrix).toEqual({
+            Array: {
+              find: {
+                Chrome_55_Window_10: true,
+              },
+            },
+            Audio: {
+              stop: {
+                Chrome_55_Window_10: true,
+              },
+            },
+          });
+        });
     });
   });
 
   describe('toCSV()', function() {
-    let apiImporter = org.chromium.apis.web.ApiImporter.create();
-    let apiMatrix = org.chromium.apis.web.ApiMatrix.create({
-      browserAPIs: apiImporter.browserAPIs,
-    });
-    apiImporter.import('Chrome', '55', 'Window', '10', {
-      'Array': ['find'],
-      'Audio': ['stop'],
-    });
-    apiImporter.import('Edge', '14', 'Window', '10', {
-      'Array': ['find'],
-      'Audio': ['play'],
-    });
-    apiImporter.import('Safari', '10', 'OSX', '601', {
-      'ApplePay': ['about'],
-      'Audio': ['play', 'stop'],
-      'Array': ['find'],
-    });
     it(`produces correct csv string when all browsers are selected`,
-    function(done) {
+    function() {
       apiMatrix.toCSV([
         'Chrome_55_Window_10',
         'Edge_14_Window_10',
@@ -113,22 +183,51 @@ describe('ApiMatrix', function() {
           'Audio,play,false,true,true\n' + 'Audio,stop,true,false,true\n' +
           'ApplePay,about,false,false,true\n').split('\n').sort()
         );
-        done();
       });
     });
     it(`produces correct csv string when part of browsers are selected`,
-    function(done) {
+    function() {
       apiMatrix.toCSV([
         'Chrome_55_Window_10',
         'Edge_14_Window_10',
       ]).then((csvStr) => {
-        expect(csvStr).toEqual(
-          'Interface,API,Chrome_55_Window_10,Edge_14_Window_10\n' +
+        expect(csvStr.split('\n').sort()).toEqual(
+          ('Interface,API,Chrome_55_Window_10,Edge_14_Window_10\n' +
           'Array,find,true,true\n' + 'Audio,stop,true,false\n' +
-          'Audio,play,false,true\n'
+          'Audio,play,false,true\n').split('\n').sort()
         );
-        done();
       });
     });
+    it('returns empty csv when given array of browser keys is empty.',
+      function() {
+        apiMatrix.toCSV([]).then((csvStr) => {
+          expect(csvStr).toEqual('Interface,API\n');
+        });
+    });
+    it('lists  all false for a unknown browser key.',
+      function() {
+        apiMatrix.toCSV([
+          'Chrome_55_Window_10',
+          'IE_10_Window_8',
+        ]).then((csvStr) => {
+          expect(csvStr.split('\n').sort()).toEqual(
+            ('Interface,API,Chrome_55_Window_10,IE_10_Window_8\n' +
+            'Array,find,true,false\n' +
+            'Audio,stop,true,false\n').split('\n').sort());
+        });
+    });
+    it('has a table header with the same order of given browser keys',
+      function() {
+        apiMatrix.toCSV([
+          'Edge_14_Window_10',
+          'Safari_10_OSX_601',
+          'Chrome_55_Window_10',
+        ]).then((csvStr) => {
+          expect(csvStr.split('\n')[0]).toEqual(
+            'Interface,API,Edge_14_Window_10,' +
+            'Safari_10_OSX_601,Chrome_55_Window_10'
+          );
+        });
+      });
   });
 });
