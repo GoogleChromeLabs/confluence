@@ -18,7 +18,7 @@
 
 /*
  * The object graph files under /test/data are extracted using
- * web-apis (https://github.com/mdittmer/web-apis). The test
+ * object-graph-js (https://github.com/mdittmer/object-graph-js). The test
  * specifications are defined in the API Result test cases sheet.
  **/
 
