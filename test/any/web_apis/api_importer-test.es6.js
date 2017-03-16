@@ -20,7 +20,7 @@ describe('ApiImporter', function() {
   let apiImporter = org.chromium.apis.web.ApiImporter.create();
   let mlang = foam.mlang.ExpressionsSingleton.create();
   let webCatalog = {
-    'Window': [
+    'Windows': [
       'Function',
       'property',
     ],
@@ -39,7 +39,7 @@ describe('ApiImporter', function() {
         '56.0.2924.87',
         'OSX',
         '10.12.2',
-        'Window',
+        'Windows',
         'Function',
       ]),
       apiImporter.browserAPIs.find([
@@ -47,7 +47,7 @@ describe('ApiImporter', function() {
         '56.0.2924.87',
         'OSX',
         '10.12.2',
-        'Window',
+        'Windows',
         'property',
       ]),
       apiImporter.browserAPIs.find([
