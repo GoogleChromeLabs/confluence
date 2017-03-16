@@ -144,12 +144,11 @@ describe('ApiMatrix', function() {
         'Edge_14_Windows_10',
         'Safari_10_OSX_601',
       ]).then((csvStr) => {
-        expect(csvStr.split('\n').sort()).toEqual(
-          ('Interface,API,Chrome_55_Windows_10,Edge_14_Windows_10,' +
-          'Safari_10_OSX_601\n' + 'Array,find,true,true,true\n' +
-          'Audio,play,false,true,true\n' + 'Audio,stop,true,false,true\n' +
-          'ApplePay,about,false,false,true\n').split('\n').sort()
-        );
+        expect(csvStr).toEqual(
+          'Interface,API,Chrome_55_Windows_10,Edge_14_Windows_10,' +
+          'Safari_10_OSX_601\n' + 'ApplePay,about,false,false,true\n' +
+          'Array,find,true,true,true\n' + 'Audio,play,false,true,true\n' +
+          'Audio,stop,true,false,true\n');
         done();
       });
     });
@@ -159,11 +158,10 @@ describe('ApiMatrix', function() {
         'Chrome_55_Windows_10',
         'Edge_14_Windows_10',
       ]).then((csvStr) => {
-        expect(csvStr.split('\n').sort()).toEqual(
-          ('Interface,API,Chrome_55_Windows_10,Edge_14_Windows_10\n' +
-          'Array,find,true,true\n' + 'Audio,stop,true,false\n' +
-          'Audio,play,false,true\n').split('\n').sort()
-        );
+        expect(csvStr).toEqual(
+          'Interface,API,Chrome_55_Windows_10,Edge_14_Windows_10\n' +
+          'Array,find,true,true\n' + 'Audio,play,false,true\n' +
+          'Audio,stop,true,false\n');
         done();
       });
     });
@@ -180,10 +178,9 @@ describe('ApiMatrix', function() {
           'Chrome_55_Windows_10',
           'IE_10_Windows_8',
         ]).then((csvStr) => {
-          expect(csvStr.split('\n').sort()).toEqual(
-            ('Interface,API,Chrome_55_Windows_10,IE_10_Windows_8\n' +
-            'Array,find,true,false\n' +
-            'Audio,stop,true,false\n').split('\n').sort());
+          expect(csvStr).toEqual(
+            'Interface,API,Chrome_55_Windows_10,IE_10_Windows_8\n' +
+            'Array,find,true,false\n' + 'Audio,stop,true,false\n');
           done();
         });
     });
