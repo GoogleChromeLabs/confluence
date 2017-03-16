@@ -16,25 +16,14 @@
  */
 'use strict';
 
-let express = require('express');
-let yargs = require('yargs');
-let path = require('path');
+require('foam2');
 
-let argv = yargs
-  .default('port', 9000)
-  .describe('port', 'Port to listen for HTTP requests on')
-  .coerce('port', (str) => parseInt(str))
-  .help()
-  .argv;
-
-let app = express();
-
-app.use(express.static('static/bundle'));
-
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, '../', 'static', 'index.html'));
+let server = foam.net.node.Server.create({
+  port: 9000,
 });
 
-app.listen(argv.port, function() {
-  console.log('Listening on port ' + argv.port.toString() + '...');
-});
+server.exportFile('/', `${__dirname}/../static/index.html`);
+
+server.exportDirectory('/', `${__dirname}/../static/bundle`);
+
+server.start();

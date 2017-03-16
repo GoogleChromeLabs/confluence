@@ -16,7 +16,6 @@
  */
  'use strict';
 
-const HtmlWebpack = require('html-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 const ChunkWebpack = webpack.optimize.CommonsChunkPlugin;
@@ -52,11 +51,6 @@ module.exports = {
       filename: 'vendors.bundle.js',
       minChunks: Infinity,
       name: 'vendors',
-    }),
-    new HtmlWebpack({
-      filename: 'index.html',
-      inject: 'body',
-      template: path.resolve(rootDir, 'static', 'index.html'),
     }),
   ],
   resolve: {
