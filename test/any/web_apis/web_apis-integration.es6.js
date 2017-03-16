@@ -19,139 +19,144 @@
 /*
  * The object graph files under /test/data are extracted using
  * web-apis (https://github.com/mdittmer/web-apis). The test
- * specifications are defined at:
- * https://docs.google.com/spreadsheets/d/1bnm-atGD2SPyQ5XBltEXOaVhzK0ey5Dvpe4Nwu2m588
+ * specifications are defined in the API Result test cases sheet.
  **/
 
 describe('WebAPI and api extractor', function() {
-  let chrome56 = global.DATA.chrome56;
-  let edge14 = global.DATA.edge14;
-  let safari602 = global.DATA.safari602;
-  let og = global.ObjectGraph;
-  let extractor = org.chromium.apis.web.apiExtractor.create({});
-  let apiImporter = org.chromium.apis.web.ApiImporter.create();
-  let apiMatrix = org.chromium.apis.web.ApiMatrix
-    .create({browserAPIs: apiImporter.browserAPIs});
+  let webCatalog;
+  beforeEach(function(done) {
+    let chrome56 = global.DATA.chrome56;
+    let edge14 = global.DATA.edge14;
+    let safari602 = global.DATA.safari602;
+    let og = global.ObjectGraph;
+    let extractor = org.chromium.apis.web.apiExtractor.create({});
+    let apiImporter = org.chromium.apis.web.ApiImporter.create();
+    let apiMatrix = org.chromium.apis.web.ApiMatrix
+      .create({browserAPIs: apiImporter.browserAPIs});
 
-  apiImporter.import('Chrome', '56', 'Windows', '10',
-    extractor.extractWebCatalog(og.fromJSON(chrome56)));
-  apiImporter.import('Edge', '14', 'Windows', '10',
-      extractor.extractWebCatalog(og.fromJSON(edge14)));
-  apiImporter.import('Safari', '602', 'OSX', '10',
-      extractor.extractWebCatalog(og.fromJSON(safari602)));
-  apiMatrix.toMatrix(['Chrome_56_Windows_10', 'Edge_14_Windows_10',
-  'Safari_602_OSX_10']).then((webCatalogMap) => {
-    it('filters out constant primitive properties', function(done) {
-      expect(webCatalogMap.CSSRule.CHARSET_RULE).toBeUndefined();
-      expect(webCatalogMap.Math.PI).toBeUndefined();
-      done();
-    });
-    it('contains capital non-constant properties', function(done) {
-      // Constant value are not identified as all-capital value.
-      expect(webCatalogMap.Document.URL).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
-      });
-      expect(webCatalogMap.BiquadFilterNode.Q).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
-      });
-      done();
-    });
-    describe('Window interface', function() {
-      it(`contains first level objects`, function(done) {
-        // Constant value are not identified as all-capital value.
-        expect(webCatalogMap.Window.alert).toEqual({
-          Chrome_56_Windows_10: true,
-          Edge_14_Windows_10: true,
-          Safari_602_OSX_10: true,
-        });
-        expect(webCatalogMap.Window.Boolean).toEqual({
-          Chrome_56_Windows_10: true,
-          Edge_14_Windows_10: true,
-          Safari_602_OSX_10: true,
-        });
-        expect(webCatalogMap.Window.ApplePaySession).toEqual({
-          Safari_602_OSX_10: true,
-        });
-        expect(webCatalogMap.Window.Math).toEqual({
-          Chrome_56_Windows_10: true,
-          Edge_14_Windows_10: true,
-          Safari_602_OSX_10: true,
-        });
-        expect(webCatalogMap.Window.MouseEvent).toEqual({
-          Chrome_56_Windows_10: true,
-          Edge_14_Windows_10: true,
-          Safari_602_OSX_10: true,
-        });
-        done();
-      });
-      it('does not contain non-interface object', function(done) {
-        // Chrome does not expose FontFase as global interface.
-        expect(webCatalogMap.Window.FontFaceSet.
-          Chrome_56_Windows_10).toBeUndefined;
-        done();
-      });
-    });
-    it('filters out built-in function object properties', function(done) {
-      expect(webCatalogMap.MouseEvent.name).toBeUndefined();
-      expect(webCatalogMap.MouseEvent.caller).toBeUndefined();
-      expect(webCatalogMap.MouseEvent.bind).toBeUndefined();
-      expect(webCatalogMap.AnalyserNode.caller).toBeUndefined();
-      expect(webCatalogMap.AnalyserNode.name).toBeUndefined();
-      expect(webCatalogMap.AnalyserNode.bind).toBeUndefined();
-      done();
-    });
-    it('captures built-in properties for Function and Object',
-    function(done) {
-      expect(webCatalogMap.Function.bind).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
-      });
-      expect(webCatalogMap.Function.apply).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
-      });
-      expect(webCatalogMap.Function.call).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
-      });
-      expect(webCatalogMap.Function.length).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
-      });
-      expect(webCatalogMap.Function.name).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
-      });
-      expect(webCatalogMap.Object.__defineGetter__).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
-      });
-      expect(webCatalogMap.Object.hasOwnProperty).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
-      });
-      expect(webCatalogMap.Object.toString).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
-      });
-      expect(webCatalogMap.Object.constructor).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
-      });
+    apiImporter.import('Chrome', '56', 'Windows', '10',
+      extractor.extractWebCatalog(og.fromJSON(chrome56)));
+    apiImporter.import('Edge', '14', 'Windows', '10',
+        extractor.extractWebCatalog(og.fromJSON(edge14)));
+    apiImporter.import('Safari', '602', 'OSX', '10',
+        extractor.extractWebCatalog(og.fromJSON(safari602)));
+    apiMatrix.toMatrix(['Chrome_56_Windows_10', 'Edge_14_Windows_10',
+    'Safari_602_OSX_10']).then((webCatalogMatrix) =>{
+      webCatalog = webCatalogMatrix;
       done();
     });
   });
+
+  it('filters out constant primitive properties', function() {
+    expect(webCatalog.CSSRule.CHARSET_RULE).toBeUndefined();
+    expect(webCatalog.Math.PI).toBeUndefined();
+  });
+  it('contains capital non-constant properties', function() {
+    // Constant value are not identified as all-capital value.
+    expect(webCatalog.Document.URL).toEqual({
+      Chrome_56_Windows_10: true,
+      Edge_14_Windows_10: true,
+      Safari_602_OSX_10: true,
+    });
+    expect(webCatalog.BiquadFilterNode.Q).toEqual({
+      Chrome_56_Windows_10: true,
+      Edge_14_Windows_10: true,
+      Safari_602_OSX_10: true,
+    });
+  });
+  describe('Window interface', function() {
+    it(`contains first level objects`, function() {
+      expect(webCatalog.Window.alert).toEqual({
+        Chrome_56_Windows_10: true,
+        Edge_14_Windows_10: true,
+        Safari_602_OSX_10: true,
+      });
+      expect(webCatalog.Window.Boolean).toEqual({
+        Chrome_56_Windows_10: true,
+        Edge_14_Windows_10: true,
+        Safari_602_OSX_10: true,
+      });
+      expect(webCatalog.Window.ApplePaySession).toEqual({
+        Safari_602_OSX_10: true,
+      });
+      expect(webCatalog.Window.Math).toEqual({
+        Chrome_56_Windows_10: true,
+        Edge_14_Windows_10: true,
+        Safari_602_OSX_10: true,
+      });
+      expect(webCatalog.Window.MouseEvent).toEqual({
+        Chrome_56_Windows_10: true,
+        Edge_14_Windows_10: true,
+        Safari_602_OSX_10: true,
+      });
+    });
+    it(`contains first level objects that references to the same object
+      as separate interfaecs`, function() {
+        // In chrome, MediaStream is the same function as webkitMediaStream.
+        expect(webCatalog.Window.MediaStream).toBeDefined();
+        expect(webCatalog.Window.webkitMediaStream).toBeDefined();
+      });
+    it('does not contain non-interface objects', function() {
+      // Chrome does not expose FontFace as global interface.
+      expect(webCatalog.Window.FontFaceSet.
+        Chrome_56_Windows_10).toBeUndefined;
+    });
+  });
+  it('ignores built-in function properties on function instances',
+    function() {
+      expect(webCatalog.MouseEvent.name).toBeUndefined();
+      expect(webCatalog.MouseEvent.caller).toBeUndefined();
+      expect(webCatalog.MouseEvent.bind).toBeUndefined();
+      expect(webCatalog.AnalyserNode.caller).toBeUndefined();
+      expect(webCatalog.AnalyserNode.name).toBeUndefined();
+      expect(webCatalog.AnalyserNode.bind).toBeUndefined();
+    });
+  it('captures built-in properties for Function and Object',
+    function() {
+      expect(webCatalog.Function.bind).toEqual({
+        Chrome_56_Windows_10: true,
+        Edge_14_Windows_10: true,
+        Safari_602_OSX_10: true,
+      });
+      expect(webCatalog.Function.apply).toEqual({
+        Chrome_56_Windows_10: true,
+        Edge_14_Windows_10: true,
+        Safari_602_OSX_10: true,
+      });
+      expect(webCatalog.Function.call).toEqual({
+        Chrome_56_Windows_10: true,
+        Edge_14_Windows_10: true,
+        Safari_602_OSX_10: true,
+      });
+      expect(webCatalog.Function.length).toEqual({
+        Chrome_56_Windows_10: true,
+        Edge_14_Windows_10: true,
+        Safari_602_OSX_10: true,
+      });
+      expect(webCatalog.Function.name).toEqual({
+        Chrome_56_Windows_10: true,
+        Edge_14_Windows_10: true,
+        Safari_602_OSX_10: true,
+      });
+      expect(webCatalog.Object.__defineGetter__).toEqual({
+        Chrome_56_Windows_10: true,
+        Edge_14_Windows_10: true,
+        Safari_602_OSX_10: true,
+      });
+      expect(webCatalog.Object.hasOwnProperty).toEqual({
+        Chrome_56_Windows_10: true,
+        Edge_14_Windows_10: true,
+        Safari_602_OSX_10: true,
+      });
+      expect(webCatalog.Object.toString).toEqual({
+        Chrome_56_Windows_10: true,
+        Edge_14_Windows_10: true,
+        Safari_602_OSX_10: true,
+      });
+      expect(webCatalog.Object.constructor).toEqual({
+        Chrome_56_Windows_10: true,
+        Edge_14_Windows_10: true,
+        Safari_602_OSX_10: true,
+      });
+    });
 });
