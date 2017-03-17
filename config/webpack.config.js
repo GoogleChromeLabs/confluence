@@ -7,19 +7,22 @@ const path = require('path');
 const webpack = require('webpack');
 const ChunkWebpack = webpack.optimize.CommonsChunkPlugin;
 
-const rootDir = path.resolve(__dirname, '..');
+const ROOT_DIR = path.resolve(__dirname, '..');
+const FOAM_DIR = path.resolve(__dirname, '../node_modules/foam2');
+const BUNDLE_DIR = path.resolve(__dirname, '../static/bundle');
 
-const FOAM_DIR = `${__dirname}/../node_modules/foam2`;
 const execSync = require('child_process').execSync;
 execSync(`node ${FOAM_DIR}/tools/build.js  web,gcloud`);
+execSync(`mkdir -p ${ROOT_DIR}/static/bundle`);
+execSync(`mv ${FOAM_DIR}/foam-bin.js ${ROOT_DIR}/static/bundle/foam.bundle.js`);
 
 module.exports = {
   entry: {
-    foam: [path.resolve(rootDir, 'node_modules/foam2', 'foam-bin')],
+    app: [path.resolve(ROOT_DIR, 'main/app.es6')],
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(rootDir, 'static/bundle'),
+    path: BUNDLE_DIR,
   },
   module: {
     loaders: [
