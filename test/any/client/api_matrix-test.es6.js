@@ -18,41 +18,71 @@
 
 describe('ApiMatrix', function() {
   let apiMatrix;
+  let browser = function(browserName, browserVersion,
+    osName, osVersion) {
+      return org.chromium.apis.web.Browser.create({
+        browserName,
+        browserVersion,
+        osName,
+        osVersion,
+      });
+    };
+  let webInterface = function(interfaceName, apiName) {
+    return org.chromium.apis.web.WebInterface.create({
+      interfaceName,
+      apiName,
+    });
+  };
   let browserAPI = function(browserName, browserVersion,
     osName, osVersion, interfaceName, apiName) {
-      return org.chromium.apis.web.BrowserAPI.create({
-        browserName: browserName,
-        browserVersion: browserVersion,
-        osName: osName,
-        osVersion: osVersion,
-        interfaceName: interfaceName,
-        apiName: apiName,
+      return org.chromium.apis.web.BrowserWebInterfaceJunction.create({
+        sourceId: `${browserName}_${browserVersion}_${osName}_${osVersion}`,
+        targetId: `${interfaceName}#${apiName}`,
       });
     };
   beforeEach(function() {
-    let browserApiDao = foam.dao.EasyDAO.create({
+    let browserApiDAO = foam.dao.EasyDAO.create({
       name: 'browserApiDao',
-      of: org.chromium.apis.web.BrowserAPI,
+      of: org.chromium.apis.web.BrowserWebInterfaceJunction,
       daoType: 'MDAO',
     });
-    browserApiDao.put(browserAPI('Chrome', '55', 'Windows', '10',
+    browserApiDAO.put(browserAPI('Chrome', '55', 'Windows', '10',
       'Array', 'find'));
-    browserApiDao.put(browserAPI('Chrome', '55', 'Windows', '10',
+    browserApiDAO.put(browserAPI('Chrome', '55', 'Windows', '10',
       'Audio', 'stop'));
-    browserApiDao.put(browserAPI('Edge', '14', 'Windows', '10',
+    browserApiDAO.put(browserAPI('Edge', '14', 'Windows', '10',
       'Array', 'find'));
-    browserApiDao.put(browserAPI('Edge', '14', 'Windows', '10',
+    browserApiDAO.put(browserAPI('Edge', '14', 'Windows', '10',
       'Audio', 'play'));
-    browserApiDao.put(browserAPI('Safari', '10', 'OSX', '601',
+    browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
       'ApplePay', 'about'));
-    browserApiDao.put(browserAPI('Safari', '10', 'OSX', '601',
+    browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
       'Audio', 'play'));
-    browserApiDao.put(browserAPI('Safari', '10', 'OSX', '601',
+    browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
       'Audio', 'stop'));
-    browserApiDao.put(browserAPI('Safari', '10', 'OSX', '601',
+    browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
       'Array', 'find'));
+    let browserDAO = foam.dao.EasyDAO.create({
+      name: 'browserDAO',
+      of: org.chromium.apis.web.Browser,
+      daoType: 'MDAO',
+    });
+    browserDAO.put(browser('Chrome', '55'));
+    browserDAO.put(browser('Edge', '14'));
+    browserDAO.put(browser('Safari', '10'));
+    let interfaceDAO = foam.dao.EasyDAO.create({
+      name: 'interfaceDAO',
+      of: org.chromium.apis.web.WebInterface,
+      daoType: 'MDAO',
+    });
+    interfaceDAO.put(webInterface('Array', 'find'));
+    interfaceDAO.put(webInterface('Audio', 'play'));
+    interfaceDAO.put(webInterface('Audio', 'stop'));
+    interfaceDAO.put(webInterface('ApplePay', 'about'));
     apiMatrix = org.chromium.apis.web.ApiMatrix.create({
-      browserAPIs: browserApiDao,
+      browserApiDAO,
+      browserDAO,
+      interfaceDAO,
     });
   });
 

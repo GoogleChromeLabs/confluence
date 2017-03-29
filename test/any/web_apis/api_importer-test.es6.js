@@ -32,46 +32,30 @@ describe('ApiImporter', function() {
 
   apiImporter.import('Chrome', '56.0.2924.87',
     'OSX', '10.12.2', webCatalog);
-  it('correctly imports browserAPIs to DAO', function(done) {
+  it('correctly imports browserWebInterfaceJunction to DAO', function(done) {
     let promises = [
-      apiImporter.browserAPIs.find([
-        'Chrome',
-        '56.0.2924.87',
-        'OSX',
-        '10.12.2',
-        'Windows',
-        'Function',
+      apiImporter.browserApiDAO.find([
+        'Chrome_56.0.2924.87_OSX_10.12.2',
+        'Windows#Function',
       ]),
-      apiImporter.browserAPIs.find([
-        'Chrome',
-        '56.0.2924.87',
-        'OSX',
-        '10.12.2',
-        'Windows',
-        'property',
+      apiImporter.browserApiDAO.find([
+        'Chrome_56.0.2924.87_OSX_10.12.2',
+        'Windows#property',
       ]),
-      apiImporter.browserAPIs.find([
-        'Chrome',
-        '56.0.2924.87',
-        'OSX',
-        '10.12.2',
-        'Function',
-        'arguments',
+      apiImporter.browserApiDAO.find([
+        'Chrome_56.0.2924.87_OSX_10.12.2',
+        'Function#arguments',
       ]),
-      apiImporter.browserAPIs.find([
-        'Chrome',
-        '56.0.2924.87',
-        'OSX',
-        '10.12.2',
-        'Function',
-        'caller',
+      apiImporter.browserApiDAO.find([
+        'Chrome_56.0.2924.87_OSX_10.12.2',
+        'Function#caller',
       ]),
     ];
     Promise.all(promises).then((results) => {
       results.forEach((browserAPI) => {
         expect(browserAPI).not.toBeNull();
       });
-      return apiImporter.browserAPIs.select(mlang.COUNT());
+      return apiImporter.browserApiDAO.select(mlang.COUNT());
     }).then((countSink) => {
       expect(countSink.value).toBe(promises.length);
       done();

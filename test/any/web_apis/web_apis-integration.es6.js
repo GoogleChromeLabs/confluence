@@ -31,8 +31,11 @@ describe('WebAPI and api extractor', function() {
     let og = global.ObjectGraph;
     let extractor = org.chromium.apis.web.apiExtractor.create({});
     let apiImporter = org.chromium.apis.web.ApiImporter.create();
-    let apiMatrix = org.chromium.apis.web.ApiMatrix
-      .create({browserAPIs: apiImporter.browserAPIs});
+    let apiMatrix = org.chromium.apis.web.ApiMatrix.create({
+      browserApiDAO: apiImporter.browserApiDAO,
+      browserDAO: apiImporter.browserDAO,
+      interfaceDAO: apiImporter.interfaceDAO,
+    });
 
     apiImporter.import('Chrome', '56', 'Windows', '10',
       extractor.extractWebCatalog(og.fromJSON(chrome56)));

@@ -23,7 +23,17 @@
 
 // Import libraries to test.
 require('../../lib/web_catalog/api_extractor.es6');
-require('../../lib/web_apis/browser_api.es6');
+require('../../lib/web_apis/browser.es6');
+require('../../lib/web_apis/web_interface.es6');
+
+foam.RELATIONSHIP({
+  sourceModel: 'org.chromium.apis.web.Browser',
+  targetModel: 'org.chromium.apis.web.WebInterface',
+  forwardName: 'interface',
+  inverseName: 'browser',
+  cardinality: '*:*',
+});
+
 require('../../lib/web_apis/api_importer.es6');
 require('../../lib/client/api_matrix.es6');
 
