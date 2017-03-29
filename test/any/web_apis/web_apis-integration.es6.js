@@ -39,12 +39,12 @@ describe('WebAPI and api extractor', function() {
 
     apiImporter.import('Chrome', '56', 'Windows', '10',
       extractor.extractWebCatalog(og.fromJSON(chrome56)));
-    apiImporter.import('Edge', '14', 'Windows', '10',
+    apiImporter.import('Edge', '14.14393', 'Windows', '10',
         extractor.extractWebCatalog(og.fromJSON(edge14)));
-    apiImporter.import('Safari', '602', 'OSX', '10',
+    apiImporter.import('Safari', '602.4.8', 'OSX', '10',
         extractor.extractWebCatalog(og.fromJSON(safari602)));
-    apiMatrix.toMatrix(['Chrome_56_Windows_10', 'Edge_14_Windows_10',
-    'Safari_602_OSX_10']).then((webCatalogMatrix) =>{
+    apiMatrix.toMatrix(['Chrome_56_Windows_10', 'Edge_14.14393_Windows_10',
+    'Safari_602.4.8_OSX_10']).then((webCatalogMatrix) =>{
       webCatalog = webCatalogMatrix;
       done();
     });
@@ -57,40 +57,40 @@ describe('WebAPI and api extractor', function() {
   it('contains capital non-constant properties', function() {
     // Constant value are not identified as all-capital value.
     expect(webCatalog.Document.URL).toEqual({
-      Chrome_56_Windows_10: true,
-      Edge_14_Windows_10: true,
-      Safari_602_OSX_10: true,
+      'Chrome_56_Windows_10': true,
+      'Edge_14.14393_Windows_10': true,
+      'Safari_602.4.8_OSX_10': true,
     });
     expect(webCatalog.BiquadFilterNode.Q).toEqual({
-      Chrome_56_Windows_10: true,
-      Edge_14_Windows_10: true,
-      Safari_602_OSX_10: true,
+      'Chrome_56_Windows_10': true,
+      'Edge_14.14393_Windows_10': true,
+      'Safari_602.4.8_OSX_10': true,
     });
   });
   describe('Window interface', function() {
     it(`contains first level objects`, function() {
       expect(webCatalog.Window.alert).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
+        'Chrome_56_Windows_10': true,
+        'Edge_14.14393_Windows_10': true,
+        'Safari_602.4.8_OSX_10': true,
       });
       expect(webCatalog.Window.Boolean).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
+        'Chrome_56_Windows_10': true,
+        'Edge_14.14393_Windows_10': true,
+        'Safari_602.4.8_OSX_10': true,
       });
       expect(webCatalog.Window.ApplePaySession).toEqual({
-        Safari_602_OSX_10: true,
+        'Safari_602.4.8_OSX_10': true,
       });
       expect(webCatalog.Window.Math).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
+        'Chrome_56_Windows_10': true,
+        'Edge_14.14393_Windows_10': true,
+        'Safari_602.4.8_OSX_10': true,
       });
       expect(webCatalog.Window.MouseEvent).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
+        'Chrome_56_Windows_10': true,
+        'Edge_14.14393_Windows_10': true,
+        'Safari_602.4.8_OSX_10': true,
       });
     });
     it(`contains first level objects that references to the same object
@@ -117,49 +117,49 @@ describe('WebAPI and api extractor', function() {
   it('captures built-in properties for Function and Object',
     function() {
       expect(webCatalog.Function.bind).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
+        'Chrome_56_Windows_10': true,
+        'Edge_14.14393_Windows_10': true,
+        'Safari_602.4.8_OSX_10': true,
       });
       expect(webCatalog.Function.apply).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
+        'Chrome_56_Windows_10': true,
+        'Edge_14.14393_Windows_10': true,
+        'Safari_602.4.8_OSX_10': true,
       });
       expect(webCatalog.Function.call).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
+        'Chrome_56_Windows_10': true,
+        'Edge_14.14393_Windows_10': true,
+        'Safari_602.4.8_OSX_10': true,
       });
       expect(webCatalog.Function.length).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
+        'Chrome_56_Windows_10': true,
+        'Edge_14.14393_Windows_10': true,
+        'Safari_602.4.8_OSX_10': true,
       });
       expect(webCatalog.Function.name).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
+        'Chrome_56_Windows_10': true,
+        'Edge_14.14393_Windows_10': true,
+        'Safari_602.4.8_OSX_10': true,
       });
       expect(webCatalog.Object.__defineGetter__).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
+        'Chrome_56_Windows_10': true,
+        'Edge_14.14393_Windows_10': true,
+        'Safari_602.4.8_OSX_10': true,
       });
       expect(webCatalog.Object.hasOwnProperty).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
+        'Chrome_56_Windows_10': true,
+        'Edge_14.14393_Windows_10': true,
+        'Safari_602.4.8_OSX_10': true,
       });
       expect(webCatalog.Object.toString).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
+        'Chrome_56_Windows_10': true,
+        'Edge_14.14393_Windows_10': true,
+        'Safari_602.4.8_OSX_10': true,
       });
       expect(webCatalog.Object.constructor).toEqual({
-        Chrome_56_Windows_10: true,
-        Edge_14_Windows_10: true,
-        Safari_602_OSX_10: true,
+        'Chrome_56_Windows_10': true,
+        'Edge_14.14393_Windows_10': true,
+        'Safari_602.4.8_OSX_10': true,
       });
     });
 });
