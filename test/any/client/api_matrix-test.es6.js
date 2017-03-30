@@ -67,9 +67,9 @@ describe('ApiMatrix', function() {
       of: org.chromium.apis.web.Browser,
       daoType: 'MDAO',
     });
-    browserDAO.put(browser('Chrome', '55'));
-    browserDAO.put(browser('Edge', '14'));
-    browserDAO.put(browser('Safari', '10'));
+    browserDAO.put(browser('Chrome', '55', 'Windows', '10'));
+    browserDAO.put(browser('Edge', '14', 'Windows', '10'));
+    browserDAO.put(browser('Safari', '10', 'OSX', '601'));
     let interfaceDAO = foam.dao.EasyDAO.create({
       name: 'interfaceDAO',
       of: org.chromium.apis.web.WebInterface,

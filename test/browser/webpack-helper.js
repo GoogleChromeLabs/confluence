@@ -22,9 +22,9 @@
  */
 
 // Import libraries to test.
-require('../../lib/web_catalog/api_extractor.es6');
-require('../../lib/web_apis/browser.es6');
-require('../../lib/web_apis/web_interface.es6');
+require('../../lib/web_catalog/api_extractor.es6.js');
+require('../../lib/web_apis/browser.es6.js');
+require('../../lib/web_apis/web_interface.es6.js');
 
 foam.RELATIONSHIP({
   sourceModel: 'org.chromium.apis.web.Browser',
