@@ -15,7 +15,6 @@
     "tools"
   ],
   "author": "Mark Dittmer, Jing Tao",
-  "license": "Apache-2.0",
   "homepage": "https://github.com/GoogleChrome/confluence#readme",
   "dependencies": {
     "foam2": "git://github.com/foam-framework/foam2.git",
