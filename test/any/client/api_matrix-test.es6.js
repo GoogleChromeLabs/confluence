@@ -44,7 +44,7 @@ describe('ApiMatrix', function() {
     let browserApiDAO = foam.dao.EasyDAO.create({
       name: 'browserApiDao',
       of: org.chromium.apis.web.BrowserWebInterfaceJunction,
-      daoType: 'MDAO',
+      daoType: 'ARRAY',
     });
     browserApiDAO.put(browserAPI('Chrome', '55', 'Windows', '10',
       'Array', 'find'));
@@ -65,15 +65,15 @@ describe('ApiMatrix', function() {
     let browserDAO = foam.dao.EasyDAO.create({
       name: 'browserDAO',
       of: org.chromium.apis.web.Browser,
-      daoType: 'MDAO',
+      daoType: 'ARRAY',
     });
-    browserDAO.put(browser('Chrome', '55'));
-    browserDAO.put(browser('Edge', '14'));
-    browserDAO.put(browser('Safari', '10'));
+    browserDAO.put(browser('Chrome', '55', 'Windows', '10'));
+    browserDAO.put(browser('Edge', '14', 'Windows', '10'));
+    browserDAO.put(browser('Safari', '10', 'OSX', '601'));
     let interfaceDAO = foam.dao.EasyDAO.create({
       name: 'interfaceDAO',
       of: org.chromium.apis.web.WebInterface,
-      daoType: 'MDAO',
+      daoType: 'ARRAY',
     });
     interfaceDAO.put(webInterface('Array', 'find'));
     interfaceDAO.put(webInterface('Audio', 'play'));
