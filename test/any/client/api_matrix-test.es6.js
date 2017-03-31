@@ -28,6 +28,16 @@ describe('ApiMatrix', function() {
       });
     };
   beforeEach(function() {
+    let browserDAO = foam.dao.EasyDAO.create({
+      name: 'browserDAO',
+      of: org.chromium.apis.web.Browser,
+      daoType: 'MDAO',
+    });
+    let interfaceDAO = foam.dao.EasyDAO.create({
+      name: 'interfaceDAO',
+      of: org.chromium.apis.web.WebInterface,
+      daoType: 'MDAO',
+    });
     let browserApiDAO = foam.dao.EasyDAO.create({
       name: 'browserApiDao',
       of: org.chromium.apis.web.BrowserWebInterfaceJunction,
@@ -49,19 +59,9 @@ describe('ApiMatrix', function() {
       'Audio', 'stop'));
     browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
       'Array', 'find'));
-    let browserDAO = foam.dao.EasyDAO.create({
-      name: 'browserDAO',
-      of: org.chromium.apis.web.Browser,
-      daoType: 'MDAO',
-    });
     browserDAO.put(browser('Chrome', '55', 'Windows', '10'));
     browserDAO.put(browser('Edge', '14', 'Windows', '10'));
     browserDAO.put(browser('Safari', '10', 'OSX', '601'));
-    let interfaceDAO = foam.dao.EasyDAO.create({
-      name: 'interfaceDAO',
-      of: org.chromium.apis.web.WebInterface,
-      daoType: 'MDAO',
-    });
     interfaceDAO.put(webInterface('Array', 'find'));
     interfaceDAO.put(webInterface('Audio', 'play'));
     interfaceDAO.put(webInterface('Audio', 'stop'));
@@ -70,7 +70,13 @@ describe('ApiMatrix', function() {
       browserApiDAO,
       browserDAO,
       interfaceDAO,
-    });
+    },
+    // Mock exports expected from ApiExtractor.
+    foam.__context__.createSubContext({
+      browserDAO,
+      webInterfaceDAO: interfaceDAO,
+      browserWebInterfaceJunctionDAO: browserApiDAO,
+    }));
   });
 
   describe('toMatrix()', function() {
@@ -81,6 +87,7 @@ describe('ApiMatrix', function() {
           'Edge_14_Windows_10',
           'Safari_10_OSX_601',
         ]).then((interfaceMatrix) => {
+          let a = interfaceMatrix;
           expect(interfaceMatrix.ApplePay.about).toEqual({
             Safari_10_OSX_601: true,
           });
@@ -101,8 +108,8 @@ describe('ApiMatrix', function() {
             Chrome_55_Windows_10: true,
             Safari_10_OSX_601: true,
           });
+          done();
         });
-        done();
       });
     it(`contains correct interface and API information, when part of
       keys are selected.`, function(done) {
@@ -130,24 +137,13 @@ describe('ApiMatrix', function() {
           done();
         });
     });
-    it('produces correct result when unknown browser key is given.',
+    it('rejects promise if unknown browser key are given.',
       function(done) {
         apiMatrix.toMatrix([
           'Chrome_55_Windows_10',
           'IE_10_Windows_8',
-        ]).then((interfaceMatrix) => {
-          expect(interfaceMatrix).toEqual({
-            Array: {
-              find: {
-                Chrome_55_Windows_10: true,
-              },
-            },
-            Audio: {
-              stop: {
-                Chrome_55_Windows_10: true,
-              },
-            },
-          });
+        ]).catch((reason) => {
+          expect(reason).toEqual(new Error('IE_10_Windows_8 does not exist.'));
           done();
         });
     });
@@ -189,15 +185,13 @@ describe('ApiMatrix', function() {
           done();
         });
     });
-    it('lists  all false for a unknown browser key.',
+    it('rejects promise if unknown browser key are given.',
       function(done) {
         apiMatrix.toCSV([
           'Chrome_55_Windows_10',
           'IE_10_Windows_8',
-        ]).then((csvStr) => {
-          expect(csvStr).toEqual(
-            'Interface,API,Chrome_55_Windows_10,IE_10_Windows_8\n' +
-            'Array,find,true,false\n' + 'Audio,stop,true,false\n');
+        ]).catch((reason) => {
+          expect(reason).toEqual(new Error('IE_10_Windows_8 does not exist.'));
           done();
         });
     });
