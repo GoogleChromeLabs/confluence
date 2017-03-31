@@ -71,7 +71,9 @@ describe('ApiMatrix', function() {
       browserDAO,
       interfaceDAO,
     },
-    // Mock exports expected from ApiExtractor.
+    // Provide a context that is aware to relationship DAOs.
+    // TODO(markdittmer): providing an interface for binding
+    // DAOs on Relationships.
     foam.__context__.createSubContext({
       browserDAO,
       webInterfaceDAO: interfaceDAO,
@@ -87,7 +89,6 @@ describe('ApiMatrix', function() {
           'Edge_14_Windows_10',
           'Safari_10_OSX_601',
         ]).then((interfaceMatrix) => {
-          let a = interfaceMatrix;
           expect(interfaceMatrix.ApplePay.about).toEqual({
             Safari_10_OSX_601: true,
           });
@@ -142,7 +143,9 @@ describe('ApiMatrix', function() {
         apiMatrix.toMatrix([
           'Chrome_55_Windows_10',
           'IE_10_Windows_8',
-        ]).catch((reason) => {
+        ]).then(() => {
+          fail('toMatrix promise resolved on unknwon browser key.');
+        }, (reason) => {
           expect(reason).toEqual(new Error('IE_10_Windows_8 does not exist.'));
           done();
         });
@@ -190,7 +193,9 @@ describe('ApiMatrix', function() {
         apiMatrix.toCSV([
           'Chrome_55_Windows_10',
           'IE_10_Windows_8',
-        ]).catch((reason) => {
+        ]).then(() => {
+          fail('toCSV promise resolved on unknwon browser key.');
+        }, (reason) => {
           expect(reason).toEqual(new Error('IE_10_Windows_8 does not exist.'));
           done();
         });
