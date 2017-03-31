@@ -41,10 +41,20 @@ describe('ApiMatrix', function() {
       });
     };
   beforeEach(function() {
+    let browserDAO = foam.dao.EasyDAO.create({
+      name: 'browserDAO',
+      of: org.chromium.apis.web.Browser,
+      daoType: 'MDAO',
+    });
+    let interfaceDAO = foam.dao.EasyDAO.create({
+      name: 'interfaceDAO',
+      of: org.chromium.apis.web.WebInterface,
+      daoType: 'MDAO',
+    });
     let browserApiDAO = foam.dao.EasyDAO.create({
       name: 'browserApiDao',
       of: org.chromium.apis.web.BrowserWebInterfaceJunction,
-      daoType: 'ARRAY',
+      daoType: 'MDAO',
     });
     browserApiDAO.put(browserAPI('Chrome', '55', 'Windows', '10',
       'Array', 'find'));
@@ -62,19 +72,9 @@ describe('ApiMatrix', function() {
       'Audio', 'stop'));
     browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
       'Array', 'find'));
-    let browserDAO = foam.dao.EasyDAO.create({
-      name: 'browserDAO',
-      of: org.chromium.apis.web.Browser,
-      daoType: 'ARRAY',
-    });
     browserDAO.put(browser('Chrome', '55', 'Windows', '10'));
     browserDAO.put(browser('Edge', '14', 'Windows', '10'));
     browserDAO.put(browser('Safari', '10', 'OSX', '601'));
-    let interfaceDAO = foam.dao.EasyDAO.create({
-      name: 'interfaceDAO',
-      of: org.chromium.apis.web.WebInterface,
-      daoType: 'ARRAY',
-    });
     interfaceDAO.put(webInterface('Array', 'find'));
     interfaceDAO.put(webInterface('Audio', 'play'));
     interfaceDAO.put(webInterface('Audio', 'stop'));
@@ -83,7 +83,13 @@ describe('ApiMatrix', function() {
       browserApiDAO,
       browserDAO,
       interfaceDAO,
-    });
+    },
+    // Mock exports expected from ApiExtractor.
+    foam.__context__.createSubContext({
+      browserDAO,
+      webInterfaceDAO: interfaceDAO,
+      browserWebInterfaceJunctionDAO: browserApiDAO,
+    }));
   });
 
   describe('toMatrix()', function() {
@@ -143,7 +149,10 @@ describe('ApiMatrix', function() {
           done();
         });
     });
-    it('produces correct result when unknown browser key is given.',
+    // TODO(jingt06): We should expect to throw on unknown browser keys.
+    // The behaviour described below creates the illusion that there exists
+    // data for unknown browsers.
+    xit('produces correct result when unknown browser key is given.',
       function(done) {
         apiMatrix.toMatrix([
           'Chrome_55_Windows_10',
@@ -202,7 +211,10 @@ describe('ApiMatrix', function() {
           done();
         });
     });
-    it('lists  all false for a unknown browser key.',
+    // TODO(jingt06): We should expect to throw on unknown browser keys.
+    // The behaviour described below creates the illusion that there exists
+    // data for unknown browsers.
+    xit('lists  all false for a unknown browser key.',
       function(done) {
         apiMatrix.toCSV([
           'Chrome_55_Windows_10',

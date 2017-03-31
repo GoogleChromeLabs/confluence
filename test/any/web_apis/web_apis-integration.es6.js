@@ -29,13 +29,15 @@ describe('WebAPI and api extractor', function() {
     let edge14 = global.DATA.edge14;
     let safari602 = global.DATA.safari602;
     let og = global.ObjectGraph;
-    let extractor = org.chromium.apis.web.apiExtractor.create({});
-    let apiImporter = org.chromium.apis.web.ApiImporter.create();
+    // Construct service components in context:
+    // extractor -> importer -> matrix.
+    let extractor = org.chromium.apis.web.apiExtractor.create();
+    let apiImporter = org.chromium.apis.web.ApiImporter.create(null, extractor);
     let apiMatrix = org.chromium.apis.web.ApiMatrix.create({
       browserApiDAO: apiImporter.browserApiDAO,
       browserDAO: apiImporter.browserDAO,
       interfaceDAO: apiImporter.interfaceDAO,
-    });
+    }, apiImporter);
 
     apiImporter.import('Chrome', '56', 'Windows', '10',
       extractor.extractWebCatalog(og.fromJSON(chrome56)));
