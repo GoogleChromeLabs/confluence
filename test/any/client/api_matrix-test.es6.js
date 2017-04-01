@@ -5,42 +5,80 @@
 
 describe('ApiMatrix', function() {
   let apiMatrix;
+  let browser = function(browserName, browserVersion,
+    osName, osVersion) {
+      return org.chromium.apis.web.Browser.create({
+        browserName,
+        browserVersion,
+        osName,
+        osVersion,
+      });
+    };
+  let webInterface = function(interfaceName, apiName) {
+    return org.chromium.apis.web.WebInterface.create({
+      interfaceName,
+      apiName,
+    });
+  };
   let browserAPI = function(browserName, browserVersion,
     osName, osVersion, interfaceName, apiName) {
-      return org.chromium.apis.web.BrowserAPI.create({
-        browserName: browserName,
-        browserVersion: browserVersion,
-        osName: osName,
-        osVersion: osVersion,
-        interfaceName: interfaceName,
-        apiName: apiName,
+      return org.chromium.apis.web.BrowserWebInterfaceJunction.create({
+        sourceId: `${browserName}_${browserVersion}_${osName}_${osVersion}`,
+        targetId: `${interfaceName}#${apiName}`,
       });
     };
   beforeEach(function() {
-    let browserApiDao = foam.dao.EasyDAO.create({
-      name: 'browserApiDao',
-      of: org.chromium.apis.web.BrowserAPI,
+    let browserDAO = foam.dao.EasyDAO.create({
+      name: 'browserDAO',
+      of: org.chromium.apis.web.Browser,
       daoType: 'MDAO',
     });
-    browserApiDao.put(browserAPI('Chrome', '55', 'Windows', '10',
-      'Array', 'find'));
-    browserApiDao.put(browserAPI('Chrome', '55', 'Windows', '10',
-      'Audio', 'stop'));
-    browserApiDao.put(browserAPI('Edge', '14', 'Windows', '10',
-      'Array', 'find'));
-    browserApiDao.put(browserAPI('Edge', '14', 'Windows', '10',
-      'Audio', 'play'));
-    browserApiDao.put(browserAPI('Safari', '10', 'OSX', '601',
-      'ApplePay', 'about'));
-    browserApiDao.put(browserAPI('Safari', '10', 'OSX', '601',
-      'Audio', 'play'));
-    browserApiDao.put(browserAPI('Safari', '10', 'OSX', '601',
-      'Audio', 'stop'));
-    browserApiDao.put(browserAPI('Safari', '10', 'OSX', '601',
-      'Array', 'find'));
-    apiMatrix = org.chromium.apis.web.ApiMatrix.create({
-      browserAPIs: browserApiDao,
+    let interfaceDAO = foam.dao.EasyDAO.create({
+      name: 'interfaceDAO',
+      of: org.chromium.apis.web.WebInterface,
+      daoType: 'MDAO',
     });
+    let browserApiDAO = foam.dao.EasyDAO.create({
+      name: 'browserApiDao',
+      of: org.chromium.apis.web.BrowserWebInterfaceJunction,
+      daoType: 'MDAO',
+    });
+    browserApiDAO.put(browserAPI('Chrome', '55', 'Windows', '10',
+      'Array', 'find'));
+    browserApiDAO.put(browserAPI('Chrome', '55', 'Windows', '10',
+      'Audio', 'stop'));
+    browserApiDAO.put(browserAPI('Edge', '14', 'Windows', '10',
+      'Array', 'find'));
+    browserApiDAO.put(browserAPI('Edge', '14', 'Windows', '10',
+      'Audio', 'play'));
+    browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
+      'ApplePay', 'about'));
+    browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
+      'Audio', 'play'));
+    browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
+      'Audio', 'stop'));
+    browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
+      'Array', 'find'));
+    browserDAO.put(browser('Chrome', '55', 'Windows', '10'));
+    browserDAO.put(browser('Edge', '14', 'Windows', '10'));
+    browserDAO.put(browser('Safari', '10', 'OSX', '601'));
+    interfaceDAO.put(webInterface('Array', 'find'));
+    interfaceDAO.put(webInterface('Audio', 'play'));
+    interfaceDAO.put(webInterface('Audio', 'stop'));
+    interfaceDAO.put(webInterface('ApplePay', 'about'));
+    apiMatrix = org.chromium.apis.web.ApiMatrix.create({
+      browserApiDAO,
+      browserDAO,
+      interfaceDAO,
+    },
+    // Provide a context that is aware to relationship DAOs.
+    // TODO(markdittmer): providing an interface for binding
+    // DAOs on Relationships.
+    foam.__context__.createSubContext({
+      browserDAO,
+      webInterfaceDAO: interfaceDAO,
+      browserWebInterfaceJunctionDAO: browserApiDAO,
+    }));
   });
 
   describe('toMatrix()', function() {
@@ -71,8 +109,8 @@ describe('ApiMatrix', function() {
             Chrome_55_Windows_10: true,
             Safari_10_OSX_601: true,
           });
+          done();
         });
-        done();
       });
     it(`contains correct interface and API information, when part of
       keys are selected.`, function(done) {
@@ -100,24 +138,15 @@ describe('ApiMatrix', function() {
           done();
         });
     });
-    it('produces correct result when unknown browser key is given.',
+    it('rejects promise if unknown browser key are given.',
       function(done) {
         apiMatrix.toMatrix([
           'Chrome_55_Windows_10',
           'IE_10_Windows_8',
-        ]).then((interfaceMatrix) => {
-          expect(interfaceMatrix).toEqual({
-            Array: {
-              find: {
-                Chrome_55_Windows_10: true,
-              },
-            },
-            Audio: {
-              stop: {
-                Chrome_55_Windows_10: true,
-              },
-            },
-          });
+        ]).then(() => {
+          fail('toMatrix promise resolved on unknwon browser key.');
+        }, (reason) => {
+          expect(reason).toEqual(new Error('IE_10_Windows_8 does not exist.'));
           done();
         });
     });
@@ -159,15 +188,15 @@ describe('ApiMatrix', function() {
           done();
         });
     });
-    it('lists  all false for a unknown browser key.',
+    it('rejects promise if unknown browser key are given.',
       function(done) {
         apiMatrix.toCSV([
           'Chrome_55_Windows_10',
           'IE_10_Windows_8',
-        ]).then((csvStr) => {
-          expect(csvStr).toEqual(
-            'Interface,API,Chrome_55_Windows_10,IE_10_Windows_8\n' +
-            'Array,find,true,false\n' + 'Audio,stop,true,false\n');
+        ]).then(() => {
+          fail('toCSV promise resolved on unknwon browser key.');
+        }, (reason) => {
+          expect(reason).toEqual(new Error('IE_10_Windows_8 does not exist.'));
           done();
         });
     });
