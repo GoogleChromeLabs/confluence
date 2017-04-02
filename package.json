@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "Web API Confluence Dashboard",
   "scripts": {
-    "test": "karma start ./config/karma.all.conf.js"
+    "test": "karma start ./config/karma.all.conf.js",
+    "serve": "zsh scripts/serve.sh"
   },
   "repository": {
     "type": "git",
