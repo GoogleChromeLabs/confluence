@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+    <script type='text/javascript' src='vendors.bundle.js'></script>
+    <script type='text/javascript' src='foam.bundle.js'></script>
+    <script type='text/javascript' src='app.bundle.js'></script>
+    <!--Import Google Icon Font-->
+    <link href='http://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
+
+    <style type='text/css'>
+      /* Sticky Footer */
+      body {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+      main {
+        flex: 1 0 auto;
+      }
+    </style>
+</head>
+<body ng-app='confluence'>
+  <header>
+    <nav>
+      <div class='nav-wrapper blue darken-2'>
+        <a class='brand-logo' ui-sref='home'>Web API Confluence</a>
+        <ul class='right'>
+          <li><a ui-sref='catalog'>catalog</a></li>
+          <li><a ui-sref='confluence'>confluence</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main><ui-view></ui-view></main>
+
+  <footer class='page-footer blue darken-2'>
+    <div class='footer-copyright blue darken-2'>
+      <div class='container'>
+        © 2015 The Chromium Authors
+        <a class='grey-text text-lighten-4 right'
+          href='https://github.com/GoogleChrome/confluence'>
+          Github
+        </a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
