@@ -2,22 +2,21 @@
   <table class='bordered highlight'>
     <tr>
       <th>Interface / API</th>
-      <th ng-repeat='browser in $ctrl.browserKeys'>
-        <div class='chip'>
-          {{browser}}
-        </div>
+      <th ng-repeat='browser in $ctrl.browsers'>
+        {{browser.browserName}} {{browser.browserVersion}}
+        {{browser.osName}} {{browser.osVersion}}
       </th>
     </tr>
     <tr>
       <td>Total APIs</td>
-      <td ng-repeat='browser in $ctrl.browserKeys'>
-        {{analytics[browser].total}}
+      <td ng-repeat='browser in $ctrl.browsers'>
+        {{analytics[browser.browserKey].total}}
       </td>
     </tr>
     <tr>
       <td>Proprietary APIs</td>
-      <td ng-repeat='browser in $ctrl.browserKeys'>
-        {{analytics[browser].proprietary}}
+      <td ng-repeat='browser in $ctrl.browsers'>
+        {{analytics[browser.browserKey].proprietary}}
         <i class="tiny material-icons"
           style='cursor:pointer'
           ng-click='createNewView(browser, "proprietary")'>
@@ -27,8 +26,8 @@
     </tr>
     <tr>
       <td>Fall Behind APIs</td>
-      <td ng-repeat='browser in $ctrl.browserKeys'>
-        {{analytics[browser].fallBehind}}
+      <td ng-repeat='browser in $ctrl.browsers'>
+        {{analytics[browser.browserKey].fallBehind}}
         <i class='tiny material-icons'
           style='cursor:pointer'
           ng-click='createNewView(browser, "fallBehind")'>

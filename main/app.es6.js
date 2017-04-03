@@ -36,6 +36,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
     url: '/catalog',
     controller: 'catalogController',
     template: require('../static/view/api_catalog.html'),
+    resolve: {
+      apiPromises: function(api) {
+        return Promise.all(api.promises);
+      },
+    },
   };
 
   $stateProvider.state(homeState);
@@ -45,19 +50,40 @@ app.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('/');
 });
 
-app.service('apiMatrix', function() {
+app.service('api', function() {
+  let browserDAO = foam.dao.EasyDAO.create({
+    name: 'browserDAO',
+    of: org.chromium.apis.web.Browser,
+    daoType: 'MDAO',
+  });
+  let interfaceDAO = foam.dao.EasyDAO.create({
+    name: 'interfaceDAO',
+    of: org.chromium.apis.web.WebInterface,
+    daoType: 'MDAO',
+  });
   let browserApiDAO = foam.dao.RestDAO.create({
     baseURL: window.location.origin + '/browser-apis',
     of: org.chromium.apis.web.BrowserWebInterfaceJunction,
   });
-  let browserDAO = foam.dao.RestDAO.create({
+  let promises = [];
+  promises.push(foam.dao.RestDAO.create({
     baseURL: window.location.origin + '/browsers',
     of: org.chromium.apis.web.Browser,
-  });
-  let interfaceDAO = foam.dao.RestDAO.create({
+  }).select({
+    put: (browser) => {
+      browserDAO.put(browser);
+    },
+  }));
+
+  promises.push(foam.dao.RestDAO.create({
     baseURL: window.location.origin + '/web-interfaces',
     of: org.chromium.apis.web.WebInterface,
-  });
+  }).select({
+    put: (webInterface) => {
+      interfaceDAO.put(webInterface);
+    },
+  }));
+
   let apiMatrix = org.chromium.apis.web.ApiMatrix.create({
     browserApiDAO,
     browserDAO,
@@ -71,5 +97,8 @@ app.service('apiMatrix', function() {
     webInterfaceDAO: interfaceDAO,
     browserWebInterfaceJunctionDAO: browserApiDAO,
   }));
-  return apiMatrix;
+  return {
+    matrix: apiMatrix,
+    promises,
+  };
 });
