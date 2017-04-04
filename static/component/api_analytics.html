@@ -1,36 +1,36 @@
-<div class='card-panel' style='overflow: scroll;width: 100%;'>
-  <table class='bordered highlight'>
+<div class="card-panel full-width">
+  <table class="bordered highlight">
     <tr>
       <th>Interface / API</th>
-      <th ng-repeat='browser in $ctrl.browsers'>
+      <th ng-repeat="browser in $ctrl.browsers">
         {{browser.browserName}} {{browser.browserVersion}}
         {{browser.osName}} {{browser.osVersion}}
       </th>
     </tr>
     <tr>
       <td>Total APIs</td>
-      <td ng-repeat='browser in $ctrl.browsers'>
+      <td ng-repeat="browser in $ctrl.browsers">
         {{analytics[browser.browserKey].total}}
       </td>
     </tr>
     <tr>
       <td>Proprietary APIs</td>
-      <td ng-repeat='browser in $ctrl.browsers'>
+      <td ng-repeat="browser in $ctrl.browsers">
         {{analytics[browser.browserKey].proprietary}}
         <i class="tiny material-icons"
-          style='cursor:pointer'
-          ng-click='createNewView(browser, "proprietary")'>
+          style="cursor:pointer"
+          ng-click="createNewView(browser, 'proprietary')">
           open_in_new
         </i>
       </td>
     </tr>
     <tr>
       <td>Fall Behind APIs</td>
-      <td ng-repeat='browser in $ctrl.browsers'>
+      <td ng-repeat="browser in $ctrl.browsers">
         {{analytics[browser.browserKey].fallBehind}}
-        <i class='tiny material-icons'
-          style='cursor:pointer'
-          ng-click='createNewView(browser, "fallBehind")'>
+        <i class="tiny material-icons"
+          style="cursor:pointer"
+          ng-click="createNewView(browser, 'fallBehind')">
           open_in_new
         </i>
       </td>
