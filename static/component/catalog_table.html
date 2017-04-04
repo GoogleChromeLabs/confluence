@@ -1,7 +1,7 @@
-<style type='text/css'>
-  /* Set search bar's height to 64px. Otherwise, the UI breaks,
+<style type="text/css">
+  /* Set search bar"s height to 64px. Otherwise, the UI breaks,
     it is a bug in materlize-css.*/
-  input[type='search'] {
+  input[type="search"] {
     height: 64px !important;
   }
   /* Sticky column interface / API column. */
@@ -12,95 +12,97 @@
     background-color: rgba(255, 255, 255, 0.5);
   }
 </style>
-<div class='card-panel'>
-  <nav class='blue lighten-3'>
-    <div class='nav-wrapper'>
-      <ul class='left'>
+<div class="card-panel">
+  <nav class="blue lighten-3">
+    <div class="nav-wrapper">
+      <ul class="left">
         <!-- Pagination -->
-        <li class='waves-effect'
-          ng-class='{disabled: currentPage === 0}'
-          ng-click='setPage(currentPage-1)'
-          ng-disabled='currentPage === 0'>
-          <i class='material-icons'>chevron_left</i>
+        <li class="waves-effect"
+          ng-class="{disabled: currentPage === 0}"
+          ng-click="setPage(currentPage - 1)"
+          ng-disabled="currentPage === 0">
+          <i class="material-icons">chevron_left</i>
         </li>
-        <li class='waves-effect'
-          ng-class='{active: n === currentPage}'
-          ng-repeat='n in range(pageLength, currentPage)'>
-            <a ng-click='setPage(n)'>{{n + 1}}</a>
+        <li class="waves-effect"
+          ng-class="{active: n === currentPage}"
+          ng-repeat="n in range(pageLength, currentPage)">
+            <a ng-click="setPage(n)">{{n + 1}}</a>
         </li>
-        <li class='waves-effect'
-          ng-class='{disabled: (currentPage) === pageLength - 1}'
-          ng-click='setPage(currentPage+1)'
-          ng-disabled='currentPage === pageLength - 1'>
-           <i class='material-icons'>chevron_right</i>
+        <li class="waves-effect"
+          ng-class="{disabled: (currentPage) === pageLength - 1}"
+          ng-click="setPage(currentPage + 1)"
+          ng-disabled="currentPage === pageLength - 1">
+           <i class="material-icons">chevron_right</i>
         </li>
         <!-- Download CSV button -->
         <li>
-          <a ng-click='downloadCSV()'>
-            Download CSV<i class='material-icons right'>file_download</i>
+          <a ng-click="downloadCSV()">
+            Download CSV<i class="material-icons right">file_download</i>
           </a>
         </li>
         <!-- Expand all switch -->
         <li class="switch">
-          <label class='white-text'>
+          <label class="white-text">
             Expand All
-            <input type="checkbox" ng-model='expandAll'>
+            <input type="checkbox" ng-model="expandAll">
             <span class="lever"></span>
           </label>
         </li>
       </ul>
-      <ul class='right'>
+      <ul class="right">
         <li>
           <a class="btn-floating waves-effect blue darken-3
- waves-light search-btn" ng-click='showSearchBar=!showSearchBar'>
-            <i class='material-icons'>search</i>
+              waves-light search-btn"
+            ng-click="showSearchBar=!showSearchBar">
+            <i class="material-icons">search</i>
           </a>
         </li>
       </ul>
     </div>
   </nav>
   <!-- Search Navbar -->
-  <nav class='blue lighten-3' ng-show='showSearchBar'>
+  <nav class="blue lighten-3" ng-show="showSearchBar">
     <div class="nav-wrapper">
       <form>
-        <div class='input-field'>
-          <input id='search' type='search' ng-model='searchKey'
-            ng-keyup='$event.keyCode == 13 && search($event)'>
-          <label class='label-icon' for='search'>
-            <i class='material-icons'>search</i>
+        <div class="input-field">
+          <input id="search" type="search" ng-model="searchKey"
+            ng-keyup="$event.keyCode == 13 && search($event)">
+          <label class="label-icon" for="search">
+            <i class="material-icons">search</i>
           </label>
-          <i class='material-icons'>close</i>
+          <i class="material-icons">close</i>
         </div>
       </form>
     </div>
   </nav>
-  <div style='overflow:scroll; width:100%;'>
-    <table class='bordered highlight'>
+  <div class="full-width">
+    <table class="bordered highlight">
       <tr>
         <th>Interface / API</th>
-        <th ng-repeat='browser in $ctrl.browsers'>
+        <th ng-repeat="browser in $ctrl.browsers">
           {{browser.browserName}} {{browser.browserVersion}}
           {{browser.osName}} {{browser.osVersion}}
-          <i class='tiny material-icons close'
-            style='cursor:pointer'
-            ng-if='$ctrl.ableToDeleteBrowser'
-            ng-click='removeBrowser($event, browser)'>
+          <i class="tiny material-icons close"
+            style="cursor:pointer"
+            ng-if="$ctrl.ableToDeleteBrowser"
+            ng-click="removeBrowser($event, browser)">
               close
           </i>
         </th>
       </tr>
-      <tr ng-repeat-start='interface in getInterfaceRange()' ng-click='showCatalog(interface)'>
-        <td class='waves-effect'
-          ng-class='{"grey lighten-1": showRows[interface] || expandAll}'
-          ng-style='{cursor:"pointer", width:"100%"}'>{{interface}}</td>
+      <tr ng-repeat-start="interface in getInterfaceRange()"
+        ng-click="showCatalog(interface)">
+        <td class="waves-effect"
+          ng-class="{'grey lighten-1': showRows[interface] || expandAll}"
+          style="cursor:pointer; width:100%">{{interface}}</td>
       </tr>
-      <tr ng-repeat-end ng-repeat='(api, results) in apiCatalogMatrix[interface]' ng-if='showRows[interface] || expandAll'>
-        <td class='colhead'>{{api}}</td>
-        <td ng-repeat='browser in $ctrl.browsers'
-          ng-class='{"red accent-1": !results[browser.browserKey],
-           "green accent-1": results[browser.browserKey]}'>
-          <i class='material-icons' ng-if='results[browser.browserKey]'>check</i>
-          <i class='material-icons' ng-if='!results[browser.browserKey]'>close</i>
+      <tr ng-repeat-end ng-repeat="(api, results) in apiCatalogMatrix[interface]" ng-if="showRows[interface] || expandAll">
+        <td class="colhead">{{api}}</td>
+        <td ng-repeat="browser in $ctrl.browsers"
+          ng-class="{'red accent-1': !results[browser.browserKey],
+           'green accent-1': results[browser.browserKey]}">
+          <i class="material-icons" ng-if="results[browser.browserKey]">check</i>
+          <i class="material-icons" ng-if="!results[browser.browserKey]">close</i>
         </td>
       </tr>
     </table>

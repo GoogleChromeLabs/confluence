@@ -15,23 +15,17 @@ require('../lib/client/api_matrix.es6.js');
 
 let app = angular.module('confluence', ['ui.router']);
 
+require('../lib/client/api_service.es6.js');
 require('../lib/controller/api_catalog.es6.js');
 
 app.config(function($stateProvider, $urlRouterProvider) {
-  let homeState = {
+  $stateProvider.state({
     name: 'home',
     url: '/',
     template: require('../static/view/home.html'),
-  };
+  });
 
-  // let confluenceState = {
-  //   name: 'confluence',
-  //   url: '/confluence',
-  //   controller: 'confluenceController',
-  //   template: require('../static/view/confluence.html'),
-  // };
-
-  let catalogState = {
+  $stateProvider.state({
     name: 'catalog',
     url: '/catalog',
     controller: 'catalogController',
@@ -41,64 +35,8 @@ app.config(function($stateProvider, $urlRouterProvider) {
         return Promise.all(api.promises);
       },
     },
-  };
-
-  $stateProvider.state(homeState);
-  $stateProvider.state(catalogState);
-  // $stateProvider.state(confluenceState);
+  });
 
   $urlRouterProvider.otherwise('/');
 });
 
-app.service('api', function() {
-  let browserDAO = foam.dao.EasyDAO.create({
-    name: 'browserDAO',
-    of: org.chromium.apis.web.Browser,
-    daoType: 'MDAO',
-  });
-  let interfaceDAO = foam.dao.EasyDAO.create({
-    name: 'interfaceDAO',
-    of: org.chromium.apis.web.WebInterface,
-    daoType: 'MDAO',
-  });
-  let browserApiDAO = foam.dao.RestDAO.create({
-    baseURL: window.location.origin + '/browser-apis',
-    of: org.chromium.apis.web.BrowserWebInterfaceJunction,
-  });
-  let promises = [];
-  promises.push(foam.dao.RestDAO.create({
-    baseURL: window.location.origin + '/browsers',
-    of: org.chromium.apis.web.Browser,
-  }).select({
-    put: (browser) => {
-      browserDAO.put(browser);
-    },
-  }));
-
-  promises.push(foam.dao.RestDAO.create({
-    baseURL: window.location.origin + '/web-interfaces',
-    of: org.chromium.apis.web.WebInterface,
-  }).select({
-    put: (webInterface) => {
-      interfaceDAO.put(webInterface);
-    },
-  }));
-
-  let apiMatrix = org.chromium.apis.web.ApiMatrix.create({
-    browserApiDAO,
-    browserDAO,
-    interfaceDAO,
-  },
-  // Provide a context that is aware to relationship DAOs.
-  // TODO(markdittmer): providing an interface for binding
-  // DAOs on Relationships.
-  foam.__context__.createSubContext({
-    browserDAO,
-    webInterfaceDAO: interfaceDAO,
-    browserWebInterfaceJunctionDAO: browserApiDAO,
-  }));
-  return {
-    matrix: apiMatrix,
-    promises,
-  };
-});
