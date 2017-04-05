@@ -24,10 +24,10 @@ WebServer_PID=""
 
 function stop() {
   warn "STOPPING WEBPACK (PID=${Webpack_PID})"
-  if [ "${Webpack_PID}" != "" ]; then kill ${Webpack_PID}; fi
+  if [ "${Webpack_PID}" != "" ]; then kill "${Webpack_PID}"; fi
   win "WEBPACK STOPPED"
   warn "STOPPING WEB SERVER (PID=${WebServer_PID})"
-  if [ "${WebServer_PID}" != "" ]; then kill ${Webpack_PID}; fi
+  if [ "${WebServer_PID}" != "" ]; then kill "${Webpack_PID}"; fi
   win "WEB SERVER STOPPED"
   exit 0
 }
@@ -35,12 +35,12 @@ function stop() {
 trap stop INT
 
 warn "STARTING WEBPACK"
-webpack --watch --progress --config ${WD}/../config/webpack.config.js &
+webpack --watch --progress --config "${WD}/../config/webpack.config.js" &
 Webpack_PID=$!
 win "WEBPACK STARTED (PID=${Webpack_PID})"
 
 warn "STARTING WEB SERVER"
-node ${WD}/../main/serve.js &
+node "${WD}/../main/serve.js" &
 WebServer_PID=$!
 win "WEB SERVER STARTED (PID=${WebServer_PID})"
 
