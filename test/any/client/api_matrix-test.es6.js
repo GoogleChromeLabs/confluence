@@ -150,6 +150,78 @@ describe('ApiMatrix', function() {
           done();
         });
     });
+    it(`filters APIs by options.browserOptions`, function(done) {
+      let promises = [];
+      promises.push(apiMatrix.toMatrix([
+        'Chrome_55_Windows_10',
+        'Edge_14_Windows_10',
+        'Safari_10_OSX_601',
+      ], {
+        browserOptions: {
+          'Chrome_55_Windows_10': true,
+          'Edge_14_Windows_10': false,
+        },
+      }).then((interfaceMatrix) => {
+        expect(interfaceMatrix.ApplePay).toBeUndefined();
+        expect(interfaceMatrix.Array).toBeUndefined();
+        expect(interfaceMatrix.Audio.play).toBeUndefined();
+        expect(interfaceMatrix.Audio.stop).toEqual({
+          Chrome_55_Windows_10: true,
+          Safari_10_OSX_601: true,
+        });
+      }));
+      promises.push(apiMatrix.toMatrix([
+        'Chrome_55_Windows_10',
+        'Edge_14_Windows_10',
+        'Safari_10_OSX_601',
+      ], {
+        browserOptions: {
+          'Chrome_55_Windows_10': false,
+        },
+      }).then((interfaceMatrix) => {
+        expect(interfaceMatrix.ApplePay.about).toEqual({
+          Safari_10_OSX_601: true,
+        });
+        expect(interfaceMatrix.Audio.play).toEqual({
+          Edge_14_Windows_10: true,
+          Safari_10_OSX_601: true,
+        });
+        expect(interfaceMatrix.Array).toBeUndefined();
+        expect(interfaceMatrix.Audio.stop).toBeUndefined();
+      }));
+      Promise.all(promises).then(() => done());
+    });
+    it(`filters APIs by options.numAvailable`, function(done) {
+      let promises = [];
+      promises.push(apiMatrix.toMatrix([
+        'Chrome_55_Windows_10',
+        'Edge_14_Windows_10',
+        'Safari_10_OSX_601',
+      ], {
+        numAvailable: 1,
+      }).then((interfaceMatrix) => {
+        expect(interfaceMatrix).toEqual({
+          ApplePay: {
+            about: {
+              Safari_10_OSX_601: true,
+            },
+          },
+        });
+      }));
+      promises.push(apiMatrix.toMatrix([
+        'Chrome_55_Windows_10',
+        'Edge_14_Windows_10',
+        'Safari_10_OSX_601',
+      ], {
+        numAvailable: [2, 3],
+      }).then((interfaceMatrix) => {
+        expect(interfaceMatrix.Array.find).toBeDefined();
+        expect(interfaceMatrix.Audio.play).toBeDefined();
+        expect(interfaceMatrix.Audio.stop).toBeDefined();
+        expect(interfaceMatrix.ApplePay).toBeUndefined();
+      }));
+      Promise.all(promises).then(() => done());
+    });
   });
 
   describe('toCSV()', function() {
