@@ -16,8 +16,8 @@ describe('WebAPI and api extractor', function() {
     let edge14 = global.DATA.edge14;
     let safari602 = global.DATA.safari602;
     let og = global.ObjectGraph;
-    let extractor = org.chromium.apis.web.apiExtractor.create();
-    let apiImporter = org.chromium.apis.web.ApiImporter.create(null, extractor);
+    let apiExtractor = org.chromium.apis.web.ApiExtractor.create();
+    let apiImporter = org.chromium.apis.web.ApiImporter.create(null, apiExtractor);
     let apiMatrix = org.chromium.apis.web.ApiMatrix.create({
       browserApiDAO: apiImporter.browserApiDAO,
       browserDAO: apiImporter.browserDAO,
@@ -25,11 +25,11 @@ describe('WebAPI and api extractor', function() {
     }, apiImporter);
 
     apiImporter.import('Chrome', '56', 'Windows', '10',
-      extractor.extractWebCatalog(og.fromJSON(chrome56)));
+      apiExtractor.extractWebCatalog(og.fromJSON(chrome56)));
     apiImporter.import('Edge', '14.14393', 'Windows', '10',
-        extractor.extractWebCatalog(og.fromJSON(edge14)));
+        apiExtractor.extractWebCatalog(og.fromJSON(edge14)));
     apiImporter.import('Safari', '602.4.8', 'OSX', '10',
-        extractor.extractWebCatalog(og.fromJSON(safari602)));
+        apiExtractor.extractWebCatalog(og.fromJSON(safari602)));
     apiMatrix.toMatrix(['Chrome_56_Windows_10', 'Edge_14.14393_Windows_10',
     'Safari_602.4.8_OSX_10']).then((webCatalogMatrix) =>{
       webCatalog = webCatalogMatrix;

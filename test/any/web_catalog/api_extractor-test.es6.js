@@ -5,7 +5,7 @@
 
 describe('API extractor', function() {
   let objectGraph = global.ObjectGraph;
-  let extractor = org.chromium.apis.web.apiExtractor.create({});
+  let extractor = org.chromium.apis.web.ApiExtractor.create({});
   const types = {
     'boolean': 2,
     'exception': 7,
