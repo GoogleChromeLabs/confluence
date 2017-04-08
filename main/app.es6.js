@@ -12,11 +12,13 @@ require('../lib/web_apis/browser.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 require('../lib/web_apis/browser_interface_relationship.es6.js');
 require('../lib/client/api_matrix.es6.js');
+require('../lib/client/api_confluence.es6.js');
 
 let app = angular.module('confluence', ['ui.router']);
 
 require('../lib/client/api_service.es6.js');
 require('../lib/controller/api_catalog.es6.js');
+require('../lib/controller/api_confluence.es6.js');
 
 app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider.state({
@@ -35,6 +37,13 @@ app.config(function($stateProvider, $urlRouterProvider) {
         return Promise.all(api.promises);
       },
     },
+  });
+
+  $stateProvider.state({
+    name: 'confluence',
+    url: '/confluence',
+    controller: 'confluenceController',
+    template: require('../static/view/confluence.html'),
   });
 
   $urlRouterProvider.otherwise('/');
