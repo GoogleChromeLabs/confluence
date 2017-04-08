@@ -13,13 +13,23 @@ const files = base.deps
   .concat(base.integrations);
 const preprocessors = {
   'browser/webpack-helper.js': ['webpack'],
+  '../lib/**/*.js': ['coverage'],
 };
 
 module.exports = function(config) {
   base(config);
   config.set({
     files,
+    reporters: (base.reporters || []).concat(['coverage']),
     preprocessors,
     webpack,
+    coverageReporter: {
+      reporters: [
+        {type: 'lcov'},
+        {type: 'html'},
+        {type: 'json'},
+      ],
+      dir: '../.coverage',
+    },
   });
 };
