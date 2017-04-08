@@ -7,6 +7,9 @@ global.FOAM_FLAGS = {gcloud: true};
 require('foam2');
 require('../lib/web_apis/api_importer.es6');
 require('../lib/web_catalog/api_extractor.es6');
+require('../lib/confluence/api_velocity.es6.js');
+require('../lib/confluence/failure_to_ship.es6.js');
+require('../lib/confluence/vendor_specific.es6.js');
 
 
 let server = foam.net.node.Server.create({
@@ -36,11 +39,32 @@ for (let i = 0; i < ogFiles.length; i += 1) {
   }
 }
 
+let apiVelocity = org.chromium.apis.web.ApiVelocity.create({
+  browserDAO: apiImporter.browserDAO,
+  interfaceDAO: apiImporter.interfaceDAO,
+  browserApiDAO: apiImporter.browserApiDAO,
+});
+
+let failureToShip = org.chromium.apis.web.FailureToShip.create({
+  browserDAO: apiImporter.browserDAO,
+  interfaceDAO: apiImporter.interfaceDAO,
+  browserApiDAO: apiImporter.browserApiDAO,
+});
+
+let vendorSpecific = org.chromium.apis.web.VendorSpecific.create({
+  browserDAO: apiImporter.browserDAO,
+  interfaceDAO: apiImporter.interfaceDAO,
+  browserApiDAO: apiImporter.browserApiDAO,
+});
+
 server.exportFile('/', `${__dirname}/../static/index.html`);
 
 server.exportDAO(apiImporter.browserDAO, '/browsers');
 server.exportDAO(apiImporter.interfaceDAO, '/web-interfaces');
 server.exportDAO(apiImporter.browserApiDAO, '/browser-apis');
+server.exportDAO(apiVelocity.apiVelocityDAO, '/api-velocity');
+server.exportDAO(failureToShip.failureToShipDAO, '/failure-to-ship');
+server.exportDAO(vendorSpecific.vendorSpecificDAO, '/vendor-specific');
 
 server.exportDirectory('/images', `${__dirname}/../static/images`);
 
