@@ -33,7 +33,7 @@ describe('RateLimiter', function() {
     expect(task.calls.count()).toEqual(4);
   });
 
-  it('handles more complex scenariou.', function() {
+  it('accepts task that add more tasks correctly.', function() {
     let task1 = jasmine.createSpy('task1');
     let task2 = jasmine.createSpy('task2');
     let task3 = jasmine.createSpy('task3');
