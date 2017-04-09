@@ -5,11 +5,13 @@
 
 describe('RateLimitedDAO', function() {
   let rateLimitedDAO;
+  let arrayDAO;
   beforeEach(function() {
     jasmine.clock().install();
+    arrayDAO = foam.dao.ArrayDAO.create()
     rateLimitedDAO = org.chromium.apis.web.RateLimitedDAO.create({
       interval: 50,
-      delegate: foam.dao.ArrayDAO.create(),
+      delegate: arrayDAO,
     });
     foam.CLASS({
       package: 'test.RateLimitedDAO',
@@ -45,28 +47,39 @@ describe('RateLimitedDAO', function() {
     rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 2}));
     rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 3}));
     jasmine.clock().tick(160);
-    rateLimitedDAO.delegate.select().then((arraySink) => {
-      expect(arraySink.a.map((Item) => Item.id).sort()).toEqual(
+    arrayDAO.select().then((arraySink) => {
+      expect(arraySink.a.map((Item) => Item.id)).toEqual(
         [1, 2, 3]);
         done();
     });
   });
-  it('handles more complex scenariou.', function(done) {
-    rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 1}));
-    rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 2}));
-    rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 3}));
-    jasmine.clock().tick(70);
-    rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 4}));
-    rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 5}));
-    jasmine.clock().tick(150);
-    rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 6}));
-    rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 7}));
-    rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 8}));
-    jasmine.clock().tick(300);
-    rateLimitedDAO.delegate.select().then((arraySink) => {
-      expect(arraySink.a.map((Item) => Item.id).sort()).toEqual(
-        [1, 2, 3, 4, 5, 6, 7, 8]);
-        done();
-    });
+  it('accepts puts after partial dequeue and empties queue correctly.',
+    function(done) {
+      rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 1}));
+      rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 2}));
+      rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 3}));
+      jasmine.clock().tick(70);
+      rateLimitedDAO.delegate.select().then((arraySink) => {
+        expect(arraySink.a.map((Item) => Item.id)).toEqual(
+          [1]);
+          done();
+      });
+      rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 4}));
+      rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 5}));
+      jasmine.clock().tick(150);
+      rateLimitedDAO.delegate.select().then((arraySink) => {
+        expect(arraySink.a.map((Item) => Item.id)).toEqual(
+          [1, 2, 3, 4]);
+          done();
+      });
+      rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 6}));
+      rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 7}));
+      rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 8}));
+      jasmine.clock().tick(300);
+      rateLimitedDAO.delegate.select().then((arraySink) => {
+        expect(arraySink.a.map((Item) => Item.id)).toEqual(
+          [1, 2, 3, 4, 5, 6, 7, 8]);
+          done();
+      });
   });
 });
