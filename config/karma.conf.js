@@ -30,9 +30,8 @@ const integrations = [
   'browser/**/*-integration*.js',
 ];
 const reporters = ['progress'];
-const wp = ['webpack'];
 const preprocessors = {
-  'browser/webpack-helper.js': wp,
+  'browser/webpack-helper.js': ['webpack'],
 };
 
 function configurator(config) {
