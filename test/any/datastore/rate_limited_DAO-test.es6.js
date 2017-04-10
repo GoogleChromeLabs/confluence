@@ -8,7 +8,7 @@ describe('RateLimitedDAO', function() {
   let arrayDAO;
   beforeEach(function() {
     jasmine.clock().install();
-    arrayDAO = foam.dao.ArrayDAO.create()
+    arrayDAO = foam.dao.ArrayDAO.create();
     rateLimitedDAO = org.chromium.apis.web.RateLimitedDAO.create({
       interval: 50,
       delegate: arrayDAO,
@@ -29,15 +29,15 @@ describe('RateLimitedDAO', function() {
     rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 2}));
     rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 3}));
     jasmine.clock().tick(55);
-    rateLimitedDAO.delegate.select().then((arraySink) => {
+    arrayDAO.select().then((arraySink) => {
       expect(arraySink.a.length).toBe(1);
     });
     jasmine.clock().tick(50);
-    rateLimitedDAO.delegate.select().then((arraySink) => {
+    arrayDAO.select().then((arraySink) => {
       expect(arraySink.a.length).toBe(2);
     });
     jasmine.clock().tick(50);
-    rateLimitedDAO.delegate.select().then((arraySink) => {
+    arrayDAO.select().then((arraySink) => {
       expect(arraySink.a.length).toBe(3);
     });
     done();
@@ -59,7 +59,7 @@ describe('RateLimitedDAO', function() {
       rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 2}));
       rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 3}));
       jasmine.clock().tick(70);
-      rateLimitedDAO.delegate.select().then((arraySink) => {
+      arrayDAO.select().then((arraySink) => {
         expect(arraySink.a.map((Item) => Item.id)).toEqual(
           [1]);
           done();
@@ -67,7 +67,7 @@ describe('RateLimitedDAO', function() {
       rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 4}));
       rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 5}));
       jasmine.clock().tick(150);
-      rateLimitedDAO.delegate.select().then((arraySink) => {
+      arrayDAO.select().then((arraySink) => {
         expect(arraySink.a.map((Item) => Item.id)).toEqual(
           [1, 2, 3, 4]);
           done();
@@ -76,7 +76,7 @@ describe('RateLimitedDAO', function() {
       rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 7}));
       rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 8}));
       jasmine.clock().tick(300);
-      rateLimitedDAO.delegate.select().then((arraySink) => {
+      arrayDAO.select().then((arraySink) => {
         expect(arraySink.a.map((Item) => Item.id)).toEqual(
           [1, 2, 3, 4, 5, 6, 7, 8]);
           done();
