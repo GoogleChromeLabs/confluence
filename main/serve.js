@@ -7,6 +7,7 @@ global.FOAM_FLAGS = {gcloud: true};
 require('foam2');
 require('../lib/web_apis/api_importer.es6');
 require('../lib/web_catalog/api_extractor.es6');
+require('../lib/confluence/metric_computer.es6.js');
 require('../lib/confluence/api_velocity.es6.js');
 require('../lib/confluence/failure_to_ship.es6.js');
 require('../lib/confluence/vendor_specific.es6.js');
