@@ -11,9 +11,8 @@ const files = base.deps
   .concat(base.helpers)
   .concat(base.units)
   .concat(base.integrations);
-const wp = ['webpack'];
 const preprocessors = {
-  'browser/webpack-helper.js': wp,
+  'browser/webpack-helper.js': ['webpack'],
 };
 
 module.exports = function(config) {

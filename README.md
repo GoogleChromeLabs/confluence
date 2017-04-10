@@ -1,4 +1,4 @@
-# Web API Confluence Dashboard
+# Web API Confluence Dashboard [![Travis](https://img.shields.io/travis/GoogleChrome/confluence.svg)]() [![Codecov](https://img.shields.io/codecov/c/github/GoogleChrome/confluence.svg)]()
 
 A web UI for visualizing *API confluence metrics*. These metrics are intended to
 capture the how browser vendors
