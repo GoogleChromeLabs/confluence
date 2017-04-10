@@ -10,6 +10,7 @@ require('../lib/web_catalog/api_extractor.es6');
 require('../lib/confluence/api_velocity.es6.js');
 require('../lib/confluence/failure_to_ship.es6.js');
 require('../lib/confluence/vendor_specific.es6.js');
+require('../lib/confluence/aggressive_removal.es6.js');
 
 
 let server = foam.net.node.Server.create({
@@ -57,6 +58,12 @@ let vendorSpecific = org.chromium.apis.web.VendorSpecific.create({
   browserApiDAO: apiImporter.browserApiDAO,
 });
 
+let aggressiveRemoval = org.chromium.apis.web.AggressiveRemoval.create({
+  browserDAO: apiImporter.browserDAO,
+  interfaceDAO: apiImporter.interfaceDAO,
+  browserApiDAO: apiImporter.browserApiDAO,
+});
+
 server.exportFile('/', `${__dirname}/../static/index.html`);
 
 server.exportDAO(apiImporter.browserDAO, '/browsers');
@@ -65,6 +72,7 @@ server.exportDAO(apiImporter.browserApiDAO, '/browser-apis');
 server.exportDAO(apiVelocity.apiVelocityDAO, '/api-velocity');
 server.exportDAO(failureToShip.failureToShipDAO, '/failure-to-ship');
 server.exportDAO(vendorSpecific.vendorSpecificDAO, '/vendor-specific');
+server.exportDAO(aggressiveRemoval.aggressiveRemovalDAO, '/aggressive-removal');
 
 server.exportDirectory('/images', `${__dirname}/../static/images`);
 

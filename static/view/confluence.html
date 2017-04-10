@@ -36,18 +36,16 @@
     >
     </failure-to-ship-chart>
   </div>
-  <!--
   <div ng-show="showTab===2">
     <aggressive-removal-chart
       ng-if="aggressiveRemovalMetrics"
-      ng-repeat="(browser, dataArray) in aggressiveRemovalMetrics"
-      chart-id="browser+"-aggressive-removal-apis-chart""
-      title="browser+" Aggressive Removal APIs""
-      aggressive-removal="dataArray"
-      create-new-view="newRemovedView(browserKey, prevBrowserKey, comparedBrowserKeys)"
+      chart-id="aggressive-removal-apis-chart"
+      title="Aggressive Removal APIs"
+      aggressive-removal-metrics="aggressiveRemovalMetrics"
+      create-new-view="newAggressiveRemovalView(browserTwoYearsAgo, prevReleaseBrowsers, currBrowsers)"
     >
     </aggressive-removal-chart>
-  </div> -->
+  </div>
   <div ng-show="showTab===3">
     <vendor-specific-chart
       ng-if="vendorSpecificMetric"
@@ -65,7 +63,6 @@
     ng-show="$parent.showTab === 4 + $index"
     browsers="view.browsers"
     browser-options="view.browserOptions"
-    length="view.length"
-    lengths="view.lengths">
+    num-available="view.numAvailable">
   </api-catalog-table>
 </div>
