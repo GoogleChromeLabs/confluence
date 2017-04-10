@@ -5,31 +5,46 @@
 
 // Run all tests in Karma.
 
+const path = require('path');
+
 const base = require('./karma.conf.js');
-const webpack = base.webpackConfig;
+
+// Prepend istanbul-instrumenter-loader to default loaders.
+let webpack = base.webpackConfig;
+let loaders = [{
+  test: /\.js$/,
+  include: path.resolve(__dirname, '../lib/'),
+  loader: 'istanbul-instrumenter-loader',
+}].concat(webpack.module.loaders);
+webpack.module.loaders = loaders;
+
 const files = base.deps
   .concat(base.helpers)
   .concat(base.units)
   .concat(base.integrations);
 const preprocessors = {
   'browser/webpack-helper.js': ['webpack'],
-  '../lib/**/*.js': ['coverage'],
 };
 
 module.exports = function(config) {
   base(config);
   config.set({
     files,
-    reporters: (base.reporters || []).concat(['coverage']),
+    // Report coverage gathered by istanbul-instrumenter-loader.
+    reporters: (base.reporters || []).concat(['coverage-istanbul']),
     preprocessors,
     webpack,
-    coverageReporter: {
-      reporters: [
-        {type: 'lcov'},
-        {type: 'html'},
-        {type: 'json'},
-      ],
-      dir: '../.coverage',
+    // Configure coverage-istanbul.
+    coverageIstanbulReporter: {
+      reports: ['lcov', 'html', 'json'],
+      dir: path.resolve(__dirname, '../.coverage'),
+      fixWebPackSourcePaths: true,
+      thresholds: {
+        statements: 85,
+        lines: 85,
+        branches: 80,
+        functions: 80,
+      },
     },
   });
 };
