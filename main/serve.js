@@ -13,7 +13,6 @@ require('../lib/confluence/failure_to_ship.es6.js');
 require('../lib/confluence/vendor_specific.es6.js');
 require('../lib/confluence/aggressive_removal.es6.js');
 
-
 let server = foam.net.node.Server.create({
   port: 9000,
 });
@@ -21,8 +20,8 @@ let server = foam.net.node.Server.create({
 // Use object graph data from ../data/og directory for test
 // before cloudstore DAO is done.
 const OG_DATA_PATH = `${__dirname}/../data/og`;
-let extractor = org.chromium.apis.web.apiExtractor.create({});
-let apiImporter = org.chromium.apis.web.ApiImporter.create({});
+let extractor = org.chromium.apis.web.ApiExtractor.create();
+let apiImporter = org.chromium.apis.web.ApiImporter.create();
 const objectGraph = require('object-graph-js').ObjectGraph;
 const fs = require('fs');
 let ogFiles = fs.readdirSync(OG_DATA_PATH);
