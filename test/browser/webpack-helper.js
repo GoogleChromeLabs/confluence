@@ -10,12 +10,15 @@
  */
 
 // Import libraries to test.
+require('foam2/test/helpers/testcontext');
 require('../../lib/web_catalog/api_extractor.es6.js');
 require('../../lib/web_apis/browser.es6.js');
 require('../../lib/web_apis/web_interface.es6.js');
 require('../../lib/web_apis/browser_interface_relationship.es6.js');
 require('../../lib/web_apis/api_importer.es6.js');
 require('../../lib/client/api_matrix.es6.js');
+require('../../lib/datastore/rate_limiter.es6.js');
+require('../../lib/datastore/rate_limited_DAO.es6.js');
 
 // Require external libraries.
 let libs = {
