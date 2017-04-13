@@ -19,6 +19,7 @@ require('../../lib/web_apis/api_importer.es6.js');
 require('../../lib/client/api_matrix.es6.js');
 require('../../lib/datastore/rate_limiter.es6.js');
 require('../../lib/datastore/rate_limited_DAO.es6.js');
+require('../../lib/confluence/metric_computer.es6.js');
 
 // Require external libraries.
 let libs = {
