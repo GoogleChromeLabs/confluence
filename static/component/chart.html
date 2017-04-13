@@ -1,0 +1,45 @@
+<style>
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+  div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: auto;
+    height: auto;
+    padding: 2px;
+    font: 12px;
+    border: 0px;
+    z-index: 10;
+  }
+  .line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+  .bar {
+    fill: steelblue;
+  }
+  .bar:hover {
+    fill: brown;
+  }
+</style>
+
+
+<div ng-attr-id="{{$ctrl.chartId}}">
+  <div ng-attr-id="{{$ctrl.chartId}}-tooltip" class="tooltip card-panel" style="opacity:0">
+    <p>{{tooltip.browserName}}</p>
+    <p ng-repeat="property in tooltip.properties">
+      {{property.name}}: {{property.value}}
+      <i class="tiny material-icons"
+        style="cursor:pointer"
+        ng-if="property.action"
+        ng-click="property.action()">
+        open_in_new
+      </i>
+    </p>
+  </div>
+</div>
