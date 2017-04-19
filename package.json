@@ -3,9 +3,13 @@
   "version": "0.0.1",
   "description": "Web API Confluence Dashboard",
   "scripts": {
-    "coverage": "karma start ./config/karma.coverage.conf.js",
-    "test": "karma start ./config/karma.all.conf.js",
-    "serve": "zsh scripts/serve.sh"
+    "coverage": "npm run coverageNode && npm run coverageWeb && istanbul-combine -d .coverage -p summary -r lcov -r html -r json -b . .node_coverage/coverage.json .web_coverage/*/coverage*.json && istanbul check-coverage --config config/istanbul.yml \".coverage/**/coverage*.json\"",
+    "coverageNode": "JASMINE_CONFIG_PATH=./config/jasmine.json istanbul cover --config config/istanbul.yml --dir .node_coverage -- jasmine",
+    "coverageWeb": "karma start ./config/karma.coverage.conf.js",
+    "serve": "zsh scripts/serve.sh",
+    "test": "npm run testNode && npm run testWeb",
+    "testNode": "JASMINE_CONFIG_PATH=./config/jasmine.json jasmine",
+    "testWeb": "karma start ./config/karma.all.conf.js"
   },
   "repository": {
     "type": "git",
@@ -39,6 +43,7 @@
     "eslint-config-google": "^0.7.1",
     "file-loader": "^0.10.1",
     "istanbul-instrumenter-loader": "^2.0.0",
+    "istanbul-combine": "^0.3.0",
     "jasmine": "^2.5.3",
     "jasmine-core": "^2.5.2",
     "json-loader": "^0.5.4",
