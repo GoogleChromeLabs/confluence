@@ -1,5 +1,6 @@
 check:
   global:
+    # TODO(markdittmer): Improve coverage, then bump up to 80-85% range.
     statements: 55
     lines: 55
     branches: 50
