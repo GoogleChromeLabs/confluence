@@ -1,0 +1,6 @@
+check:
+  global:
+    statements: 55
+    lines: 55
+    branches: 50
+    functions: 50

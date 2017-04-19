@@ -8,6 +8,7 @@
   ],
   "helpers": [
     "node/**/*-helper*.js",
-    "any/**/*-helper*.js"
+    "any/**/*-helper*.js",
+    "../node_modules/foam2/test/helpers/testcontext.js"
   ]
 }

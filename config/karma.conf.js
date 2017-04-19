@@ -20,6 +20,7 @@ const entries = [
 const helpers = [
   'any/**/*-helper*.js',
   'browser/**/*-helper*.js',
+  '../node_modules/foam2/test/helpers/testcontext.js',
 ];
 const units = [
   'any/**/*-test*.js',
@@ -31,7 +32,8 @@ const integrations = [
 ];
 const reporters = ['progress'];
 const preprocessors = {
-  'browser/webpack-helper.js': ['webpack'],
+  'any/files-helper.js': ['webpack'],
+  'any/data-helper.js': ['webpack'],
 };
 
 function configurator(config) {
@@ -51,8 +53,8 @@ function configurator(config) {
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters,
 
-    // preprocess matching files before serving them to the browser
-    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+    // preprocess matching files before serving them to the browser available
+    // preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors,
 
     // web server port
@@ -104,8 +106,16 @@ configurator.webpackConfig = {
         },
       },
       {
-        test: /\.json$/,
-        loader: 'json-loader',
+        test: /\.html$/,
+        loader: 'html-loader',
+      },
+      {
+        test: /\.css$/,
+        loader: 'style-loader!css-loader',
+      },
+      {
+        test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+        loader: 'file-loader?name=fonts/[name].[ext]',
       },
     ],
   },

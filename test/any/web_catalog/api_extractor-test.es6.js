@@ -4,8 +4,6 @@
 'use strict';
 
 describe('API extractor', function() {
-  let objectGraph = global.ObjectGraph;
-  let extractor = org.chromium.apis.web.ApiExtractor.create({});
   const types = {
     'boolean': 2,
     'exception': 7,
@@ -16,41 +14,54 @@ describe('API extractor', function() {
     'undefined': 1,
   };
 
+  let objectGraph;
+  let extractor;
+  beforeEach(function() {
+    objectGraph = global.ObjectGraph;
+    extractor = org.chromium.apis.web.ApiExtractor.create({});
+  });
+
   describe('getObjectProperties()', function() {
-    let og = objectGraph.fromJSON({
-      'data': {
-        '10000': {
-          'constantNumber': 3,
-          'constantObject': 6,
-          'nonOwnProperty': 3,
-          'property': 3,
-          'object': 7,
-          'builtInProperty': 3,
-        },
-      },
-      'metadata': {
-        '10000': {
-          'constantNumber': {
-            writable: 0,
-          },
-          'constantObject': {
-            writable: 0,
-          },
-          'property': {
-            writable: 1,
-          },
-          'object': {
-            writable: 1,
-          },
-          'builtInProperty': {
-            writable: 1,
+    let og;
+    let properties;
+    beforeEach(function() {
+      og = objectGraph.fromJSON({
+        'data': {
+          '10000': {
+            'constantNumber': 3,
+            'constantObject': 6,
+            'nonOwnProperty': 3,
+            'property': 3,
+            'object': 7,
+            'builtInProperty': 3,
           },
         },
-      },
-      types,
+        'metadata': {
+          '10000': {
+            'constantNumber': {
+              writable: 0,
+            },
+            'constantObject': {
+              writable: 0,
+            },
+            'property': {
+              writable: 1,
+            },
+            'object': {
+              writable: 1,
+            },
+            'builtInProperty': {
+              writable: 1,
+            },
+          },
+        },
+        types,
+      });
+
+      properties = extractor.getObjectProperties_(og, 10000);
+      extractor.builtInObjectProperties = ['builtInProperty'];
     });
-    let properties = extractor.getObjectProperties_(og, 10000);
-    extractor.builtInObjectProperties = ['builtInProperty'];
+
     it('captures non-constant properties', function() {
       expect(properties).toContain('property');
     });
@@ -66,12 +77,17 @@ describe('API extractor', function() {
     it('does not filter built-in properties', function() {
       expect(properties).toContain('builtInProperty');
     });
-    // Need to test retaining constant members case separately.
-    extractor.retainConstantMembers = true;
-    let propertiesWithConst = extractor.getObjectProperties_(og, 10000);
-    it('contains constant property if retainConstantMembers is true',
-    function() {
-      expect(propertiesWithConst).toContain('constantNumber');
+
+    describe('retainConstantMembers', function() {
+      let propertiesWithConst;
+      beforeEach(function() {
+        extractor.retainConstantMembers = true;
+        propertiesWithConst = extractor.getObjectProperties_(og, 10000);
+      });
+      it('contains constant property if retainConstantMembers is true',
+         function() {
+           expect(propertiesWithConst).toContain('constantNumber');
+         });
     });
   });
 
@@ -149,24 +165,28 @@ describe('API extractor', function() {
   });
 
   describe('getFunctionBuiltInProperties()', function() {
-    let og = objectGraph.fromJSON({
-      'data': {
-        '10000': {
-          'Function': 10001,
+    let og;
+    beforeEach(function() {
+      og = objectGraph.fromJSON({
+        'data': {
+          '10000': {
+            'Function': 10001,
+          },
+          '10001': {
+            'prototype': 10002,
+          },
+          '10002': {
+            'caller': 3,
+            'arguments': 6,
+            'length': 6,
+            '+toString+': 6,
+          },
         },
-        '10001': {
-          'prototype': 10002,
-        },
-        '10002': {
-          'caller': 3,
-          'arguments': 6,
-          'length': 6,
-          '+toString+': 6,
-        },
-      },
-      types,
-      'root': 10000,
+        types,
+        'root': 10000,
+      });
     });
+
     it('obtains Function built-in properties correctly', function() {
       extractor.getFunctionBuiltInProperties_(og);
       expect(extractor.builtInFunctionProperties.sort())
@@ -180,24 +200,25 @@ describe('API extractor', function() {
   });
 
   describe('getObjectBuiltInProperties()', function() {
-    let og = objectGraph.fromJSON({
-      'data': {
-        '10000': {
-          'Object': 10001,
-        },
-        '10001': {
-          'prototype': 10002,
-        },
-        '10002': {
-          '+toString+': 3,
-          '+valueOf+': 6,
-          '+constructor+': 6,
-        },
-      },
-      types,
-      'root': 10000,
-    });
     it('obtains cleaned up Object built-in properties correctly', function() {
+      let og = objectGraph.fromJSON({
+        'data': {
+          '10000': {
+            'Object': 10001,
+          },
+          '10001': {
+            'prototype': 10002,
+          },
+          '10002': {
+            '+toString+': 3,
+            '+valueOf+': 6,
+            '+constructor+': 6,
+          },
+        },
+        types,
+        'root': 10000,
+      });
+
       extractor.getObjectBuiltInProperties_(og);
       expect(extractor.builtInObjectProperties.sort())
         .toEqual(['toString', 'valueOf', 'constructor']
@@ -292,23 +313,29 @@ describe('API extractor', function() {
   });
 
   describe('postProcess()', function() {
-    let og = objectGraph.fromJSON({
-      'functions': {
-        '10001': 'Function',
-        '10002': 'Object',
-      },
-      types,
+    let og;
+    let apiCatalogs;
+    beforeEach(function() {
+      og = objectGraph.fromJSON({
+        'functions': {
+          '10001': 'Function',
+          '10002': 'Object',
+        },
+        types,
+      });
+      extractor.builtInFunctionProperties = ['toString', 'caller', 'arguments'];
+      extractor.builtInObjectProperties = [
+        'toString', 'valueOf', 'constructor',
+      ];
+      extractor.functionId = 10001;
+      extractor.objectId = 10002;
+      extractor.blacklistProperties = ['nonInterface'];
+      apiCatalogs = {
+        'interface': ['API1', 'API2'],
+        'nonInterface': ['API'],
+      };
+      extractor.postProcess_(apiCatalogs, og);
     });
-    extractor.builtInFunctionProperties = ['toString', 'caller', 'arguments'];
-    extractor.builtInObjectProperties = ['toString', 'valueOf', 'constructor'];
-    extractor.functionId = 10001;
-    extractor.objectId = 10002;
-    extractor.blacklistProperties = ['nonInterface'];
-    let apiCatalogs = {
-      'interface': ['API1', 'API2'],
-      'nonInterface': ['API'],
-    };
-    extractor.postProcess_(apiCatalogs, og);
     it('filters blacklisted properties', function() {
       expect(apiCatalogs.nonInterface).toBeUndefined();
     });

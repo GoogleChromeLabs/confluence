@@ -37,14 +37,8 @@ module.exports = function(config) {
     // Configure coverage-istanbul.
     coverageIstanbulReporter: {
       reports: ['lcov', 'html', 'json'],
-      dir: path.resolve(__dirname, '../.coverage'),
+      dir: path.resolve(__dirname, '../.web_coverage'),
       fixWebPackSourcePaths: true,
-      thresholds: {
-        statements: 85,
-        lines: 85,
-        branches: 80,
-        functions: 80,
-      },
     },
   });
 };
