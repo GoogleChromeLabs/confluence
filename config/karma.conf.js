@@ -86,6 +86,9 @@ function configurator(config) {
     // how many browser should be started simultaneous
     concurrency: Infinity,
 
+    captureTimeout: 150000,
+    browserDisconnectTimeout: 100000,
+    browserDisconnectTolerance: 5,
     browserNoActivityTimeout: 150000,
   });
 };
