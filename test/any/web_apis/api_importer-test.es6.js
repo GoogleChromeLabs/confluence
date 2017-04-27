@@ -17,11 +17,11 @@ describe('ApiImporter', function() {
 
   let apiImporter;
   let mlang;
-  beforeEach(function() {
+  beforeEach(function(done) {
     apiImporter = org.chromium.apis.web.ApiImporter.create();
     mlang = foam.mlang.ExpressionsSingleton.create();
     apiImporter.import('Chrome', '56.0.2924.87',
-                       'OSX', '10.12.2', webCatalog);
+                       'OSX', '10.12.2', webCatalog).then(done);
   });
 
   it('correctly imports browserWebInterfaceJunction to DAO', function(done) {
