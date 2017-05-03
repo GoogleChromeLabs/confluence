@@ -92,32 +92,8 @@ describe('Set ops', () => {
 
       set.orderBy(Num.ID).select(E.SET_MINUS(nullSet))
           .then(sink => {
-            var array = sink.a;
-            expect(array.length).toBe(10);
-            for (var i = 0; i < 10; i++) {
-              expect(array[i].id).toBe(i);
-            }
-
-            done();
-          });
-    });
-
-    it('should yield full set on SET_MINUS(nullSet)', done => {
-      var set = MDAO.create({of: Num});
-      var nullSet = MDAO.create({of: Num});
-
-      for (var i = 0; i < 10; i++) {
-        set.put(mkNum(i));
-      }
-
-      set.orderBy(Num.ID).select(E.SET_MINUS(nullSet))
-          .then(sink => {
-            var array = sink.a;
-            expect(array.length).toBe(10);
-            for (var i = 0; i < 10; i++) {
-              expect(array[i].id).toBe(i);
-            }
-
+            expect(sink.a.map(num => num.id))
+                .toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
             done();
           });
     });
@@ -133,8 +109,7 @@ describe('Set ops', () => {
 
       set.select(E.SET_MINUS(subtrahend))
           .then(sink => {
-            var array = sink.a;
-            expect(array.length).toBe(0);
+            expect(sink.a).toEqual([]);
 
             done();
           });
@@ -151,13 +126,11 @@ describe('Set ops', () => {
         }
       }
 
+      // {0..9} \ {0, 2, 4, 6, 8}
       set.orderBy(Num.ID).select(E.SET_MINUS(subtrahend))
           .then(sink => {
-            var array = sink.a;
-            expect(array.length).toBe(5);
-            for (var i = 0; i < 5; i++) {
-              expect(array[i].id).toBe((i * 2) + 1);
-            }
+            expect(sink.a.map(num => num.id))
+                .toEqual([1, 3, 5, 7, 9]);
 
             done();
           });
@@ -175,11 +148,8 @@ describe('Set ops', () => {
 
       set.orderBy(Num.ID).select(E.SET_MINUS(subtrahend))
           .then(sink => {
-            var array = sink.a;
-            expect(array.length).toBe(9);
-            for (var i = 0; i < 9; i++) {
-              expect(array[i].id).toBe(i);
-            }
+            expect(sink.a.map(num => num.id))
+                .toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
 
             done();
           });
@@ -199,13 +169,11 @@ describe('Set ops', () => {
         }
       }
 
+      // {0..9} \ {0, 2, 4, 6, 8}
       set.orderBy(Num.ID).select(E.SET_MINUS(subtrahend))
           .then(sink => {
-            var array = sink.a;
-            expect(array.length).toBe(5);
-            for (var i = 0; i < 5; i++) {
-              expect(array[i].id).toBe((i * 2) + 1);
-            }
+            expect(sink.a.map(num => num.id))
+                .toEqual([1, 3, 5, 7, 9]);
 
             done();
           });
@@ -213,7 +181,7 @@ describe('Set ops', () => {
 
     it('should reject when minuend rejects select()', done => {
       var set = ErrorDAO.create({of: Num, delegate: MDAO.create({of: Num})});
-      var subtrahend = MDAO.create({of: Num})
+      var subtrahend = MDAO.create({of: Num});
 
       for (var i = 0; i < 10; i++) {
         set.put(mkNum(i));
@@ -224,7 +192,7 @@ describe('Set ops', () => {
     });
 
     it('should reject when subtrahend rejects find()', done => {
-      var set = MDAO.create({of: Num})
+      var set = MDAO.create({of: Num});
       var subtrahend = ErrorDAO.create({
         of: Num,
         delegate: MDAO.create({of: Num}),
