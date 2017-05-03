@@ -91,7 +91,6 @@ describe('Set ops', () => {
       }
 
       set.orderBy(Num.ID).select(E.SET_MINUS(nullSet))
-          .then(setMinusSink => setMinusSink.getSink())
           .then(sink => {
             var array = sink.a;
             expect(array.length).toBe(10);
@@ -112,7 +111,6 @@ describe('Set ops', () => {
       }
 
       set.orderBy(Num.ID).select(E.SET_MINUS(nullSet))
-          .then(setMinusSink=> setMinusSink.getSink())
           .then(sink => {
             var array = sink.a;
             expect(array.length).toBe(10);
@@ -134,7 +132,6 @@ describe('Set ops', () => {
       }
 
       set.select(E.SET_MINUS(subtrahend))
-          .then(setMinusSink => setMinusSink.getSink())
           .then(sink => {
             var array = sink.a;
             expect(array.length).toBe(0);
@@ -155,7 +152,6 @@ describe('Set ops', () => {
       }
 
       set.orderBy(Num.ID).select(E.SET_MINUS(subtrahend))
-          .then(setMinusSink =>setMinusSink.getSink())
           .then(sink => {
             var array = sink.a;
             expect(array.length).toBe(5);
@@ -178,7 +174,6 @@ describe('Set ops', () => {
       subtrahend.put(mkNum(42));
 
       set.orderBy(Num.ID).select(E.SET_MINUS(subtrahend))
-          .then(setMinusSink =>setMinusSink.getSink())
           .then(sink => {
             var array = sink.a;
             expect(array.length).toBe(9);
@@ -205,7 +200,6 @@ describe('Set ops', () => {
       }
 
       set.orderBy(Num.ID).select(E.SET_MINUS(subtrahend))
-          .then(setMinusSink =>setMinusSink.getSink())
           .then(sink => {
             var array = sink.a;
             expect(array.length).toBe(5);
@@ -241,7 +235,6 @@ describe('Set ops', () => {
       }
 
       set.select(E.SET_MINUS(subtrahend))
-          .then(setMinusSink =>setMinusSink.getSink())
           .then(done.fail, done);
     });
   });
