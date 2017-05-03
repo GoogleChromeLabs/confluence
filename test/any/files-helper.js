@@ -39,15 +39,16 @@ beforeAll(function() {
   // Client-side, but used in server integration tests.
   require('../../lib/client/api_matrix.es6.js');
 
-  require('../../lib/confluence/aggressive_removal_data.es6.js');
   require('../../lib/confluence/aggressive_removal.es6.js');
-  require('../../lib/confluence/api_velocity_data.es6.js');
+  require('../../lib/confluence/aggressive_removal_data.es6.js');
   require('../../lib/confluence/api_velocity.es6.js');
-  require('../../lib/confluence/failure_to_ship_data.es6.js');
+  require('../../lib/confluence/api_velocity_data.es6.js');
   require('../../lib/confluence/failure_to_ship.es6.js');
+  require('../../lib/confluence/failure_to_ship_data.es6.js');
   require('../../lib/confluence/metric_computer.es6.js');
-  require('../../lib/confluence/vendor_specific_data.es6.js');
+  require('../../lib/confluence/set_ops.es6.js');
   require('../../lib/confluence/vendor_specific.es6.js');
+  require('../../lib/confluence/vendor_specific_data.es6.js');
   require('../../lib/datastore/rate_limited_DAO.es6.js');
   require('../../lib/datastore/rate_limiter.es6.js');
   require('../../lib/web_apis/api_importer.es6.js');
