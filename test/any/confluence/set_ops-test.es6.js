@@ -79,6 +79,35 @@ describe('Set ops', () => {
     ErrorDAO = foam.lookup('org.chromium.mlang.sink.test.ErrorDAO');
   });
 
+  describe('AsyncSink', () => {
+    it('should reject when minuend rejects select()', done => {
+      var set = ErrorDAO.create({of: Num, delegate: MDAO.create({of: Num})});
+      var subtrahend = MDAO.create({of: Num});
+
+      for (var i = 0; i < 10; i++) {
+        set.put(mkNum(i));
+      }
+
+      set.select(E.SET_MINUS(subtrahend))
+          .then(done.fail, done);
+    });
+
+    it('should reject when subtrahend rejects find()', done => {
+      var set = MDAO.create({of: Num});
+      var subtrahend = ErrorDAO.create({
+        of: Num,
+        delegate: MDAO.create({of: Num}),
+      });
+
+      for (var i = 0; i < 10; i++) {
+        set.put(mkNum(i));
+      }
+
+      set.select(E.SET_MINUS(subtrahend))
+          .then(done.fail, done);
+    });
+  });
+
   describe('SetMinus', () => {
     it('should yield full set on SET_MINUS(nullSet)', done => {
       var set = MDAO.create({of: Num});
@@ -96,7 +125,7 @@ describe('Set ops', () => {
           });
     });
 
-    it('should remove all items when sets are identical', done => {
+    it('should exclude all items when sets are identical', done => {
       var set = MDAO.create({of: Num});
       var subtrahend = MDAO.create({of: Num});
 
@@ -113,7 +142,7 @@ describe('Set ops', () => {
           });
     });
 
-    it('should remove some items when there is overlap', done => {
+    it('should exclude some items when there is overlap', done => {
       var set = MDAO.create({of: Num});
       var subtrahend = MDAO.create({of: Num});
 
@@ -203,33 +232,6 @@ describe('Set ops', () => {
             done();
           });
     });
-
-    it('should reject when minuend rejects select()', done => {
-      var set = ErrorDAO.create({of: Num, delegate: MDAO.create({of: Num})});
-      var subtrahend = MDAO.create({of: Num});
-
-      for (var i = 0; i < 10; i++) {
-        set.put(mkNum(i));
-      }
-
-      set.select(E.SET_MINUS(subtrahend))
-          .then(done.fail, done);
-    });
-
-    it('should reject when subtrahend rejects find()', done => {
-      var set = MDAO.create({of: Num});
-      var subtrahend = ErrorDAO.create({
-        of: Num,
-        delegate: MDAO.create({of: Num}),
-      });
-
-      for (var i = 0; i < 10; i++) {
-        set.put(mkNum(i));
-      }
-
-      set.select(E.SET_MINUS(subtrahend))
-          .then(done.fail, done);
-    });
   });
 
   describe('Intersect', () => {
@@ -265,7 +267,7 @@ describe('Set ops', () => {
           });
     });
 
-    it('should remove some items when secondary is subset', done => {
+    it('should exclude some items when secondary is subset', done => {
       var set = MDAO.create({of: Num});
       var secondary = MDAO.create({of: Num});
 
@@ -286,7 +288,7 @@ describe('Set ops', () => {
           });
     });
 
-    it('should remove some items when primary is subset', done => {
+    it('should exclude some items when primary is subset', done => {
       var set = MDAO.create({of: Num});
       var secondary = MDAO.create({of: Num});
 
@@ -356,33 +358,6 @@ describe('Set ops', () => {
 
             done();
           });
-    });
-
-    it('should reject when primary rejects select()', done => {
-      var set = ErrorDAO.create({of: Num, delegate: MDAO.create({of: Num})});
-      var secondary = MDAO.create({of: Num});
-
-      for (var i = 0; i < 10; i++) {
-        set.put(mkNum(i));
-      }
-
-      set.select(E.INTERSECT(secondary))
-          .then(done.fail, done);
-    });
-
-    it('should reject when secondary rejects find()', done => {
-      var set = MDAO.create({of: Num});
-      var secondary = ErrorDAO.create({
-        of: Num,
-        delegate: MDAO.create({of: Num}),
-      });
-
-      for (var i = 0; i < 10; i++) {
-        set.put(mkNum(i));
-      }
-
-      set.select(E.INTERSECT(secondary))
-          .then(done.fail, done);
     });
   });
 });
