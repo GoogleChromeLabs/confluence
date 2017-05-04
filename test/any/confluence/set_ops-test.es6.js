@@ -360,4 +360,99 @@ describe('Set ops', () => {
           });
     });
   });
+
+  describe('Union', () => {
+    it('should throw on put(), remove(), removeAll()', () => {
+      var primary = MDAO.create({of: Num});
+      var secondary = MDAO.create({of: Num});
+      expect(() => E.UNION(primary, secondary).put(mkNum(0))).toThrow();
+      expect(() => E.UNION(primary, secondary).remove(mkNum(0))).toThrow();
+      expect(() => E.UNION(primary, secondary).removeAll(mkNum(0))).toThrow();
+    });
+
+    it('should throw on select()/listen() with skip/limit/order/predicate', () => {
+      var primary = MDAO.create({of: Num});
+      var secondary = MDAO.create({of: Num});
+      var u = undefined;
+      expect(() => E.UNION(primary, secondary).select(u, 1)).toThrow();
+      expect(() => E.UNION(primary, secondary).select(u, u, 1)).toThrow();
+      expect(() => E.UNION(primary, secondary).select(u, u, u, Num.ID))
+          .toThrow();
+      expect(() => E.UNION(primary, secondary)
+          .select(u, u, u, u, E.EQ(Num.ID, 0))).toThrow();
+      expect(() => E.UNION(primary, secondary).listen(u, 1)).toThrow();
+      expect(() => E.UNION(primary, secondary).listen(u, u, 1)).toThrow();
+      expect(() => E.UNION(primary, secondary).listen(u, u, u, Num.ID))
+          .toThrow();
+      expect(() => E.UNION(primary, secondary)
+          .listen(u, u, u, u, E.EQ(Num.ID, 0))).toThrow();
+    });
+
+    it('should combine non-intersecting sets', done => {
+      var primary = MDAO.create({of: Num});
+      var secondary = MDAO.create({of: Num});
+
+      primary.put(mkNum(0));
+      secondary.put(mkNum(1));
+
+      E.UNION(primary, secondary).select().then(sink => {
+        expect(sink.a.map(num => num.id).sort()).toEqual([0, 1]);
+        done();
+      });
+    });
+
+    it('should combine intersecting sets', done => {
+      var primary = MDAO.create({of: Num});
+      var secondary = MDAO.create({of: Num});
+
+      primary.put(mkNum(0));
+      secondary.put(mkNum(0));
+      secondary.put(mkNum(1));
+
+      E.UNION(primary, secondary).select().then(sink => {
+        expect(sink.a.map(num => num.id).sort()).toEqual([0, 1]);
+        done();
+      });
+    });
+
+    it('should be composable', done => {
+      var primary = MDAO.create({of: Num});
+      var secondary = MDAO.create({of: Num});
+      var tertiary = MDAO.create({of: Num});
+
+      primary.put(mkNum(0));
+      secondary.put(mkNum(1));
+      tertiary.put(mkNum(2));
+
+      E.UNION(primary, E.UNION(secondary, tertiary)).select().then(sink => {
+        expect(sink.a.map(num => num.id).sort()).toEqual([0, 1, 2]);
+        done();
+      });
+    });
+
+    it('should compose correctly with inconsistent find() callback timing', done => {
+      var aDAO = EvilDAO.create({of: Num, delegate: MDAO.create({of: Num})});
+      var bDAO = EvilDAO.create({of: Num, delegate: MDAO.create({of: Num})});
+      var cDAO = EvilDAO.create({of: Num, delegate: MDAO.create({of: Num})});
+
+      aDAO.put(mkNum(0));
+      aDAO.put(mkNum(1));
+      aDAO.put(mkNum(2));
+      aDAO.put(mkNum(3));
+
+      bDAO.put(mkNum(3));
+      bDAO.put(mkNum(4));
+      bDAO.put(mkNum(5));
+
+      cDAO.put(mkNum(0));
+      cDAO.put(mkNum(4));
+      cDAO.put(mkNum(6));
+
+      E.UNION(aDAO, E.UNION(bDAO, cDAO)).select().then(sink => {
+        expect(sink.a.map(num => num.id).sort()).toEqual([0, 1, 2, 3, 4, 5, 6]);
+        done();
+      });
+    });
+
+  });
 });
