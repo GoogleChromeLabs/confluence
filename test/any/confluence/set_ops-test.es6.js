@@ -293,10 +293,10 @@ describe('Set ops', () => {
       var secondary = MDAO.create({of: Num});
 
       for (var i = 0; i < 10; i++) {
-        if ((i % 2) === 0) {
+        if ((i % 2) === 0)
           set.put(mkNum(i));
+
         secondary.put(mkNum(i));
-        }
       }
 
       // {0, 2, 4, 6, 8} INTERSECT {0..9}
