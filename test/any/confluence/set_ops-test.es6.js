@@ -190,6 +190,32 @@ describe('Set ops', () => {
           });
     });
 
+    it('should support array-of-DAOs', done => {
+      var set = MDAO.create({of: Num});
+      var subtrahend1 = MDAO.create({of: Num});
+      var subtrahend2 = MDAO.create({of: Num});
+
+      for (var i = 0; i < 10; i++) {
+        set.put(mkNum(i));
+      }
+
+      subtrahend1.put(mkNum(1));
+      subtrahend1.put(mkNum(7));
+
+      subtrahend2.put(mkNum(3));
+      subtrahend2.put(mkNum(5));
+      subtrahend2.put(mkNum(9));
+
+      // {0..9} \ {1, 7} \ {3, 5, 9}
+      set.orderBy(Num.ID).select(E.SET_MINUS([subtrahend1, subtrahend2]))
+          .then(sink => {
+            expect(sink.a.map(num => num.id))
+                .toEqual([0, 2, 4, 6, 8]);
+
+            done();
+          });
+    });
+
     it('should ignore extra items in subtrahend', done => {
       var set = MDAO.create({of: Num});
       var subtrahend = MDAO.create({of: Num});
@@ -336,6 +362,33 @@ describe('Set ops', () => {
           });
     });
 
+    it('should support array-of-DAOs', done => {
+      var set = MDAO.create({of: Num});
+      var secondary1 = MDAO.create({of: Num});
+      var secondary2 = MDAO.create({of: Num});
+
+      for (var i = 0; i < 10; i++) {
+        set.put(mkNum(i));
+      }
+
+      secondary1.put(mkNum(1));
+      secondary1.put(mkNum(7));
+
+      secondary2.put(mkNum(3));
+      secondary2.put(mkNum(7));
+      secondary2.put(mkNum(5));
+
+      // {0..9} INTERSECT {1, 7} INTERSECT {3, 7, 5}
+      set.orderBy(Num.ID)
+          .select(E.INTERSECT([secondary1, secondary2]))
+          .then(sink => {
+            expect(sink.a.map(num => num.id))
+                .toEqual([7]);
+
+            done();
+          });
+    });
+
     it('should deliver items in order, even when secondary would resolve find()s out of order', done => {
       var set = MDAO.create({of: Num});
       var secondary = EvilDAO.create({
@@ -425,6 +478,21 @@ describe('Set ops', () => {
       tertiary.put(mkNum(2));
 
       E.UNION(primary, E.UNION(secondary, tertiary)).select().then(sink => {
+        expect(sink.a.map(num => num.id).sort()).toEqual([0, 1, 2]);
+        done();
+      });
+    });
+
+    it('should support more than 2 DAOs', done => {
+      var primary = MDAO.create({of: Num});
+      var secondary = MDAO.create({of: Num});
+      var tertiary = MDAO.create({of: Num});
+
+      primary.put(mkNum(0));
+      secondary.put(mkNum(1));
+      tertiary.put(mkNum(2));
+
+      E.UNION(primary, secondary, tertiary).select().then(sink => {
         expect(sink.a.map(num => num.id).sort()).toEqual([0, 1, 2]);
         done();
       });
