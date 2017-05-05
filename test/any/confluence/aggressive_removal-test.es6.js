@@ -4,6 +4,13 @@
 'use strict';
 
 describe('AggressiveRemoval', function() {
+  function equals(a, b) {
+    return foam.util.equals(a, b);
+  }
+  function sortedEquals(a, b) {
+    function sort(array) { return array.sort(foam.util.compare); }
+    return equals(sort(a), sort(b));
+  }
   let testCtx;
   beforeEach(function() {
     foam.CLASS({
@@ -166,10 +173,10 @@ describe('AggressiveRemoval', function() {
       expect(ar.numAggressiveRemoval).toBe(1);
       // First date that all vendors have a release: Charlie release date.
       expect(ar.date).toEqual(charlie.releaseDate);
-      expect(foam.util.equals(ar.browserOneYearAgo, alpha2)).toBe(true);
-      expect(foam.util.equals(ar.prevReleaseBrowsers, [alpha1])).toBe(true);
-      expect(foam.util.equals(ar.currBrowsers.sort(), [beta, charlie].sort()))
-          .toBe(true);
+      debugger;
+      expect(equals(ar.browserOneYearAgo, alpha2)).toBe(true);
+      expect(equals(ar.prevReleaseBrowsers, [alpha1])).toBe(true);
+      expect(sortedEquals(ar.currBrowsers, [beta, charlie])).toBe(true);
       done();
     });
   });
@@ -295,10 +302,9 @@ describe('AggressiveRemoval', function() {
       expect(ar.numAggressiveRemoval).toBe(0);
       // First date that all vendors have a release: Charlie release date.
       expect(ar.date).toEqual(charlie.releaseDate);
-      expect(foam.util.equals(ar.browserOneYearAgo, alpha1)).toBe(true);
-      expect(foam.util.equals(ar.prevReleaseBrowsers, [alpha0])).toBe(true);
-      expect(foam.util.equals(ar.currBrowsers.sort(), [beta, charlie].sort()))
-          .toBe(true);
+      expect(equals(ar.browserOneYearAgo, alpha1)).toBe(true);
+      expect(equals(ar.prevReleaseBrowsers, [alpha0])).toBe(true);
+      expect(sortedEquals(ar.currBrowsers, [beta, charlie])).toBe(true);
       done();
     });
   });
@@ -446,12 +452,9 @@ describe('AggressiveRemoval', function() {
       expect(ar.numAggressiveRemoval).toBe(2);
       // First date that all vendors have a release: Charlie release date.
       expect(ar.date).toEqual(charlie.releaseDate);
-      expect(foam.util.equals(ar.browserOneYearAgo, alpha2)).toBe(true);
-      expect(foam.util.equals(ar.prevReleaseBrowsers.sort(),
-                              [alpha0, alpha1].sort()))
-                                  .toBe(true);
-      expect(foam.util.equals(ar.currBrowsers.sort(), [beta, charlie].sort()))
-          .toBe(true);
+      expect(equals(ar.browserOneYearAgo, alpha2)).toBe(true);
+      expect(sortedEquals(ar.prevReleaseBrowsers, [alpha0, alpha1])).toBe(true);
+      expect(sortedEquals(ar.currBrowsers, [beta, charlie])).toBe(true);
       done();
     });
   });
@@ -601,11 +604,9 @@ describe('AggressiveRemoval', function() {
       expect(ar1.numAggressiveRemoval).toBe(1);
       // First date that all vendors have a release: Charlie release date.
       expect(ar1.date).toEqual(charlie.releaseDate);
-      expect(foam.util.equals(ar1.browserOneYearAgo, alpha1)).toBe(true);
-      expect(foam.util.equals(ar1.prevReleaseBrowsers.sort(), [alpha0].sort()))
-          .toBe(true);
-      expect(foam.util.equals(ar1.currBrowsers.sort(), [beta, charlie].sort()))
-          .toBe(true);
+      expect(equals(ar1.browserOneYearAgo, alpha1)).toBe(true);
+      expect(sortedEquals(ar1.prevReleaseBrowsers, [alpha0])).toBe(true);
+      expect(sortedEquals(ar1.currBrowsers, [beta, charlie])).toBe(true);
       done();
 
       // Second point: Removals from Alpha 1 and Alpha 2 counted at time of
@@ -616,12 +617,10 @@ describe('AggressiveRemoval', function() {
       expect(ar2.numAggressiveRemoval).toBe(2);
       // First date that all vendors have a release: Charlie release date.
       expect(ar2.date).toEqual(alpha3.releaseDate);
-      expect(foam.util.equals(ar2.browserOneYearAgo, alpha2)).toBe(true);
-      expect(foam.util.equals(ar2.prevReleaseBrowsers.sort(),
-                              [alpha0, alpha1].sort()))
-                                  .toBe(true);
-      expect(foam.util.equals(ar2.currBrowsers.sort(), [beta, charlie].sort()))
+      expect(equals(ar2.browserOneYearAgo, alpha2)).toBe(true);
+      expect(sortedEquals(ar2.prevReleaseBrowsers, [alpha0, alpha1]))
           .toBe(true);
+      expect(sortedEquals(ar2.currBrowsers, [beta, charlie])).toBe(true);
       done();
     });
   });
@@ -737,10 +736,9 @@ describe('AggressiveRemoval', function() {
       expect(ar.numAggressiveRemoval).toBe(0);
       // First date that all vendors have a release: Charlie release date.
       expect(ar.date).toEqual(charlie.releaseDate);
-      expect(foam.util.equals(ar.browserOneYearAgo, alpha2)).toBe(true);
-      expect(foam.util.equals(ar.prevReleaseBrowsers, [alpha1])).toBe(true);
-      expect(foam.util.equals(ar.currBrowsers.sort(), [beta, charlie].sort()))
-          .toBe(true);
+      expect(equals(ar.browserOneYearAgo, alpha2)).toBe(true);
+      expect(sortedEquals(ar.prevReleaseBrowsers, [alpha1])).toBe(true);
+      expect(sortedEquals(ar.currBrowsers, [beta, charlie])).toBe(true);
       done();
     });
   });
