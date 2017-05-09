@@ -24,30 +24,30 @@ describe('ApiImporter', function() {
                        'OSX', '10.12.2', webCatalog).then(done);
   });
 
-  it('correctly imports browserWebInterfaceJunction to DAO', function(done) {
+  it('correctly imports releaseWebInterfaceJunction to DAO', function(done) {
     let promises = [
-      apiImporter.browserApiDAO.find([
+      apiImporter.releaseApiDAO.find([
         'Chrome_56.0.2924.87_OSX_10.12.2',
         'Windows#Function',
       ]),
-      apiImporter.browserApiDAO.find([
+      apiImporter.releaseApiDAO.find([
         'Chrome_56.0.2924.87_OSX_10.12.2',
         'Windows#property',
       ]),
-      apiImporter.browserApiDAO.find([
+      apiImporter.releaseApiDAO.find([
         'Chrome_56.0.2924.87_OSX_10.12.2',
         'Function#arguments',
       ]),
-      apiImporter.browserApiDAO.find([
+      apiImporter.releaseApiDAO.find([
         'Chrome_56.0.2924.87_OSX_10.12.2',
         'Function#caller',
       ]),
     ];
     Promise.all(promises).then((results) => {
-      results.forEach((browserAPI) => {
-        expect(browserAPI).not.toBeNull();
+      results.forEach((releaseAPI) => {
+        expect(releaseAPI).not.toBeNull();
       });
-      return apiImporter.browserApiDAO.select(mlang.COUNT());
+      return apiImporter.releaseApiDAO.select(mlang.COUNT());
     }).then((countSink) => {
       expect(countSink.value).toBe(promises.length);
       done();

@@ -1,36 +1,36 @@
 <br>
-<!-- Browser Dropdown Dropdown Structure -->
-<!-- The browserList is a nested dropdown list.
+<!-- Release Dropdown Dropdown Structure -->
+<!-- The releaseList is a nested dropdown list.
   It is grouped by browserName and version.-->
-<ul id="browserList" class="dropdown-content"
+<ul id="releaseList" class="dropdown-content"
   style="position:fixed;z-index:1;left:70%;top:10%">
-  <li ng-repeat-start="(browserName, versions) in browserGroups"
+  <li ng-repeat-start="(browserName, versions) in releaseGroups"
     class="blue-text text-darken-3 grey lighten-5"
     value="{{browserName}}">
-      <a ng-click="expandBrowserList($event, browserName)">
+      <a ng-click="expandReleaseList($event, browserName)">
         {{browserName}}
       </a>
   </li>
-  <li ng-repeat-start="(version, browsers) in versions"
+  <li ng-repeat-start="(version, releases) in versions"
     class="blue-text text-darken-3 grey lighten-4"
-    ng-show="expandBrowserDropdown[browserName]"
-    ng-click="expandBrowserDropdown[browserName][version] ?
-      expandBrowserDropdown[browserName][version] = {} :
-      expandBrowserDropdown[browserName][version] = false"
+    ng-show="expandReleaseDropdown[browserName]"
+    ng-click="expandReleaseDropdown[browserName][version] ?
+      expandReleaseDropdown[browserName][version] = {} :
+      expandReleaseDropdown[browserName][version] = false"
     value="{{browserName + version}}">
     <a style="margin-left: 15px"
-      ng-click="expandBrowserList($event, browserName, version)">
+      ng-click="expandReleaseList($event, browserName, version)">
       {{version}}
     </a>
   </li>
   <li
-    ng-repeat="browser in browsers"
+    ng-repeat="release in releases"
     class="blue-text text-darken-3 grey lighten-3"
-    ng-show="expandBrowserDropdown[browserName][version]"
-    value="{{browserName + version + browser.osName + browser.osVersion}}">
+    ng-show="expandReleaseDropdown[browserName][version]"
+    value="{{browserName + version + release.osName + release.osVersion}}">
     <a style="margin-left: 30px"
-      ng-click="addBrowser(browser)">
-      {{browser.osName + browser.osVersion}}
+      ng-click="addRelease(release)">
+      {{release.osName + release.osVersion}}
     </a>
   </li>
   <span ng-repeat-end></span>
@@ -38,7 +38,7 @@
 </ul>
 <div class="row">
   <div class="col s8">
-    <ul id="tabs" class="tabs" ng-show="browsers.length!==0">
+    <ul id="tabs" class="tabs" ng-show="releases.length!==0">
       <li class="tab" ng-class="{'blue lighten-5': showTab === 0}">
         <a ng-click="showTab=0"
         class="blue-text text-darken-2">Catalog</a>
@@ -53,10 +53,10 @@
     </ul>
   </div>
   <div class="col s2">
-    <a class="add-browser-dropdown btn blue darken-3 white"
+    <a class="add-release-dropdown btn blue darken-3 white"
       style="position: absolute;"
-      data-activates="browserList">
-      Add Browser
+      data-activates="releaseList">
+      Add Release
       <i class="material-icons right">
         arrow_drop_down
       </i>
@@ -64,25 +64,25 @@
   </div>
 </div>
 
-<div class="container" ng-show="browsers.length !== 0">
+<div class="container" ng-show="releases.length !== 0">
   <div ng-show="showTab === 0">
     <api-catalog-table
-      browsers="browsers"
-      able-to-delete-browser="true"
-      on-delete-browser="removeBrowser(browser)"
+      releases="releases"
+      able-to-delete-release="true"
+      on-delete-release="removeRelease(release)"
     ></api-catalog-table>
   </div>
   <div ng-show="showTab === 1">
     <api-analytics
-      browsers="browsers"
-      on-create-new-view="createView(browserKey, option)"
+      releases="releases"
+      on-create-new-view="createView(releaseKey, option)"
     ></api-analytics>
   </div>
   <!-- Filtered view. -->
   <api-catalog-table
     ng-repeat="view in filteredViews track by $index"
     ng-show="$parent.showTab === 2 + $index"
-    browsers="view.browsers"
-    browser-options="view.browserOptions">
+    releases="view.releases"
+    release-options="view.releaseOptions">
   </api-catalog-table>
 </div>

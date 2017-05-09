@@ -2,35 +2,35 @@
   <table class="bordered highlight">
     <tr>
       <th>Interface / API</th>
-      <th ng-repeat="browser in $ctrl.browsers">
-        {{browser.browserName}} {{browser.browserVersion}}
-        {{browser.osName}} {{browser.osVersion}}
+      <th ng-repeat="release in $ctrl.releases">
+        {{release.browserName}} {{release.browserVersion}}
+        {{release.osName}} {{release.osVersion}}
       </th>
     </tr>
     <tr>
       <td>Total APIs</td>
-      <td ng-repeat="browser in $ctrl.browsers">
-        {{analytics[browser.browserKey].total}}
+      <td ng-repeat="release in $ctrl.releases">
+        {{analytics[release.releaseKey].total}}
       </td>
     </tr>
     <tr>
       <td>Proprietary APIs</td>
-      <td ng-repeat="browser in $ctrl.browsers">
-        {{analytics[browser.browserKey].proprietary}}
+      <td ng-repeat="release in $ctrl.releases">
+        {{analytics[release.releaseKey].proprietary}}
         <i class="tiny material-icons"
           style="cursor:pointer"
-          ng-click="createNewView(browser, 'proprietary')">
+          ng-click="createNewView(release, 'proprietary')">
           open_in_new
         </i>
       </td>
     </tr>
     <tr>
       <td>Fall Behind APIs</td>
-      <td ng-repeat="browser in $ctrl.browsers">
-        {{analytics[browser.browserKey].fallBehind}}
+      <td ng-repeat="release in $ctrl.releases">
+        {{analytics[release.releaseKey].fallBehind}}
         <i class="tiny material-icons"
           style="cursor:pointer"
-          ng-click="createNewView(browser, 'fallBehind')">
+          ng-click="createNewView(release, 'fallBehind')">
           open_in_new
         </i>
       </td>

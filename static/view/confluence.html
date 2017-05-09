@@ -1,4 +1,4 @@
-<ul id="tabs" class="tabs" ng-show="browserKeys.length!==0">
+<ul id="tabs" class="tabs" ng-show="releaseKeys.length!==0">
   <li class="tab">
     <a ng-click="showTab=0" class="blue-text text-darken-2">API Velocity</a>
   </li>
@@ -9,7 +9,7 @@
     <a ng-click="showTab=2" class="blue-text text-darken-2">Aggressive removal</a>
   </li>
   <li class="tab">
-    <a ng-click="showTab=3" class="blue-text text-darken-2">Vendor-Specific APIs</a>
+    <a ng-click="showTab=3" class="blue-text text-darken-2">Browser-Specific APIs</a>
   </li>
   <li class="tab" ng-repeat="view in additionalViews track by $index">
     <a ng-click="$parent.showTab=4+$index">{{"#view"+$index}}</a>
@@ -19,9 +19,9 @@
 <div class="container">
   <div ng-show="showTab===0">
     <api-velocity-chart
-      ng-repeat="(browser, apiVelocity) in apiVelocityMetrics"
-      chart-id="browser + '-api-velocity'"
-      title="browser + ' API Velocity'"
+      ng-repeat="(release, apiVelocity) in apiVelocityMetrics"
+      chart-id="release + '-api-velocity'"
+      title="release + ' API Velocity'"
       api-velocity="apiVelocity"
       new-diff-view="createNewDiffView(minuend, subtrahend)"
     ></api-velocity-chart>
@@ -32,7 +32,7 @@
       chart-id="failure-to-ship-chart"
       title="Failure To Ship Metric"
       failure-to-ship-metric="failureToShipMetric"
-      create-new-view="newFailureToShipView(browser, prevBrowsers, comparedBrowsers)"
+      create-new-view="newFailureToShipView(release, prevReleases, comparedReleases)"
     >
     </failure-to-ship-chart>
   </div>
@@ -42,27 +42,27 @@
       chart-id="aggressive-removal-apis-chart"
       title="Aggressive Removal APIs"
       aggressive-removal-metrics="aggressiveRemovalMetrics"
-      create-new-view="newAggressiveRemovalView(browserOneYearAgo, prevReleaseBrowsers, currBrowsers)"
+      create-new-view="newAggressiveRemovalView(releaseOneYearAgo, prevReleases, currReleases)"
     >
     </aggressive-removal-chart>
   </div>
   <div ng-show="showTab===3">
-    <vendor-specific-chart
-      ng-if="vendorSpecificMetric"
-      chart-id="vendor-specific-apis-chart"
-      title="Vendor Specific APIs"
-      vendor-specific-metric="vendorSpecificMetric"
-      create-new-view="newVendorSpecificView(browser, prevBrowsers, comparedBrowsers)"
+    <browser-specific-chart
+      ng-if="browserSpecificMetric"
+      chart-id="browser-specific-apis-chart"
+      title="Browser Specific APIs"
+      browser-specific-metric="browserSpecificMetric"
+      create-new-view="newBrowserSpecificView(release, prevReleases, comparedReleases)"
     >
-    </vendor-specific-chart>
+    </browser-specific-chart>
   </div>
   <!-- additional view. -->
   <api-catalog-table
     api-matrix="apiMatrix"
     ng-repeat="view in additionalViews track by $index"
     ng-show="$parent.showTab === 4 + $index"
-    browsers="view.browsers"
-    browser-options="view.browserOptions"
+    releases="view.releases"
+    release-options="view.releaseOptions"
     num-available="view.numAvailable">
   </api-catalog-table>
 </div>

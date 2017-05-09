@@ -5,9 +5,9 @@
 
 describe('ApiMatrix', function() {
   let apiMatrix;
-  let browser = function(browserName, browserVersion,
+  let release = function(browserName, browserVersion,
     osName, osVersion) {
-      return org.chromium.apis.web.Browser.create({
+      return org.chromium.apis.web.Release.create({
         browserName,
         browserVersion,
         osName,
@@ -20,17 +20,17 @@ describe('ApiMatrix', function() {
       apiName,
     });
   };
-  let browserAPI = function(browserName, browserVersion,
+  let releaseAPI = function(browserName, browserVersion,
     osName, osVersion, interfaceName, apiName) {
-      return org.chromium.apis.web.BrowserWebInterfaceJunction.create({
+      return org.chromium.apis.web.ReleaseWebInterfaceJunction.create({
         sourceId: `${browserName}_${browserVersion}_${osName}_${osVersion}`,
         targetId: `${interfaceName}#${apiName}`,
       });
     };
   beforeEach(function() {
-    let browserDAO = foam.dao.EasyDAO.create({
-      name: 'browserDAO',
-      of: org.chromium.apis.web.Browser,
+    let releaseDAO = foam.dao.EasyDAO.create({
+      name: 'releaseDAO',
+      of: org.chromium.apis.web.Release,
       daoType: 'MDAO',
     });
     let interfaceDAO = foam.dao.EasyDAO.create({
@@ -38,52 +38,52 @@ describe('ApiMatrix', function() {
       of: org.chromium.apis.web.WebInterface,
       daoType: 'MDAO',
     });
-    let browserApiDAO = foam.dao.EasyDAO.create({
-      name: 'browserApiDao',
-      of: org.chromium.apis.web.BrowserWebInterfaceJunction,
+    let releaseApiDAO = foam.dao.EasyDAO.create({
+      name: 'releaseApiDao',
+      of: org.chromium.apis.web.ReleaseWebInterfaceJunction,
       daoType: 'MDAO',
     });
-    browserApiDAO.put(browserAPI('Chrome', '55', 'Windows', '10',
+    releaseApiDAO.put(releaseAPI('Chrome', '55', 'Windows', '10',
       'Array', 'find'));
-    browserApiDAO.put(browserAPI('Chrome', '55', 'Windows', '10',
+    releaseApiDAO.put(releaseAPI('Chrome', '55', 'Windows', '10',
       'Audio', 'stop'));
-    browserApiDAO.put(browserAPI('Edge', '14', 'Windows', '10',
+    releaseApiDAO.put(releaseAPI('Edge', '14', 'Windows', '10',
       'Array', 'find'));
-    browserApiDAO.put(browserAPI('Edge', '14', 'Windows', '10',
+    releaseApiDAO.put(releaseAPI('Edge', '14', 'Windows', '10',
       'Audio', 'play'));
-    browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
+    releaseApiDAO.put(releaseAPI('Safari', '10', 'OSX', '601',
       'ApplePay', 'about'));
-    browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
+    releaseApiDAO.put(releaseAPI('Safari', '10', 'OSX', '601',
       'Audio', 'play'));
-    browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
+    releaseApiDAO.put(releaseAPI('Safari', '10', 'OSX', '601',
       'Audio', 'stop'));
-    browserApiDAO.put(browserAPI('Safari', '10', 'OSX', '601',
+    releaseApiDAO.put(releaseAPI('Safari', '10', 'OSX', '601',
       'Array', 'find'));
-    browserDAO.put(browser('Chrome', '55', 'Windows', '10'));
-    browserDAO.put(browser('Edge', '14', 'Windows', '10'));
-    browserDAO.put(browser('Safari', '10', 'OSX', '601'));
+    releaseDAO.put(release('Chrome', '55', 'Windows', '10'));
+    releaseDAO.put(release('Edge', '14', 'Windows', '10'));
+    releaseDAO.put(release('Safari', '10', 'OSX', '601'));
     interfaceDAO.put(webInterface('Array', 'find'));
     interfaceDAO.put(webInterface('Audio', 'play'));
     interfaceDAO.put(webInterface('Audio', 'stop'));
     interfaceDAO.put(webInterface('ApplePay', 'about'));
     apiMatrix = org.chromium.apis.web.ApiMatrix.create({
-      browserApiDAO,
-      browserDAO,
+      releaseApiDAO,
+      releaseDAO,
       interfaceDAO,
     },
     // Provide a context that is aware to relationship DAOs.
     // TODO(markdittmer): providing an interface for binding
     // DAOs on Relationships.
     foam.__context__.createSubContext({
-      browserDAO,
+      releaseDAO,
       webInterfaceDAO: interfaceDAO,
-      browserWebInterfaceJunctionDAO: browserApiDAO,
+      releaseWebInterfaceJunctionDAO: releaseApiDAO,
     }));
   });
 
   describe('toMatrix()', function() {
-    it(`contains correct interface and API information, when all browsers
-      are selected`, function(done) {
+    it(`contains correct interface and API information, when all releases
+        are selected`, function(done) {
         apiMatrix.toMatrix([
           'Chrome_55_Windows_10',
           'Edge_14_Windows_10',
@@ -131,33 +131,33 @@ describe('ApiMatrix', function() {
           done();
         });
       });
-    it('returns empty object when given array of browser keys is empty.',
+    it('returns empty object when given array of release keys is empty.',
       function(done) {
         apiMatrix.toMatrix([]).then((interfaceMatrix) => {
           expect(interfaceMatrix).toEqual({});
           done();
         });
     });
-    it('rejects promise if unknown browser key are given.',
+    it('rejects promise if unknown release key are given.',
       function(done) {
         apiMatrix.toMatrix([
           'Chrome_55_Windows_10',
           'IE_10_Windows_8',
         ]).then(() => {
-          fail('toMatrix promise resolved on unknwon browser key.');
+          fail('toMatrix promise resolved on unknwon release key.');
         }, (reason) => {
           expect(reason).toEqual(new Error('IE_10_Windows_8 does not exist.'));
           done();
         });
     });
-    it(`filters APIs by options.browserOptions`, function(done) {
+    it(`filters APIs by options.releaseOptions`, function(done) {
       let promises = [];
       promises.push(apiMatrix.toMatrix([
         'Chrome_55_Windows_10',
         'Edge_14_Windows_10',
         'Safari_10_OSX_601',
       ], {
-        browserOptions: {
+        releaseOptions: {
           'Chrome_55_Windows_10': true,
           'Edge_14_Windows_10': false,
         },
@@ -175,7 +175,7 @@ describe('ApiMatrix', function() {
         'Edge_14_Windows_10',
         'Safari_10_OSX_601',
       ], {
-        browserOptions: {
+        releaseOptions: {
           'Chrome_55_Windows_10': false,
         },
       }).then((interfaceMatrix) => {
@@ -225,7 +225,7 @@ describe('ApiMatrix', function() {
   });
 
   describe('toCSV()', function() {
-    it(`produces correct csv string when all browsers are selected`,
+    it(`produces correct csv string when all releases are selected`,
     function(done) {
       apiMatrix.toCSV([
         'Chrome_55_Windows_10',
@@ -240,7 +240,7 @@ describe('ApiMatrix', function() {
         done();
       });
     });
-    it(`produces correct csv string when part of browsers are selected`,
+    it(`produces correct csv string when part of releases are selected`,
     function(done) {
       apiMatrix.toCSV([
         'Chrome_55_Windows_10',
@@ -253,26 +253,26 @@ describe('ApiMatrix', function() {
         done();
       });
     });
-    it('returns empty csv when given array of browser keys is empty.',
+    it('returns empty csv when given array of release keys is empty.',
       function(done) {
         apiMatrix.toCSV([]).then((csvStr) => {
           expect(csvStr).toEqual('Interface,API\n');
           done();
         });
     });
-    it('rejects promise if unknown browser key are given.',
+    it('rejects promise if unknown release key are given.',
       function(done) {
         apiMatrix.toCSV([
           'Chrome_55_Windows_10',
           'IE_10_Windows_8',
         ]).then(() => {
-          fail('toCSV promise resolved on unknwon browser key.');
+          fail('toCSV promise resolved on unknwon release key.');
         }, (reason) => {
           expect(reason).toEqual(new Error('IE_10_Windows_8 does not exist.'));
           done();
         });
     });
-    it('has a table header with the same order of given browser keys',
+    it('has a table header with the same order of given release keys',
       function(done) {
         apiMatrix.toCSV([
           'Edge_14_Windows_10',
