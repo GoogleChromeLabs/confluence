@@ -19,8 +19,8 @@ describe('WebAPI and api extractor', function() {
     let apiExtractor = org.chromium.apis.web.ApiExtractor.create();
     let apiImporter = org.chromium.apis.web.ApiImporter.create(null, apiExtractor);
     let apiMatrix = org.chromium.apis.web.ApiMatrix.create({
-      browserApiDAO: apiImporter.browserApiDAO,
-      browserDAO: apiImporter.browserDAO,
+      releaseApiDAO: apiImporter.releaseApiDAO,
+      releaseDAO: apiImporter.releaseDAO,
       interfaceDAO: apiImporter.interfaceDAO,
     }, apiImporter);
 

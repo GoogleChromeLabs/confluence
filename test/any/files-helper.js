@@ -18,7 +18,7 @@ function requireBrowserCode() {
   require('../../lib/chart/api_velocity_chart.es6.js');
   require('../../lib/chart/failure_to_ship_chart.es6.js');
   require('../../lib/chart/time_series_chart.es6.js');
-  require('../../lib/chart/vendor_specific_chart.es6.js');
+  require('../../lib/chart/browser_specific_chart.es6.js');
   require('../../lib/client/api_confluence.es6.js');
   require('../../lib/client/api_service.es6.js');
   require('../../lib/component/api_analytics.es6.js');
@@ -47,13 +47,13 @@ beforeAll(function() {
   require('../../lib/confluence/failure_to_ship_data.es6.js');
   require('../../lib/confluence/metric_computer.es6.js');
   require('../../lib/confluence/set_ops.es6.js');
-  require('../../lib/confluence/vendor_specific.es6.js');
-  require('../../lib/confluence/vendor_specific_data.es6.js');
+  require('../../lib/confluence/browser_specific.es6.js');
+  require('../../lib/confluence/browser_specific_data.es6.js');
   require('../../lib/datastore/rate_limited_DAO.es6.js');
   require('../../lib/datastore/rate_limiter.es6.js');
   require('../../lib/web_apis/api_importer.es6.js');
-  require('../../lib/web_apis/browser.es6.js');
-  require('../../lib/web_apis/browser_interface_relationship.es6.js');
+  require('../../lib/web_apis/release.es6.js');
+  require('../../lib/web_apis/release_interface_relationship.es6.js');
   require('../../lib/web_apis/version_history.es6.js');
   require('../../lib/web_apis/web_interface.es6.js');
   require('../../lib/web_catalog/api_extractor.es6.js');

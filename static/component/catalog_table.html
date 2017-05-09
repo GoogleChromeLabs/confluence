@@ -79,13 +79,13 @@
     <table class="bordered highlight">
       <tr>
         <th>Interface / API</th>
-        <th ng-repeat="browser in $ctrl.browsers">
-          {{browser.browserName}} {{browser.browserVersion}}
-          {{browser.osName}} {{browser.osVersion}}
+        <th ng-repeat="release in $ctrl.releases">
+          {{release.browserName}} {{release.browserVersion}}
+          {{release.osName}} {{release.osVersion}}
           <i class="tiny material-icons close"
             style="cursor:pointer"
-            ng-if="$ctrl.ableToDeleteBrowser"
-            ng-click="removeBrowser($event, browser)">
+            ng-if="$ctrl.ableToDeleteRelease"
+            ng-click="removeRelease($event, release)">
               close
           </i>
         </th>
@@ -98,11 +98,11 @@
       </tr>
       <tr ng-repeat-end ng-repeat="(api, results) in apiCatalogMatrix[interface]" ng-if="showRows[interface] || expandAll">
         <td class="colhead">{{api}}</td>
-        <td ng-repeat="browser in $ctrl.browsers"
-          ng-class="{'red accent-1': !results[browser.browserKey],
-           'green accent-1': results[browser.browserKey]}">
-          <i class="material-icons" ng-if="results[browser.browserKey]">check</i>
-          <i class="material-icons" ng-if="!results[browser.browserKey]">close</i>
+        <td ng-repeat="release in $ctrl.releases"
+          ng-class="{'red accent-1': !results[release.releaseKey],
+           'green accent-1': results[release.releaseKey]}">
+          <i class="material-icons" ng-if="results[release.releaseKey]">check</i>
+          <i class="material-icons" ng-if="!results[release.releaseKey]">close</i>
         </td>
       </tr>
     </table>
