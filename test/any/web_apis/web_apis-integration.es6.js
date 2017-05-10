@@ -17,7 +17,7 @@ describe('WebAPI and api extractor', function() {
     let safari602 = global.DATA.safari602;
     let og = global.ObjectGraph;
 
-    let container = global.getReleaseApiContainer();
+    let container = global.createReleaseApiContainer();
     let apiExtractor = foam.lookup('org.chromium.apis.web.ApiExtractor')
         .create(null, container);
     let apiImporter = foam.lookup('org.chromium.apis.web.ApiImporter')
