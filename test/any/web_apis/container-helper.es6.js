@@ -4,7 +4,7 @@
 'use strict';
 
 beforeAll(function() {
-  global.getReleaseApiContainer = function(opt_ctx) {
+  global.createReleaseApiContainer = function(opt_ctx) {
     var ctx = opt_ctx || foam.__context__;
     var EasyDAO = ctx.lookup('foam.dao.EasyDAO');
     var ReleaseApiContainer =
