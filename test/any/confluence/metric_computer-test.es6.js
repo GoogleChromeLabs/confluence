@@ -28,15 +28,21 @@ describe('MetricComputer', function() {
           sourceId: `${browserName}_${browserVersion}_${osName}_${osVersion}`,
           targetId: `${interfaceName}#${apiName}`,
         });
-      };
+  };
+
   beforeEach(function() {
+    let container = global.getReleaseApiContainer();
+
     computeSpy = jasmine.createSpy('computeSpy');
+
     foam.CLASS({
       package: 'org.chromium.apis.web',
       name: 'MetricComputerTester',
       extends: 'org.chromium.apis.web.MetricComputer',
+
       documentation: `A Test class for MetricComputer, with a spy
           in compute method`,
+
       methods: [
         {
           name: 'compute',
@@ -46,64 +52,44 @@ describe('MetricComputer', function() {
         },
       ],
     });
-    let releaseDAO = foam.dao.EasyDAO.create({
-      name: 'releaseDAO',
-      of: org.chromium.apis.web.Release,
-      daoType: 'MDAO',
-    });
-    let interfaceDAO = foam.dao.EasyDAO.create({
-      name: 'interfaceDAO',
-      of: org.chromium.apis.web.WebInterface,
-      daoType: 'MDAO',
-    });
-    let releaseApiDAO = foam.dao.EasyDAO.create({
-      name: 'releaseApiDao',
-      of: org.chromium.apis.web.ReleaseWebInterfaceJunction,
-      daoType: 'MDAO',
-    });
-    releaseApiDAO.put(releaseAPI('Chrome', '55', 'Windows', '10',
-        'Array', 'find'));
-    releaseApiDAO.put(releaseAPI('Chrome', '55', 'Windows', '10',
-        'Audio', 'stop'));
-    releaseApiDAO.put(releaseAPI('Edge', '14', 'Windows', '10',
-        'Array', 'find'));
-    releaseApiDAO.put(releaseAPI('Edge', '14', 'Windows', '10',
-        'Audio', 'play'));
-    releaseApiDAO.put(releaseAPI('Safari', '10', 'OSX', '601',
-        'ApplePay', 'about'));
-    releaseApiDAO.put(releaseAPI('Safari', '10', 'OSX', '601',
-        'Audio', 'play'));
-    releaseApiDAO.put(releaseAPI('Safari', '10', 'OSX', '601',
-        'Audio', 'stop'));
-    releaseApiDAO.put(releaseAPI('Safari', '10', 'OSX', '601',
-        'Array', 'find'));
+
+    let releaseDAO = container.releaseDAO;
+    let webInterfaceDAO = container.webInterfaceDAO;
+    let junctionDAO = container.releaseWebInterfaceJunctionDAO;
+
+    junctionDAO.put(releaseAPI(
+        'Chrome', '55', 'Windows', '10', 'Array', 'find'));
+    junctionDAO.put(releaseAPI(
+        'Chrome', '55', 'Windows', '10', 'Audio', 'stop'));
+    junctionDAO.put(releaseAPI(
+        'Edge', '14', 'Windows', '10', 'Array', 'find'));
+    junctionDAO.put(releaseAPI(
+        'Edge', '14', 'Windows', '10', 'Audio', 'play'));
+    junctionDAO.put(releaseAPI(
+        'Safari', '10', 'OSX', '601', 'ApplePay', 'about'));
+    junctionDAO.put(releaseAPI(
+        'Safari', '10', 'OSX', '601', 'Audio', 'play'));
+    junctionDAO.put(releaseAPI(
+        'Safari', '10', 'OSX', '601', 'Audio', 'stop'));
+    junctionDAO.put(releaseAPI(
+        'Safari', '10', 'OSX', '601', 'Array', 'find'));
     releaseDAO.put(release('Chrome', '55', 'Windows', '10',
         new Date('2015-01-10')));
     releaseDAO.put(release('Edge', '14', 'Windows', '10',
         new Date('2014-02-01')));
     releaseDAO.put(release('Safari', '10', 'OSX', '601',
         new Date('2015-04-01')));
-    interfaceDAO.put(webInterface('Array', 'find'));
-    interfaceDAO.put(webInterface('Audio', 'play'));
-    interfaceDAO.put(webInterface('Audio', 'stop'));
-    interfaceDAO.put(webInterface('ApplePay', 'about'));
-    metricComputer = org.chromium.apis.web.MetricComputerTester.create({
-      releaseApiDAO,
-      releaseDAO,
-      interfaceDAO,
-    },
-    // Provide a context that is aware to relationship DAOs.
-    // TODO(markdittmer): providing an interface for binding
-    // DAOs on Relationships.
-    foam.__context__.createSubContext({
-      releaseDAO,
-      webInterfaceDAO: interfaceDAO,
-      releaseWebInterfaceJunctionDAO: releaseApiDAO,
-    }));
+    webInterfaceDAO.put(webInterface('Array', 'find'));
+    webInterfaceDAO.put(webInterface('Audio', 'play'));
+    webInterfaceDAO.put(webInterface('Audio', 'stop'));
+    webInterfaceDAO.put(webInterface('ApplePay', 'about'));
+
+    metricComputer = foam.lookup('org.chromium.apis.web.MetricComputerTester')
+        .create(null, container);
   });
-  describe('getOrderedListOfReleaseReleaseDates()', function() {
-    it('gets correct dates from releaseApiDAO', function() {
-      metricComputer.getOrderedListOfReleaseReleaseDates().then((dateArr) => {
+  describe('getOrderedListOfReleaseDates()', function() {
+    it('gets correct dates from releaseWebInterfaceJunctionDAO', function() {
+      metricComputer.getOrderedListOfReleaseDates().then((dateArr) => {
         expect(dateArr).toEqual([
           new Date('2014-02-01'),
           new Date('2015-01-10'),
@@ -141,8 +127,8 @@ describe('MetricComputer', function() {
                 expect(releases[1].browserVersion).toBe('55');
                 expect(releases[2].browserName).toBe('Edge');
                 expect(releases[2].browserVersion).toBe('14');
-                done()
+                done();
               });
     });
   });
-})
+});

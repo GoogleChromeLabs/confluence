@@ -42,33 +42,33 @@ for (let i = 0; i < ogFiles.length; i += 1) {
 
 let apiVelocity = org.chromium.apis.web.ApiVelocity.create({
   releaseDAO: apiImporter.releaseDAO,
-  interfaceDAO: apiImporter.interfaceDAO,
-  releaseApiDAO: apiImporter.releaseApiDAO,
+  webInterfaceDAO: apiImporter.webInterfaceDAO,
+  releaseWebInterfaceJunctionDAO: apiImporter.releaseWebInterfaceJunctionDAO,
 });
 
 let failureToShip = org.chromium.apis.web.FailureToShip.create({
   releaseDAO: apiImporter.releaseDAO,
-  interfaceDAO: apiImporter.interfaceDAO,
-  releaseApiDAO: apiImporter.releaseApiDAO,
+  webInterfaceDAO: apiImporter.webInterfaceDAO,
+  releaseWebInterfaceJunctionDAO: apiImporter.releaseWebInterfaceJunctionDAO,
 });
 
 let browserSpecific = org.chromium.apis.web.BrowserSpecific.create({
   releaseDAO: apiImporter.releaseDAO,
-  interfaceDAO: apiImporter.interfaceDAO,
-  releaseApiDAO: apiImporter.releaseApiDAO,
+  webInterfaceDAO: apiImporter.webInterfaceDAO,
+  releaseWebInterfaceJunctionDAO: apiImporter.releaseWebInterfaceJunctionDAO,
 });
 
 let aggressiveRemoval = org.chromium.apis.web.AggressiveRemoval.create({
   releaseDAO: apiImporter.releaseDAO,
-  interfaceDAO: apiImporter.interfaceDAO,
-  releaseApiDAO: apiImporter.releaseApiDAO,
+  webInterfaceDAO: apiImporter.webInterfaceDAO,
+  releaseWebInterfaceJunctionDAO: apiImporter.releaseWebInterfaceJunctionDAO,
 });
 
 server.exportFile('/', `${__dirname}/../static/index.html`);
 
 server.exportDAO(apiImporter.releaseDAO, '/releases');
-server.exportDAO(apiImporter.interfaceDAO, '/web-interfaces');
-server.exportDAO(apiImporter.releaseApiDAO, '/release-apis');
+server.exportDAO(apiImporter.webInterfaceDAO, '/web-interfaces');
+server.exportDAO(apiImporter.releaseWebInterfaceJunctionDAO, '/release-apis');
 server.exportDAO(apiVelocity.apiVelocityDAO, '/api-velocity');
 server.exportDAO(failureToShip.failureToShipDAO, '/failure-to-ship');
 server.exportDAO(browserSpecific.browserSpecificDAO, '/browser-specific');
