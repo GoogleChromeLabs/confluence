@@ -17,28 +17,32 @@ describe('ApiImporter', function() {
 
   let apiImporter;
   let mlang;
+  let junctionDAO;
   beforeEach(function(done) {
-    apiImporter = org.chromium.apis.web.ApiImporter.create();
+    let container = global.getReleaseApiContainer();
+    apiImporter = foam.lookup('org.chromium.apis.web.ApiImporter')
+        .create(null, container);
     mlang = foam.mlang.ExpressionsSingleton.create();
+    junctionDAO = container.releaseWebInterfaceJunctionDAO;
     apiImporter.import('Chrome', '56.0.2924.87',
                        'OSX', '10.12.2', webCatalog).then(done);
   });
 
   it('correctly imports releaseWebInterfaceJunction to DAO', function(done) {
     let promises = [
-      apiImporter.releaseApiDAO.find([
+      junctionDAO.find([
         'Chrome_56.0.2924.87_OSX_10.12.2',
         'Windows#Function',
       ]),
-      apiImporter.releaseApiDAO.find([
+      junctionDAO.find([
         'Chrome_56.0.2924.87_OSX_10.12.2',
         'Windows#property',
       ]),
-      apiImporter.releaseApiDAO.find([
+      junctionDAO.find([
         'Chrome_56.0.2924.87_OSX_10.12.2',
         'Function#arguments',
       ]),
-      apiImporter.releaseApiDAO.find([
+      junctionDAO.find([
         'Chrome_56.0.2924.87_OSX_10.12.2',
         'Function#caller',
       ]),
@@ -47,7 +51,7 @@ describe('ApiImporter', function() {
       results.forEach((releaseAPI) => {
         expect(releaseAPI).not.toBeNull();
       });
-      return apiImporter.releaseApiDAO.select(mlang.COUNT());
+      return junctionDAO.select(mlang.COUNT());
     }).then((countSink) => {
       expect(countSink.value).toBe(promises.length);
       done();

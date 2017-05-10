@@ -11,70 +11,23 @@ describe('AggressiveRemoval', function() {
     function sort(array) { return array.sort(foam.util.compare); }
     return equals(sort(a), sort(b));
   }
-  let testCtx;
+  let Release;
+  let WebInterface;
+  let Junction;
+  let container;
   beforeEach(function() {
-    foam.CLASS({
-      name: 'Controller',
-      package: 'org.chromium.apis.web.test',
-
-      requires: [
-        'foam.dao.EasyDAO',
-        'org.chromium.apis.web.Release',
-        'org.chromium.apis.web.WebInterface',
-        'org.chromium.apis.web.ReleaseWebInterfaceJunction',
-      ],
-      exports: [
-        'releaseDAO',
-        'webInterfaceDAO',
-        'releaseWebInterfaceJunctionDAO',
-      ],
-
-      properties: [
-        {
-          class: 'foam.dao.DAOProperty',
-          name: 'releaseDAO',
-          factory: function() {
-            return this.EasyDAO.create({
-              name: 'releaseDAO',
-              of: this.Release,
-              daoType: 'ARRAY',
-            });
-          },
-        },
-        {
-          class: 'foam.dao.DAOProperty',
-          name: 'webInterfaceDAO',
-          factory: function() {
-            return this.EasyDAO.create({
-              name: 'webInterfaceDAO',
-              of: this.WebInterface,
-              daoType: 'ARRAY',
-            });
-          },
-        },
-        {
-          class: 'foam.dao.DAOProperty',
-          name: 'releaseWebInterfaceJunctionDAO',
-          factory: function() {
-            return this.EasyDAO.create({
-              name: 'releaseWebInterfaceJunctionDAO',
-              of: this.ReleaseWebInterfaceJunction,
-              daoType: 'ARRAY',
-            });
-          },
-        },
-      ],
-    });
-    testCtx = foam.lookup('org.chromium.apis.web.test.Controller')
-        .create().__subContext__;
+    Release = foam.lookup('org.chromium.apis.web.Release');
+    WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
+    Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
+    container = global.getReleaseApiContainer();
   });
 
   it('should handle simple case', function(done) {
-    const Release = testCtx.lookup('org.chromium.apis.web.Release');
-    const WebInterface = testCtx.lookup('org.chromium.apis.web.WebInterface');
+    const Release = foam.lookup('org.chromium.apis.web.Release');
+    const WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
     const AggressiveRemoval =
-        testCtx.lookup('org.chromium.apis.web.AggressiveRemoval');
-    const releases = testCtx.releaseDAO;
+        foam.lookup('org.chromium.apis.web.AggressiveRemoval');
+    const releases = container.releaseDAO;
     let alpha1, alpha2, alpha3, beta, charlie, aggressiveRemoval;
     // Instantiate release releases:
     // Alpha 1, 2, 3: ~1 year apart.
@@ -86,35 +39,35 @@ describe('AggressiveRemoval', function() {
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2015-01-01T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Alpha',
         browserVersion: '2',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2016-01-02T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Alpha',
         browserVersion: '3',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2017-01-03T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Beta',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2017-01-04T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Charlie',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2017-01-05T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
     ]).then(function(releasesArray) {
       alpha1 = releasesArray[0];
       alpha2 = releasesArray[1];
@@ -125,14 +78,14 @@ describe('AggressiveRemoval', function() {
       // One API, shipped by Alpha, Beta, and Charlie, removed in Alpha 2,
       // more than a year after Alpha 3, Beta, and Charlie releases.
       // That is, API ships in Alpha 1, Beta, and Charlie.
-      const ifaces = testCtx.webInterfaceDAO;
+      const ifaces = container.webInterfaceDAO;
       const Junction =
           foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
-      const junctions = testCtx.releaseWebInterfaceJunctionDAO;
+      const junctions = container.releaseWebInterfaceJunctionDAO;
       const iface = WebInterface.create({
         interfaceName: 'Alpha',
         apiName: 'removesIn2',
-      }, testCtx);
+      }, container);
       return Promise.all([
         ifaces.put(iface),
         junctions.put(Junction.create({
@@ -153,11 +106,7 @@ describe('AggressiveRemoval', function() {
       ]);
     }).then(function() {
       // Setup and run aggressive removal metric calculation.
-      aggressiveRemoval = AggressiveRemoval.create({
-        releaseDAO: testCtx.releaseDAO,
-        interfaceDAO: testCtx.webInterfaceDAO,
-        releaseApiDAO: testCtx.releaseWebInterfaceJunctionDAO,
-      }, testCtx);
+      aggressiveRemoval = AggressiveRemoval.create(null, container);
       return aggressiveRemoval.run();
     }).then(function() {
       return aggressiveRemoval.aggressiveRemovalDAO.select();
@@ -173,7 +122,6 @@ describe('AggressiveRemoval', function() {
       expect(ar.numAggressiveRemoval).toBe(1);
       // First date that all browsers have a release: Charlie release date.
       expect(ar.date).toEqual(charlie.releaseDate);
-      debugger;
       expect(equals(ar.releaseOneYearAgo, alpha2)).toBe(true);
       expect(equals(ar.prevReleases, [alpha1])).toBe(true);
       expect(sortedEquals(ar.currReleases, [beta, charlie])).toBe(true);
@@ -182,11 +130,11 @@ describe('AggressiveRemoval', function() {
   });
 
   it('should not capture removal less than a year old', function(done) {
-    const Release = testCtx.lookup('org.chromium.apis.web.Release');
-    const WebInterface = testCtx.lookup('org.chromium.apis.web.WebInterface');
+    const Release = foam.lookup('org.chromium.apis.web.Release');
+    const WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
     const AggressiveRemoval =
-        testCtx.lookup('org.chromium.apis.web.AggressiveRemoval');
-    const releases = testCtx.releaseDAO;
+        foam.lookup('org.chromium.apis.web.AggressiveRemoval');
+    const releases = container.releaseDAO;
     let alpha0, alpha1, alpha2, alpha3, beta, charlie, aggressiveRemoval;
     // Instantiate browser releases:
     // Alpha 0, 1, 2, 3: ~1 year apart.
@@ -201,42 +149,42 @@ describe('AggressiveRemoval', function() {
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2014-01-01T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Alpha',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2015-01-01T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Alpha',
         browserVersion: '2',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2016-01-06T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Alpha',
         browserVersion: '3',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2017-01-03T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Beta',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2017-01-04T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Charlie',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2017-01-05T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
     ]).then(function(releasesArray) {
       alpha0 = releasesArray[0];
       alpha1 = releasesArray[1];
@@ -248,14 +196,14 @@ describe('AggressiveRemoval', function() {
       // One API, shipped by Alpha, Beta, and Charlie, removed in Alpha 2,
       // but less than a year after Alpha 3, Beta, and Charlie releases.
       // That is, API ships in Alpha 0, Alpha 1, Beta, and Charlie.
-      const ifaces = testCtx.webInterfaceDAO;
+      const ifaces = container.webInterfaceDAO;
       const Junction =
           foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
-      const junctions = testCtx.releaseWebInterfaceJunctionDAO;
+      const junctions = container.releaseWebInterfaceJunctionDAO;
       const iface = WebInterface.create({
         interfaceName: 'Alpha',
         apiName: 'removesIn2',
-      }, testCtx);
+      }, container);
       return Promise.all([
         ifaces.put(iface),
         junctions.put(Junction.create({
@@ -281,11 +229,7 @@ describe('AggressiveRemoval', function() {
       ]);
     }).then(function() {
       // Setup and run aggressive removal metric calculation.
-      aggressiveRemoval = AggressiveRemoval.create({
-        releaseDAO: testCtx.releaseDAO,
-        interfaceDAO: testCtx.webInterfaceDAO,
-        releaseApiDAO: testCtx.releaseWebInterfaceJunctionDAO,
-      }, testCtx);
+      aggressiveRemoval = AggressiveRemoval.create(null, container);
       return aggressiveRemoval.run();
     }).then(function() {
       return aggressiveRemoval.aggressiveRemovalDAO.select();
@@ -310,11 +254,11 @@ describe('AggressiveRemoval', function() {
   });
 
   it('should capture old removals', function(done) {
-    const Release = testCtx.lookup('org.chromium.apis.web.Release');
-    const WebInterface = testCtx.lookup('org.chromium.apis.web.WebInterface');
+    const Release = foam.lookup('org.chromium.apis.web.Release');
+    const WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
     const AggressiveRemoval =
-        testCtx.lookup('org.chromium.apis.web.AggressiveRemoval');
-    const releases = testCtx.releaseDAO;
+        foam.lookup('org.chromium.apis.web.AggressiveRemoval');
+    const releases = container.releaseDAO;
     let alpha0, alpha1, alpha2, alpha3, beta, charlie, aggressiveRemoval;
     // Instantiate release releases:
     // Alpha 0, 1, 2, 3: ~1 year apart.
@@ -327,42 +271,42 @@ describe('AggressiveRemoval', function() {
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2014-01-01T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Alpha',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2015-01-02T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Alpha',
         browserVersion: '2',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2016-01-03T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Alpha',
         browserVersion: '3',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2017-01-04T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Beta',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2017-01-05T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Charlie',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2017-01-06T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
     ]).then(function(releasesArray) {
       alpha0 = releasesArray[0];
       alpha1 = releasesArray[1];
@@ -374,18 +318,18 @@ describe('AggressiveRemoval', function() {
       // Two APIs, shipped by Alpha, Beta, and Charlie, one removed in Alpha
       // 1, another removed in Alpha 2, both removed over a year before Alpha
       // 3, Beta, and Charlie releases.
-      const ifaces = testCtx.webInterfaceDAO;
+      const ifaces = container.webInterfaceDAO;
       const Junction =
           foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
-      const junctions = testCtx.releaseWebInterfaceJunctionDAO;
+      const junctions = container.releaseWebInterfaceJunctionDAO;
       const iface1 = WebInterface.create({
         interfaceName: 'Alpha',
         apiName: 'removesIn1',
-      }, testCtx);
+      }, container);
       const iface2 = WebInterface.create({
         interfaceName: 'Alpha',
         apiName: 'removesIn2',
-      }, testCtx);
+      }, container);
       return Promise.all([
         ifaces.put(iface1),
         ifaces.put(iface2),
@@ -431,11 +375,7 @@ describe('AggressiveRemoval', function() {
       ]);
     }).then(function() {
       // Setup and run aggressive removal metric calculation.
-      aggressiveRemoval = AggressiveRemoval.create({
-        releaseDAO: testCtx.releaseDAO,
-        interfaceDAO: testCtx.webInterfaceDAO,
-        releaseApiDAO: testCtx.releaseWebInterfaceJunctionDAO,
-      }, testCtx);
+      aggressiveRemoval = AggressiveRemoval.create(null, container);
       return aggressiveRemoval.run();
     }).then(function() {
       return aggressiveRemoval.aggressiveRemovalDAO.select();
@@ -460,11 +400,11 @@ describe('AggressiveRemoval', function() {
   });
 
   it('should capture accumulate old removals', function(done) {
-    const Release = testCtx.lookup('org.chromium.apis.web.Release');
-    const WebInterface = testCtx.lookup('org.chromium.apis.web.WebInterface');
+    const Release = foam.lookup('org.chromium.apis.web.Release');
+    const WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
     const AggressiveRemoval =
-        testCtx.lookup('org.chromium.apis.web.AggressiveRemoval');
-    const releases = testCtx.releaseDAO;
+        foam.lookup('org.chromium.apis.web.AggressiveRemoval');
+    const releases = container.releaseDAO;
     let alpha0, alpha1, alpha2, alpha3, beta, charlie, aggressiveRemoval;
     // Instantiate release releases:
     // Alpha 0, 1, 2, 3: ~1 year apart.
@@ -477,42 +417,42 @@ describe('AggressiveRemoval', function() {
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2014-01-01T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Alpha',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2015-01-02T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Alpha',
         browserVersion: '2',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2016-01-03T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Beta',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2016-01-04T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Charlie',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2016-01-05T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Alpha',
         browserVersion: '3',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2017-01-06T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
     ]).then(function(releasesArray) {
       alpha0 = releasesArray[0];
       alpha1 = releasesArray[1];
@@ -525,18 +465,18 @@ describe('AggressiveRemoval', function() {
       // 1, another removed in Alpha 2, one removed over a year before Beta,
       // and Charlie releases, the other removed over a year before Alpha 3
       // release.
-      const ifaces = testCtx.webInterfaceDAO;
+      const ifaces = container.webInterfaceDAO;
       const Junction =
           foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
-      const junctions = testCtx.releaseWebInterfaceJunctionDAO;
+      const junctions = container.releaseWebInterfaceJunctionDAO;
       const iface1 = WebInterface.create({
         interfaceName: 'Alpha',
         apiName: 'removesIn1',
-      }, testCtx);
+      }, container);
       const iface2 = WebInterface.create({
         interfaceName: 'Alpha',
         apiName: 'removesIn2',
-      }, testCtx);
+      }, container);
       return Promise.all([
         ifaces.put(iface1),
         ifaces.put(iface2),
@@ -582,11 +522,7 @@ describe('AggressiveRemoval', function() {
       ]);
     }).then(function() {
       // Setup and run aggressive removal metric calculation.
-      aggressiveRemoval = AggressiveRemoval.create({
-        releaseDAO: testCtx.releaseDAO,
-        interfaceDAO: testCtx.webInterfaceDAO,
-        releaseApiDAO: testCtx.releaseWebInterfaceJunctionDAO,
-      }, testCtx);
+      aggressiveRemoval = AggressiveRemoval.create(null, container);
       return aggressiveRemoval.run();
     }).then(function() {
       return aggressiveRemoval.aggressiveRemovalDAO.select();
@@ -626,11 +562,11 @@ describe('AggressiveRemoval', function() {
   });
 
   it('should not count APIs that are reintroduced', function(done) {
-    const Release = testCtx.lookup('org.chromium.apis.web.Release');
-    const WebInterface = testCtx.lookup('org.chromium.apis.web.WebInterface');
+    const Release = foam.lookup('org.chromium.apis.web.Release');
+    const WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
     const AggressiveRemoval =
-        testCtx.lookup('org.chromium.apis.web.AggressiveRemoval');
-    const releases = testCtx.releaseDAO;
+        foam.lookup('org.chromium.apis.web.AggressiveRemoval');
+    const releases = container.releaseDAO;
     let alpha1, alpha2, alpha3, beta, charlie, aggressiveRemoval;
     // Instantiate release releases:
     // Alpha 1, 2, 3: ~1 year apart.
@@ -642,35 +578,35 @@ describe('AggressiveRemoval', function() {
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2015-01-01T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Alpha',
         browserVersion: '2',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2016-01-02T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Alpha',
         browserVersion: '3',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2017-01-03T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Beta',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2017-01-04T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
       releases.put(Release.create({
         browserName: 'Charlie',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: '2017-01-05T00:00:00.000Z'
-      }, testCtx)),
+      }, container)),
     ]).then(function(releasesArray) {
       alpha1 = releasesArray[0];
       alpha2 = releasesArray[1];
@@ -682,14 +618,14 @@ describe('AggressiveRemoval', function() {
       // more than a year after Alpha 3, Beta, and Charlie releases. However,
       // Alpha re-introduced API in version 3.
       // That is, API ships in Alpha 1, Alpha 3, Beta, and Charlie.
-      const ifaces = testCtx.webInterfaceDAO;
+      const ifaces = container.webInterfaceDAO;
       const Junction =
           foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
-      const junctions = testCtx.releaseWebInterfaceJunctionDAO;
+      const junctions = container.releaseWebInterfaceJunctionDAO;
       const iface = WebInterface.create({
         interfaceName: 'Alpha',
         apiName: 'removesIn2',
-      }, testCtx);
+      }, container);
       return Promise.all([
         ifaces.put(iface),
         junctions.put(Junction.create({
@@ -715,11 +651,7 @@ describe('AggressiveRemoval', function() {
       ]);
     }).then(function() {
       // Setup and run aggressive removal metric calculation.
-      aggressiveRemoval = AggressiveRemoval.create({
-        releaseDAO: testCtx.releaseDAO,
-        interfaceDAO: testCtx.webInterfaceDAO,
-        releaseApiDAO: testCtx.releaseWebInterfaceJunctionDAO,
-      }, testCtx);
+      aggressiveRemoval = AggressiveRemoval.create(null, container);
       return aggressiveRemoval.run();
     }).then(function() {
       return aggressiveRemoval.aggressiveRemovalDAO.select();

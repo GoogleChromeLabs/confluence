@@ -16,22 +16,26 @@ describe('WebAPI and api extractor', function() {
     let edge14 = global.DATA.edge14;
     let safari602 = global.DATA.safari602;
     let og = global.ObjectGraph;
-    let apiExtractor = org.chromium.apis.web.ApiExtractor.create();
-    let apiImporter = org.chromium.apis.web.ApiImporter.create(null, apiExtractor);
-    let apiMatrix = org.chromium.apis.web.ApiMatrix.create({
-      releaseApiDAO: apiImporter.releaseApiDAO,
-      releaseDAO: apiImporter.releaseDAO,
-      interfaceDAO: apiImporter.interfaceDAO,
-    }, apiImporter);
+
+    let container = global.getReleaseApiContainer();
+    let apiExtractor = foam.lookup('org.chromium.apis.web.ApiExtractor')
+        .create(null, container);
+    let apiImporter = foam.lookup('org.chromium.apis.web.ApiImporter')
+        .create(null, apiExtractor);
+    let apiMatrix = foam.lookup('org.chromium.apis.web.ApiMatrix')
+        .create(null, apiImporter);
 
     apiImporter.import('Chrome', '56', 'Windows', '10',
-      apiExtractor.extractWebCatalog(og.fromJSON(chrome56)));
+        apiExtractor.extractWebCatalog(og.fromJSON(chrome56)));
     apiImporter.import('Edge', '14.14393', 'Windows', '10',
         apiExtractor.extractWebCatalog(og.fromJSON(edge14)));
     apiImporter.import('Safari', '602.4.8', 'OSX', '10',
         apiExtractor.extractWebCatalog(og.fromJSON(safari602)));
-    apiMatrix.toMatrix(['Chrome_56_Windows_10', 'Edge_14.14393_Windows_10',
-    'Safari_602.4.8_OSX_10']).then((webCatalogMatrix) =>{
+    apiMatrix.toMatrix([
+      'Chrome_56_Windows_10',
+      'Edge_14.14393_Windows_10',
+      'Safari_602.4.8_OSX_10',
+    ]).then((webCatalogMatrix) =>{
       webCatalog = webCatalogMatrix;
       done();
     });
@@ -89,7 +93,7 @@ describe('WebAPI and api extractor', function() {
     it('does not contain non-interface objects', function() {
       // Chrome does not expose FontFace as global interface.
       expect(webCatalog.Window.FontFaceSet.
-        Chrome_56_Windows_10).toBeUndefined;
+          Chrome_56_Windows_10).toBeUndefined();
     });
   });
   it('ignores built-in function properties on function instances',

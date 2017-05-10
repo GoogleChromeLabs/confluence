@@ -4,10 +4,15 @@
 'use strict';
 
 describe('ApiMatrix', function() {
+  let Release;
+  let WebInterface;
+  let Junction;
+  let ApiMatrix;
   let apiMatrix;
+
   let release = function(browserName, browserVersion,
     osName, osVersion) {
-      return org.chromium.apis.web.Release.create({
+      return Release.create({
         browserName,
         browserVersion,
         osName,
@@ -15,70 +20,51 @@ describe('ApiMatrix', function() {
       });
     };
   let webInterface = function(interfaceName, apiName) {
-    return org.chromium.apis.web.WebInterface.create({
-      interfaceName,
-      apiName,
-    });
+    return WebInterface.create({interfaceName, apiName});
   };
   let releaseAPI = function(browserName, browserVersion,
-    osName, osVersion, interfaceName, apiName) {
-      return org.chromium.apis.web.ReleaseWebInterfaceJunction.create({
-        sourceId: `${browserName}_${browserVersion}_${osName}_${osVersion}`,
-        targetId: `${interfaceName}#${apiName}`,
-      });
-    };
+      osName, osVersion, interfaceName, apiName) {
+    return Junction.create({
+      sourceId: `${browserName}_${browserVersion}_${osName}_${osVersion}`,
+      targetId: `${interfaceName}#${apiName}`,
+    });
+  };
+
   beforeEach(function() {
-    let releaseDAO = foam.dao.EasyDAO.create({
-      name: 'releaseDAO',
-      of: org.chromium.apis.web.Release,
-      daoType: 'MDAO',
-    });
-    let interfaceDAO = foam.dao.EasyDAO.create({
-      name: 'interfaceDAO',
-      of: org.chromium.apis.web.WebInterface,
-      daoType: 'MDAO',
-    });
-    let releaseApiDAO = foam.dao.EasyDAO.create({
-      name: 'releaseApiDao',
-      of: org.chromium.apis.web.ReleaseWebInterfaceJunction,
-      daoType: 'MDAO',
-    });
-    releaseApiDAO.put(releaseAPI('Chrome', '55', 'Windows', '10',
-      'Array', 'find'));
-    releaseApiDAO.put(releaseAPI('Chrome', '55', 'Windows', '10',
-      'Audio', 'stop'));
-    releaseApiDAO.put(releaseAPI('Edge', '14', 'Windows', '10',
-      'Array', 'find'));
-    releaseApiDAO.put(releaseAPI('Edge', '14', 'Windows', '10',
-      'Audio', 'play'));
-    releaseApiDAO.put(releaseAPI('Safari', '10', 'OSX', '601',
-      'ApplePay', 'about'));
-    releaseApiDAO.put(releaseAPI('Safari', '10', 'OSX', '601',
-      'Audio', 'play'));
-    releaseApiDAO.put(releaseAPI('Safari', '10', 'OSX', '601',
-      'Audio', 'stop'));
-    releaseApiDAO.put(releaseAPI('Safari', '10', 'OSX', '601',
-      'Array', 'find'));
+    Release = foam.lookup('org.chromium.apis.web.Release');
+    WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
+    Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
+    ApiMatrix = foam.lookup('org.chromium.apis.web.ApiMatrix');
+
+    let container = global.getReleaseApiContainer();
+    let releaseDAO = container.releaseDAO;
+    let webInterfaceDAO = container.webInterfaceDAO;
+    let junctionDAO = container.releaseWebInterfaceJunctionDAO;
+    junctionDAO.put(releaseAPI(
+        'Chrome', '55', 'Windows', '10', 'Array', 'find'));
+    junctionDAO.put(releaseAPI(
+        'Chrome', '55', 'Windows', '10', 'Audio', 'stop'));
+    junctionDAO.put(releaseAPI(
+        'Edge', '14', 'Windows', '10', 'Array', 'find'));
+    junctionDAO.put(releaseAPI(
+        'Edge', '14', 'Windows', '10', 'Audio', 'play'));
+    junctionDAO.put(releaseAPI(
+        'Safari', '10', 'OSX', '601', 'ApplePay', 'about'));
+    junctionDAO.put(releaseAPI(
+        'Safari', '10', 'OSX', '601', 'Audio', 'play'));
+    junctionDAO.put(releaseAPI(
+        'Safari', '10', 'OSX', '601', 'Audio', 'stop'));
+    junctionDAO.put(releaseAPI(
+        'Safari', '10', 'OSX', '601', 'Array', 'find'));
     releaseDAO.put(release('Chrome', '55', 'Windows', '10'));
     releaseDAO.put(release('Edge', '14', 'Windows', '10'));
     releaseDAO.put(release('Safari', '10', 'OSX', '601'));
-    interfaceDAO.put(webInterface('Array', 'find'));
-    interfaceDAO.put(webInterface('Audio', 'play'));
-    interfaceDAO.put(webInterface('Audio', 'stop'));
-    interfaceDAO.put(webInterface('ApplePay', 'about'));
-    apiMatrix = org.chromium.apis.web.ApiMatrix.create({
-      releaseApiDAO,
-      releaseDAO,
-      interfaceDAO,
-    },
-    // Provide a context that is aware to relationship DAOs.
-    // TODO(markdittmer): providing an interface for binding
-    // DAOs on Relationships.
-    foam.__context__.createSubContext({
-      releaseDAO,
-      webInterfaceDAO: interfaceDAO,
-      releaseWebInterfaceJunctionDAO: releaseApiDAO,
-    }));
+    webInterfaceDAO.put(webInterface('Array', 'find'));
+    webInterfaceDAO.put(webInterface('Audio', 'play'));
+    webInterfaceDAO.put(webInterface('Audio', 'stop'));
+    webInterfaceDAO.put(webInterface('ApplePay', 'about'));
+
+    apiMatrix = ApiMatrix.create(null, container);
   });
 
   describe('toMatrix()', function() {
