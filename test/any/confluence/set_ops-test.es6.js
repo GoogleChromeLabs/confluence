@@ -522,5 +522,17 @@ describe('Set ops', () => {
       });
     });
 
+    it('should resolve null on find() with inconsistent callback timing', done => {
+      var aDAO = EvilDAO.create({of: Num, delegate: MDAO.create({of: Num})});
+      var bDAO = EvilDAO.create({of: Num, delegate: MDAO.create({of: Num})});
+      var abDAO = E.UNION(aDAO, bDAO);
+
+      Promise.all([
+        abDAO.find(0).then(found => expect(found).toBeNull()),
+        abDAO.find(1).then(found => expect(found).toBeNull()),
+        abDAO.find(2).then(found => expect(found).toBeNull()),
+        abDAO.find(3).then(found => expect(found).toBeNull()),
+      ]).then(done, done.fail);
+    });
   });
 });
