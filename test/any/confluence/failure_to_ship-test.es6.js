@@ -190,9 +190,9 @@ describe('FailureToShip', function() {
     }).then(function(sink) {
       expect(sortedEquals(sink.a, [
         mkData(0, date1, alpha1, [], [beta1]),
-        mkData(0, date3, alpha2, [], [beta2]),
+        mkData(0, date3, alpha2, [alpha1], [beta2]),
         mkData(0, date1, beta1, [], [alpha1]),
-        mkData(0, date3, beta2, [], [alpha2]),
+        mkData(0, date3, beta2, [beta1], [alpha2]),
       ])).toBe(true);
       done();
     });
