@@ -62,8 +62,8 @@ const localImporter = global.localImporter =
 const E = foam.lookup('foam.mlang.ExpressionsSingleton').create();
 
 const putMissing = global.putMissing = function(local, remote) {
-  return remote.select(
-      E.SET_MINUS(remote, faom.lookup('foam.dao.AnonymousSink').create({
+  return local.select(
+      E.SET_MINUS(remote, foam.lookup('foam.dao.AnonymousSink').create({
         sink: {
           put: function(o) {
             logger.info('Putting missing (' + local.of.id + '): ' + o.id);
