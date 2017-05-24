@@ -1,5 +1,6 @@
 **/.DS_Store
 .coverage
+.local
 .node_coverage
 .web_coverage
 node_modules
