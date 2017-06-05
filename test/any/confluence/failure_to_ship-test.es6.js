@@ -15,7 +15,8 @@ describe('FailureToShip', function() {
   let WebInterface;
   let Junction;
   let FailureToShip;
-  let FailureToShipData;
+  let BrowserMetricDataType;
+  let BrowserMetricData;
   let container;
   let releases;
   let ifaces;
@@ -38,11 +39,11 @@ describe('FailureToShip', function() {
       targetId: iface.id,
     });
   }
-  function mkData(numFailureToShip, date, release, prevReleases,
-                  comparedReleases) {
-    return FailureToShipData.create({
+  function mkData(value, date, release, prevReleases, comparedReleases) {
+    return BrowserMetricData.create({
+      type: BrowserMetricDataType.FAILURE_TO_SHIP,
       browserName: release.browserName,
-      numFailureToShip,
+      value,
       date,
       release,
       prevReleases,
@@ -54,8 +55,10 @@ describe('FailureToShip', function() {
     WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
     Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
     FailureToShip = foam.lookup('org.chromium.apis.web.FailureToShip');
-    FailureToShipData =
-      foam.lookup('org.chromium.apis.web.FailureToShipData');
+    BrowserMetricDataType =
+      foam.lookup('org.chromium.apis.web.BrowserMetricDataType');
+    BrowserMetricData =
+      foam.lookup('org.chromium.apis.web.BrowserMetricData');
     container = global.createReleaseApiContainer();
     releases = container.releaseDAO;
     ifaces = container.webInterfaceDAO;
@@ -284,7 +287,7 @@ describe('FailureToShip', function() {
       // ship the API; failure to ship only registers when ALL releases of other
       // browsers within the grace period shipped the API.
       expect(sink.a[1].release.id).toBe('Alpha_2.1_Windows_10');
-      expect(sink.a[1].numFailureToShip).toBe(0);
+      expect(sink.a[1].value).toBe(0);
       done();
     });
   });
