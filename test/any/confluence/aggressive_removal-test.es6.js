@@ -119,12 +119,12 @@ describe('AggressiveRemoval', function() {
       expect(array.length).toBe(1);
       var ar = array[0];
       expect(ar.browserName).toBe('Alpha');
-      expect(ar.numAggressiveRemoval).toBe(1);
+      expect(ar.value).toBe(1);
       // First date that all browsers have a release: Charlie release date.
       expect(ar.date).toEqual(charlie.releaseDate);
-      expect(equals(ar.releaseOneYearAgo, alpha2)).toBe(true);
+      expect(equals(ar.release, alpha2)).toBe(true);
       expect(equals(ar.prevReleases, [alpha1])).toBe(true);
-      expect(sortedEquals(ar.currReleases, [beta, charlie])).toBe(true);
+      expect(sortedEquals(ar.comparedReleases, [beta, charlie])).toBe(true);
       done();
     });
   });
@@ -243,12 +243,12 @@ describe('AggressiveRemoval', function() {
       var ar = array[0];
       expect(ar.browserName).toBe('Alpha');
       // Removal in Alpha 2 not counted: it's less than 1yr-old.
-      expect(ar.numAggressiveRemoval).toBe(0);
+      expect(ar.value).toBe(0);
       // First date that all browsers have a release: Charlie release date.
       expect(ar.date).toEqual(charlie.releaseDate);
-      expect(equals(ar.releaseOneYearAgo, alpha1)).toBe(true);
+      expect(equals(ar.release, alpha1)).toBe(true);
       expect(equals(ar.prevReleases, [alpha0])).toBe(true);
-      expect(sortedEquals(ar.currReleases, [beta, charlie])).toBe(true);
+      expect(sortedEquals(ar.comparedReleases, [beta, charlie])).toBe(true);
       done();
     });
   });
@@ -389,12 +389,12 @@ describe('AggressiveRemoval', function() {
       var ar = array[0];
       expect(ar.browserName).toBe('Alpha');
       // Both removals counted.
-      expect(ar.numAggressiveRemoval).toBe(2);
+      expect(ar.value).toBe(2);
       // First date that all browsers have a release: Charlie release date.
       expect(ar.date).toEqual(charlie.releaseDate);
-      expect(equals(ar.releaseOneYearAgo, alpha2)).toBe(true);
+      expect(equals(ar.release, alpha2)).toBe(true);
       expect(sortedEquals(ar.prevReleases, [alpha0, alpha1])).toBe(true);
-      expect(sortedEquals(ar.currReleases, [beta, charlie])).toBe(true);
+      expect(sortedEquals(ar.comparedReleases, [beta, charlie])).toBe(true);
       done();
     });
   });
@@ -537,12 +537,12 @@ describe('AggressiveRemoval', function() {
       // First point: Removal from Alpha 1 counted at time of Charlie release.
       var ar1 = array[0];
       expect(ar1.browserName).toBe('Alpha');
-      expect(ar1.numAggressiveRemoval).toBe(1);
+      expect(ar1.value).toBe(1);
       // First date that all browsers have a release: Charlie release date.
       expect(ar1.date).toEqual(charlie.releaseDate);
-      expect(equals(ar1.releaseOneYearAgo, alpha1)).toBe(true);
+      expect(equals(ar1.release, alpha1)).toBe(true);
       expect(sortedEquals(ar1.prevReleases, [alpha0])).toBe(true);
-      expect(sortedEquals(ar1.currReleases, [beta, charlie])).toBe(true);
+      expect(sortedEquals(ar1.comparedReleases, [beta, charlie])).toBe(true);
       done();
 
       // Second point: Removals from Alpha 1 and Alpha 2 counted at time of
@@ -550,13 +550,13 @@ describe('AggressiveRemoval', function() {
       var ar2 = array[1];
       expect(ar2.browserName).toBe('Alpha');
       // Both removals counted.
-      expect(ar2.numAggressiveRemoval).toBe(2);
+      expect(ar2.value).toBe(2);
       // First date that all browsers have a release: Charlie release date.
       expect(ar2.date).toEqual(alpha3.releaseDate);
-      expect(equals(ar2.releaseOneYearAgo, alpha2)).toBe(true);
+      expect(equals(ar2.release, alpha2)).toBe(true);
       expect(sortedEquals(ar2.prevReleases, [alpha0, alpha1]))
           .toBe(true);
-      expect(sortedEquals(ar2.currReleases, [beta, charlie])).toBe(true);
+      expect(sortedEquals(ar2.comparedReleases, [beta, charlie])).toBe(true);
       done();
     });
   });
@@ -665,12 +665,12 @@ describe('AggressiveRemoval', function() {
       var ar = array[0];
       expect(ar.browserName).toBe('Alpha');
       // Removal in Alpha 2 not counted: API is later reintroduced.
-      expect(ar.numAggressiveRemoval).toBe(0);
+      expect(ar.value).toBe(0);
       // First date that all browsers have a release: Charlie release date.
       expect(ar.date).toEqual(charlie.releaseDate);
-      expect(equals(ar.releaseOneYearAgo, alpha2)).toBe(true);
+      expect(equals(ar.release, alpha2)).toBe(true);
       expect(sortedEquals(ar.prevReleases, [alpha1])).toBe(true);
-      expect(sortedEquals(ar.currReleases, [beta, charlie])).toBe(true);
+      expect(sortedEquals(ar.comparedReleases, [beta, charlie])).toBe(true);
       done();
     });
   });

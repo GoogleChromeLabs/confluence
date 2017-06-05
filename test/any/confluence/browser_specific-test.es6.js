@@ -15,7 +15,8 @@ describe('BrowserSpecific', function() {
   let WebInterface;
   let Junction;
   let BrowserSpecific;
-  let BrowserSpecificData;
+  let BrowserMetricDataType;
+  let BrowserMetricData;
   let container;
   let releases;
   let ifaces;
@@ -38,11 +39,11 @@ describe('BrowserSpecific', function() {
       targetId: iface.id,
     });
   }
-  function mkData(numBrowserSpecific, date, release, prevReleases,
-                  comparedReleases) {
-    return BrowserSpecificData.create({
+  function mkData(value, date, release, prevReleases, comparedReleases) {
+    return BrowserMetricData.create({
+      type: BrowserMetricDataType.BROWSER_SPECIFIC,
       browserName: release.browserName,
-      numBrowserSpecific,
+      value,
       date,
       release,
       prevReleases,
@@ -54,8 +55,10 @@ describe('BrowserSpecific', function() {
     WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
     Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
     BrowserSpecific = foam.lookup('org.chromium.apis.web.BrowserSpecific');
-    BrowserSpecificData =
-      foam.lookup('org.chromium.apis.web.BrowserSpecificData');
+    BrowserMetricDataType =
+      foam.lookup('org.chromium.apis.web.BrowserMetricDataType');
+    BrowserMetricData =
+      foam.lookup('org.chromium.apis.web.BrowserMetricData');
     container = global.createReleaseApiContainer();
     releases = container.releaseDAO;
     ifaces = container.webInterfaceDAO;
@@ -282,9 +285,9 @@ describe('BrowserSpecific', function() {
       // the grace period. However, it does count when it's still shipping in
       // alpha3 (which has alpha2_1, but not alpha2, in its grace period).
       expect(sink.a[1].release.id).toBe('Alpha_2.1_Windows_10');
-      expect(sink.a[1].numBrowserSpecific).toBe(0);
+      expect(sink.a[1].value).toBe(0);
       expect(sink.a[2].release.id).toBe('Alpha_3_Windows_10');
-      expect(sink.a[2].numBrowserSpecific).toBe(1);
+      expect(sink.a[2].value).toBe(1);
       done();
     });
   });
@@ -363,7 +366,7 @@ describe('BrowserSpecific', function() {
       // browser-specific because charlie2 shipped it (even though neither
       // charlie3, nor any version of beta shipped it).
       expect(sink.a[0].release.id).toBe('Alpha_2.1_Windows_10');
-      expect(sink.a[0].numBrowserSpecific).toBe(0);
+      expect(sink.a[0].value).toBe(0);
       done();
     });
   });
