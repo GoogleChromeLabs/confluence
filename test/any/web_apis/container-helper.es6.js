@@ -13,6 +13,8 @@ beforeAll(function() {
     var WebInterface = ctx.lookup('org.chromium.apis.web.WebInterface');
     var ReleaseWebInterfaceJunction =
         ctx.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
+    var BrowserMetricData =
+        ctx.lookup('org.chromium.apis.web.BrowserMetricData');
 
     return ReleaseApiContainer.create({
       releaseDAO: EasyDAO.create({
@@ -28,6 +30,11 @@ beforeAll(function() {
       releaseWebInterfaceJunctionDAO: EasyDAO.create({
         name: 'releaseWebInterfaceJunctionDAO',
         of: ReleaseWebInterfaceJunction,
+        daoType: 'MDAO',
+      }),
+      browserMetricsDAO: EasyDAO.create({
+        name: 'browserMetricsDAO',
+        of: BrowserMetricData,
         daoType: 'MDAO',
       }),
     });
