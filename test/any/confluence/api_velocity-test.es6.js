@@ -12,7 +12,7 @@ describe('ApiVelocity', () => {
     return equals(sort(a), sort(b));
   }
   let EasyDAO;
-  let ReleaseApiContainer;
+  let DAOContainer;
   let Release;
   let ApiVelocity;
   let ApiVelocityData;
@@ -31,7 +31,7 @@ describe('ApiVelocity', () => {
     ApiVelocityData = foam.lookup('org.chromium.apis.web.ApiVelocityData');
     Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
 
-    container = global.createReleaseApiContainer();
+    container = global.createDAOContainer();
     releases = container.releaseDAO;
     apiVelocity = ApiVelocity.create(null, container);
     ifaces = container.webInterfaceDAO;

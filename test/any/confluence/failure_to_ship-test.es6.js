@@ -59,7 +59,7 @@ describe('FailureToShip', function() {
       foam.lookup('org.chromium.apis.web.BrowserMetricDataType');
     BrowserMetricData =
       foam.lookup('org.chromium.apis.web.BrowserMetricData');
-    container = global.createReleaseApiContainer();
+    container = global.createDAOContainer();
     releases = container.releaseDAO;
     ifaces = container.webInterfaceDAO;
     junctions = container.releaseWebInterfaceJunctionDAO;

@@ -14,7 +14,7 @@ const path = require('path');
 
 global.FOAM_FLAGS = {gcloud: true};
 require('foam2');
-require('../lib/datastore/import_controller.es6.js');
+require('../lib/datastore/datastore_container.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
@@ -26,7 +26,7 @@ const logger = global.logger =
     foam.lookup('foam.nanos.log.ConsoleLogger').create();
 
 const datastoreCtx = global.datastoreCtx =
-    foam.lookup('org.chromium.apis.web.ImportController').create({
+    foam.lookup('org.chromium.apis.web.DatastoreContainer').create({
       gcloudAuthEmail: credentials.client_email,
       gcloudAuthPrivateKey: credentials.private_key,
       gcloudProjectId: credentials.project_id,
@@ -38,14 +38,11 @@ const Release = foam.lookup('org.chromium.apis.web.Release');
 const WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
 const ReleaseWebInterfaceJunction =
     foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
-// TODO(markdittmer): Rename ImportController; it's a misnomer (more of a
-// ContextContainer, or similar).
-//
 // Create context for computing metrics against local data:
 // - Local release, API, and relase/API DAOs for computing metrics,
 // - Remote browser metrics DAO pushing metrics to Datastore.
 const computeMetricsCtx = global.computeMetricsCtx =
-    foam.lookup('org.chromium.apis.web.ImportController').create({
+    foam.lookup('org.chromium.apis.web.DatastoreContainer').create({
       releaseDAO: MDAO.create({of: Release}),
       webInterfaceDAO: MDAO.create({of: WebInterface}),
       releaseWebInterfaceJunctionDAO: MDAO.create({

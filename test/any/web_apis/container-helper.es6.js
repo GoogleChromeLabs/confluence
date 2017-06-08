@@ -4,19 +4,21 @@
 'use strict';
 
 beforeAll(function() {
-  global.createReleaseApiContainer = function(opt_ctx) {
+  global.createDAOContainer = function(opt_ctx) {
     var ctx = opt_ctx || foam.__context__;
     var EasyDAO = ctx.lookup('foam.dao.EasyDAO');
-    var ReleaseApiContainer =
-        ctx.lookup('org.chromium.apis.web.ReleaseApiContainer');
+    var DAOContainer =
+        ctx.lookup('org.chromium.apis.web.DAOContainer');
     var Release = ctx.lookup('org.chromium.apis.web.Release');
     var WebInterface = ctx.lookup('org.chromium.apis.web.WebInterface');
     var ReleaseWebInterfaceJunction =
         ctx.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
     var BrowserMetricData =
         ctx.lookup('org.chromium.apis.web.BrowserMetricData');
+    var ApiVelocityData =
+        ctx.lookup('org.chromium.apis.web.ApiVelocityData');
 
-    return ReleaseApiContainer.create({
+    return DAOContainer.create({
       releaseDAO: EasyDAO.create({
         name: 'releaseDAO',
         of: Release,
@@ -35,6 +37,11 @@ beforeAll(function() {
       browserMetricsDAO: EasyDAO.create({
         name: 'browserMetricsDAO',
         of: BrowserMetricData,
+        daoType: 'MDAO',
+      }),
+      apiVelocityDAO: EasyDAO.create({
+        name: 'apiVelocityDAO',
+        of: ApiVelocityData,
         daoType: 'MDAO',
       }),
     });
