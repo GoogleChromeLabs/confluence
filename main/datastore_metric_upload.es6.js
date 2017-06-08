@@ -14,8 +14,10 @@ const path = require('path');
 
 global.FOAM_FLAGS = {gcloud: true};
 require('foam2');
-require('../lib/confluence/aggressive_removal.es6.js');
 require('../lib/datastore/import_controller.es6.js');
+require('../lib/web_apis/release.es6.js');
+require('../lib/web_apis/release_interface_relationship.es6.js');
+require('../lib/web_apis/web_interface.es6.js');
 
 const credentials = JSON.parse(fs.readFileSync(
     path.resolve(__dirname, '../.local/credentials.json')));
@@ -38,41 +40,93 @@ const ReleaseWebInterfaceJunction =
     foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
 // TODO(markdittmer): Rename ImportController; it's a misnomer (more of a
 // ContextContainer, or similar).
-const localCtx = global.localCtx =
+//
+// Create context for computing metrics against local data:
+// - Local release, API, and relase/API DAOs for computing metrics,
+// - Remote browser metrics DAO pushing metrics to Datastore.
+const computeMetricsCtx = global.computeMetricsCtx =
     foam.lookup('org.chromium.apis.web.ImportController').create({
       releaseDAO: MDAO.create({of: Release}),
       webInterfaceDAO: MDAO.create({of: WebInterface}),
       releaseWebInterfaceJunctionDAO: MDAO.create({
         of: ReleaseWebInterfaceJunction,
       }),
-      authAgent: null,
+      // browserMetricsDAO: <default: Send to Datastore>,
+      gcloudAuthEmail: credentials.client_email,
+      gcloudAuthPrivateKey: credentials.private_key,
+      gcloudProjectId: credentials.project_id,
       logger: logger,
     }).ctx;
 
+// Add indexes to make relational lookups faster.
+computeMetricsCtx.releaseWebInterfaceJunctionDAO.addPropertyIndex(
+    ReleaseWebInterfaceJunction.SOURCE_ID);
+computeMetricsCtx.releaseWebInterfaceJunctionDAO.addPropertyIndex(
+    ReleaseWebInterfaceJunction.TARGET_ID);
+computeMetricsCtx.releaseWebInterfaceJunctionDAO.addPropertyIndex(
+    ReleaseWebInterfaceJunction.SOURCE_ID,
+    ReleaseWebInterfaceJunction.TARGET_ID);
+
 const AnonymousSink = foam.lookup('foam.dao.AnonymousSink');
 let promises = [];
+let computingMetrics = global.computingMetrics = false;
 function forwardDAOs(dao1, dao2) {
+  var count = 0;
+  var report = foam.__context__.merged(function report() {
+    logger.info(count + ' ' + dao1.of.id + 's stored');
+  }, 5000);
   return dao1.select(AnonymousSink.create({sink: {
     put: function(o) {
-      logger.info('Storing ' + o.id);
-      promises.push(dao2.put(o.cls_.create(o, localCtx)));
+      foam.assert(
+        !computingMetrics,
+        'Data arrival after metric computation started');
+      count++;
+      report();
+      promises.push(dao2.put(o.cls_.create(o, computeMetricsCtx)));
     },
   }}));
 }
 
 logger.info('Downloading API data snapshot');
 Promise.all([
-  forwardDAOs(datastoreCtx.releaseDAO, localCtx.releaseDAO),
-  forwardDAOs(datastoreCtx.webInterfaceDAO, localCtx.webInterfaceDAO),
+  forwardDAOs(datastoreCtx.releaseDAO, computeMetricsCtx.releaseDAO),
+  forwardDAOs(datastoreCtx.webInterfaceDAO, computeMetricsCtx.webInterfaceDAO),
   forwardDAOs(datastoreCtx.releaseWebInterfaceJunctionDAO,
-              localCtx.releaseWebInterfaceJunctionDAO),
+              computeMetricsCtx.releaseWebInterfaceJunctionDAO),
 ]).then(function() {
   logger.info('Waiting for local store to settle');
   return Promise.all(promises);
 }).then(function() {
-  logger.info('Computing metrics');
-  const aggressiveRemovalComputer =
-      foam.lookup('org.chromium.apis.web.AggressiveRemoval')
-      .create(null, localCtx);
-  return aggressiveRemovalComputer.run();
+  computingMetrics = global.computingMetrics = true;
+  logger.info('Local store ready to go in context: global.computeMetricsCtx');
+
+  // Support running interactively; only compute metrics immediately when this
+  // module is "main".
+  if (require.main === module) {
+    require('../lib/confluence/aggressive_removal.es6.js');
+    const aggressiveRemovalComputer =
+            foam.lookup('org.chromium.apis.web.AggressiveRemoval')
+            .create(null, computeMetricsCtx);
+    require('../lib/confluence/browser_specific.es6.js');
+    const browserSpecificComputer =
+            foam.lookup('org.chromium.apis.web.BrowserSpecific')
+            .create(null, computeMetricsCtx);
+    require('../lib/confluence/failure_to_ship.es6.js');
+    const failureToShipComputer =
+            foam.lookup('org.chromium.apis.web.FailureToShip')
+            .create(null, computeMetricsCtx);
+    require('../lib/confluence/api_velocity.es6.js');
+    const apiVelocityComputer =
+            foam.lookup('org.chromium.apis.web.ApiVelocity')
+            .create(null, computeMetricsCtx);
+
+    return Promise.all([
+      browserSpecificComputer.run(),
+      failureToShipComputer.run(),
+      aggressiveRemovalComputer.run(),
+      apiVelocityComputer.run(),
+    ]);
+  } else {
+    return computeMetricsCtx;
+  }
 });
