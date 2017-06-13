@@ -41,6 +41,9 @@ const ReleaseWebInterfaceJunction =
 // Create context for computing metrics against local data:
 // - Local release, API, and relase/API DAOs for computing metrics,
 // - Remote browser metrics DAO pushing metrics to Datastore.
+//
+// This way the upload back to datastore happens automatically when metrics are
+// produced by the underlying metric computer classes.
 const computeMetricsCtx = global.computeMetricsCtx =
     foam.lookup('org.chromium.apis.web.DatastoreContainer').create({
       releaseDAO: MDAO.create({of: Release}),
@@ -67,19 +70,19 @@ computeMetricsCtx.releaseWebInterfaceJunctionDAO.addPropertyIndex(
 const AnonymousSink = foam.lookup('foam.dao.AnonymousSink');
 let promises = [];
 let computingMetrics = global.computingMetrics = false;
-function forwardDAOs(dao1, dao2) {
+function forwardDAOs(src, dst) {
   var count = 0;
   var report = foam.__context__.merged(function report() {
-    logger.info(count + ' ' + dao1.of.id + 's stored');
+    logger.info(count + ' ' + src.of.id + 's stored');
   }, 5000);
-  return dao1.select(AnonymousSink.create({sink: {
+  return src.select(AnonymousSink.create({sink: {
     put: function(o) {
       foam.assert(
         !computingMetrics,
         'Data arrival after metric computation started');
       count++;
       report();
-      promises.push(dao2.put(o.cls_.create(o, computeMetricsCtx)));
+      promises.push(dst.put(o.cls_.create(o, computeMetricsCtx)));
     },
   }}));
 }
