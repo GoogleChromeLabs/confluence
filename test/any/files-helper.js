@@ -14,11 +14,9 @@ function requireBrowserCode() {
   // angular module used by other browser-only code below.
   require('../../main/app.es6.js');
 
-  require('../../lib/chart/aggressive_removal_chart.es6.js');
   require('../../lib/chart/api_velocity_chart.es6.js');
-  require('../../lib/chart/failure_to_ship_chart.es6.js');
+  require('../../lib/chart/browser_metric_chart.es6.js');
   require('../../lib/chart/time_series_chart.es6.js');
-  require('../../lib/chart/browser_specific_chart.es6.js');
   require('../../lib/client/api_confluence.es6.js');
   require('../../lib/client/api_service.es6.js');
   require('../../lib/component/catalog_table.es6.js');
