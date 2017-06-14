@@ -6,3 +6,8 @@ indexes:
   - name: osName
   - name: releaseDate
     direction: desc
+
+- kind: org.chromium.apis.web.BrowserMetricData
+  properties:
+    - name: type
+    - name: date

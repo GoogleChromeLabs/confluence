@@ -21,7 +21,6 @@ function requireBrowserCode() {
   require('../../lib/chart/browser_specific_chart.es6.js');
   require('../../lib/client/api_confluence.es6.js');
   require('../../lib/client/api_service.es6.js');
-  require('../../lib/component/api_analytics.es6.js');
   require('../../lib/component/catalog_table.es6.js');
   require('../../lib/controller/api_catalog.es6.js');
   require('../../lib/controller/api_confluence.es6.js');
