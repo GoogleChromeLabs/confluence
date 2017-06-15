@@ -7,4 +7,4 @@ var process = require('process');
 
 // Tests that are only run locally (not on Travis CI bots).
 global.describeLocal = process.env.TRAVIS && process.env.CI ?
-      xdescribe : describe;
+    xdescribe : describe;
