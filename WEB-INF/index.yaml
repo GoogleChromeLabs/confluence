@@ -1,0 +1,8 @@
+indexes:
+
+- kind: org.chromium.apis.web.Release
+  properties:
+  - name: browserName
+  - name: osName
+  - name: releaseDate
+    direction: desc

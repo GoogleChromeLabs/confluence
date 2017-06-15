@@ -36,7 +36,7 @@ describe('ApiMatrix', function() {
     Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
     ApiMatrix = foam.lookup('org.chromium.apis.web.ApiMatrix');
 
-    let container = global.createReleaseApiContainer();
+    let container = global.createDAOContainer();
     let releaseDAO = container.releaseDAO;
     let webInterfaceDAO = container.webInterfaceDAO;
     let junctionDAO = container.releaseWebInterfaceJunctionDAO;

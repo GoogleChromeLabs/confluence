@@ -19,7 +19,7 @@ describe('ApiImporter', function() {
   let mlang;
   let junctionDAO;
   beforeEach(function(done) {
-    let container = global.createReleaseApiContainer();
+    let container = global.createDAOContainer();
     apiImporter = foam.lookup('org.chromium.apis.web.ApiImporter')
         .create(null, container);
     mlang = foam.mlang.ExpressionsSingleton.create();

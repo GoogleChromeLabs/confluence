@@ -19,7 +19,7 @@ describe('AggressiveRemoval', function() {
     Release = foam.lookup('org.chromium.apis.web.Release');
     WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
     Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
-    container = global.createReleaseApiContainer();
+    container = global.createDAOContainer();
   });
 
   it('should handle simple case', function(done) {

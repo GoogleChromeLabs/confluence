@@ -31,7 +31,7 @@ describe('MetricComputer', function() {
   };
 
   beforeEach(function() {
-    let container = global.createReleaseApiContainer();
+    let container = global.createDAOContainer();
 
     computeSpy = jasmine.createSpy('computeSpy');
 
