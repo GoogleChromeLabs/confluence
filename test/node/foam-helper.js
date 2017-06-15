@@ -5,6 +5,8 @@
 
 beforeAll(function() {
   var path = require('path');
+
+  global.FOAM_FLAGS = {gcloud: true};
   require(path.resolve(__dirname, '..', '..', 'node_modules', 'foam2', 'src',
                        'foam.js'));
 });
