@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 indexes:
 
 - kind: org.chromium.apis.web.Release
@@ -7,19 +6,3 @@ indexes:
   - name: osName
   - name: releaseDate
     direction: desc
-
-- kind: org.chromium.apis.web.BrowserMetricData
-  properties:
-    - name: type
-    - name: date
-||||||| merged common ancestors
-=======
-indexes:
-
-- kind: org.chromium.apis.web.Release
-  properties:
-  - name: browserName
-  - name: osName
-  - name: releaseDate
-    direction: desc
->>>>>>> master
