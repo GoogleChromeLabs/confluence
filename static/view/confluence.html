@@ -27,34 +27,34 @@
     ></api-velocity-chart>
   </div>
   <div ng-show="showTab===1">
-    <failure-to-ship-chart
+    <browser-metric-chart
       ng-if="failureToShipMetric"
       chart-id="failure-to-ship-chart"
       title="Failure To Ship Metric"
-      failure-to-ship-metric="failureToShipMetric"
+      browser-metric="failureToShipMetric"
       create-new-view="newFailureToShipView(release, prevReleases, comparedReleases)"
     >
-    </failure-to-ship-chart>
+    </browser-metric-chart>
   </div>
   <div ng-show="showTab===2">
-    <aggressive-removal-chart
-      ng-if="aggressiveRemovalMetrics"
+    <browser-metric-chart
+      ng-if="aggressiveRemovalMetric"
       chart-id="aggressive-removal-apis-chart"
       title="Aggressive Removal APIs"
-      aggressive-removal-metrics="aggressiveRemovalMetrics"
-      create-new-view="newAggressiveRemovalView(releaseOneYearAgo, prevReleases, currReleases)"
+      browser-metric="aggressiveRemovalMetric"
+      create-new-view="newAggressiveRemovalView(release, prevReleases, comparedReleases)"
     >
-    </aggressive-removal-chart>
+    </browser-metric-chart>
   </div>
   <div ng-show="showTab===3">
-    <browser-specific-chart
+    <browser-metric-chart
       ng-if="browserSpecificMetric"
       chart-id="browser-specific-apis-chart"
       title="Browser Specific APIs"
-      browser-specific-metric="browserSpecificMetric"
+      browser-metric="browserSpecificMetric"
       create-new-view="newBrowserSpecificView(release, prevReleases, comparedReleases)"
     >
-    </browser-specific-chart>
+    </browser-metric-chart>
   </div>
   <!-- additional view. -->
   <api-catalog-table

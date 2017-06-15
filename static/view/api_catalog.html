@@ -37,21 +37,6 @@
   <span ng-repeat-end></span>
 </ul>
 <div class="row">
-  <div class="col s8">
-    <ul id="tabs" class="tabs" ng-show="releases.length!==0">
-      <li class="tab" ng-class="{'blue lighten-5': showTab === 0}">
-        <a ng-click="showTab=0"
-        class="blue-text text-darken-2">Catalog</a>
-      </li>
-      <li class="tab" ng-class="{'blue lighten-5': showTab === 1}">
-        <a ng-click="showTab=1" class="blue-text text-darken-2">Analysis</a>
-      </li>
-      <li class="tab" ng-repeat="view in filteredViews track by $index"
-       ng-class="{'blue lighten-5': showTab === 2 + $index}">
-        <a ng-click="$parent.showTab = 2 + $index">{{"#view"+$index}}</a>
-      </li>
-    </ul>
-  </div>
   <div class="col s2">
     <a class="add-release-dropdown btn blue darken-3 white"
       style="position: absolute;"
@@ -65,19 +50,11 @@
 </div>
 
 <div class="container" ng-show="releases.length !== 0">
-  <div ng-show="showTab === 0">
-    <api-catalog-table
-      releases="releases"
-      able-to-delete-release="true"
-      on-delete-release="removeRelease(release)"
-    ></api-catalog-table>
-  </div>
-  <div ng-show="showTab === 1">
-    <api-analytics
-      releases="releases"
-      on-create-new-view="createView(releaseKey, option)"
-    ></api-analytics>
-  </div>
+  <api-catalog-table
+    releases="releases"
+    able-to-delete-release="true"
+    on-delete-release="removeRelease(release)"
+  ></api-catalog-table>
   <!-- Filtered view. -->
   <api-catalog-table
     ng-repeat="view in filteredViews track by $index"
