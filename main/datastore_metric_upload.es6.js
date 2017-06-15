@@ -105,20 +105,20 @@ Promise.all([
   if (require.main === module) {
     require('../lib/confluence/aggressive_removal.es6.js');
     const aggressiveRemovalComputer =
-            foam.lookup('org.chromium.apis.web.AggressiveRemoval')
-            .create(null, computeMetricsCtx);
+        foam.lookup('org.chromium.apis.web.AggressiveRemoval')
+        .create(null, computeMetricsCtx);
     require('../lib/confluence/browser_specific.es6.js');
     const browserSpecificComputer =
-            foam.lookup('org.chromium.apis.web.BrowserSpecific')
-            .create(null, computeMetricsCtx);
+        foam.lookup('org.chromium.apis.web.BrowserSpecific')
+        .create(null, computeMetricsCtx);
     require('../lib/confluence/failure_to_ship.es6.js');
     const failureToShipComputer =
-            foam.lookup('org.chromium.apis.web.FailureToShip')
-            .create(null, computeMetricsCtx);
+        foam.lookup('org.chromium.apis.web.FailureToShip')
+        .create(null, computeMetricsCtx);
     require('../lib/confluence/api_velocity.es6.js');
     const apiVelocityComputer =
-            foam.lookup('org.chromium.apis.web.ApiVelocity')
-            .create(null, computeMetricsCtx);
+        foam.lookup('org.chromium.apis.web.ApiVelocity')
+        .create(null, computeMetricsCtx);
 
     return Promise.all([
       browserSpecificComputer.run(),
