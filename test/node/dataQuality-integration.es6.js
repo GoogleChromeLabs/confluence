@@ -57,6 +57,10 @@ describeLocal('data quality', function() {
             E.EQ(RWIJunction.SOURCE_ID, release.id),
             E.EQ(RWIJunction.TARGET_ID, api.id))).select()
         .then(function(sink) {
+          if (sink.array.length !== (shouldFind ? 1 : 0)) {
+            console.error('Expected', shouldFind ? '' : 'not', 'to find',
+                          api.id, 'on', release.id);
+          }
           expect(sink.array.length).toBe(shouldFind ? 1 : 0);
         });
   }
@@ -99,6 +103,48 @@ describeLocal('data quality', function() {
   xit(`should copy Firefox CSS2Properties into CSSStyleDeclaration. E.g.,
       CSSStyleDeclaration.border should exist`, function(done) {
     expectAPILookup(true, firefox, mkAPI('CSSStyleDeclaration', 'border'))
+        .then(done, done.fail);
+      });
+
+  it(`should list exposed namespaces as interfaces. E.g., Window.Math,
+      Math.abs.`, function(done) {
+    Promise.all([
+      expectAPILookupAll(true, mkAPI('Window', 'Math')),
+      expectAPILookupAll(true, mkAPI('Math', 'abs')),
+    ]).then(done, done.fail);
+  });
+
+  it(`should list exposed ordinary members, but not uninteresting members from
+      constructor. E.g., Store MouseEvent.clientX, but not MouseEvent
+      constructor's length, name, arguments, caller, prototype,
+      constructor.`, function(done) {
+    Promise.all([
+      expectAPILookupAll(true, mkAPI('Window', 'MouseEvent')),
+      expectAPILookupAll(true, mkAPI('MouseEvent', 'clientX')),
+      expectAPILookupAll(false, mkAPI('MouseEvent', 'length')),
+      expectAPILookupAll(false, mkAPI('MouseEvent', 'name')),
+      expectAPILookupAll(false, mkAPI('MouseEvent', 'arguments')),
+      expectAPILookupAll(false, mkAPI('MouseEvent', 'caller')),
+      expectAPILookupAll(false, mkAPI('MouseEvent', 'prototype')),
+      expectAPILookupAll(false, mkAPI('MouseEvent', 'constructor')),
+    ]).then(done, done.fail);
+  });
+
+  it(`should list Function-related data on Function.`, function(done) {
+    Promise.all([
+      expectAPILookupAll(true, mkAPI('Window', 'Function')),
+      expectAPILookupAll(true, mkAPI('Function', 'bind')),
+      expectAPILookupAll(true, mkAPI('Function', 'length')),
+      expectAPILookupAll(true, mkAPI('Function', 'name')),
+      expectAPILookupAll(true, mkAPI('Function', 'arguments')),
+      expectAPILookupAll(true, mkAPI('Function', 'caller')),
+    ]).then(done, done.fail);
+  });
+
+  it(`should list members from prototype with the same name as uninteresting
+      members from the constructor. E.g.,
+      Window.prototype.name.`, function(done) {
+    expectAPILookupAll(true, mkAPI('Window', 'name'))
         .then(done, done.fail);
   });
 });
