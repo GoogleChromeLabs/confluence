@@ -10,6 +10,7 @@ let libs = {
     chrome56: require('../data/window_Chrome_56_Windows_10.0.json'),
     edge14: require('../data/window_Edge_14_Windows_10.0.json'),
     safari602: require('../data/window_Safari_602_OSX_10.12.3.json'),
+    firefox53: require('../data/window_Firefox_53.0_OSX_10.11.json'),
   },
 };
 

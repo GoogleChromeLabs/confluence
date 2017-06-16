@@ -22,8 +22,17 @@ describe('API extractor', function() {
   let og;
   let extractor;
   let apiCatalog;
-  beforeEach(function() {
+
+  // TODO(markdittmer): firefox53 data required for test that is to be moved.
+  let firefox53og;
+
+  // Load non-FOAM-related data once.
+  beforeAll(function() {
     objectGraph = global.ObjectGraph;
+
+    // TODO(markdittmer): firefox53 data required for test that is to be moved.
+    firefox53og = objectGraph.fromJSON(global.DATA.firefox53);
+
     og = objectGraph.fromJSON({
       'data': {
         '10000': {  // window
@@ -338,7 +347,10 @@ describe('API extractor', function() {
       },
       'key': 'window',
     });
+  });
 
+  // Instantiate data related to FOAM classes each time (in each test context).
+  beforeEach(function() {
     extractor = org.chromium.apis.web.ApiExtractor.create({});
     apiCatalog = extractor.extractWebCatalog(og);
   });
@@ -412,5 +424,12 @@ describe('API extractor', function() {
     expect(apiCatalog.ObjectLibrary).toContain('property');
     expect(apiCatalog.ObjectLibrary).toContain('constObjectProperty');
     expect(apiCatalog.ObjectLibrary).not.toContain('constantNumber');
+  });
+  // TODO(markdittmer): Move this test to node/dataQuality-integration after
+  // datastore updated to contain new values.
+  it(`promotes Firefox 53 CSS2Properties to CSSStyleDeclaration (e.g., border
+      property)`, function() {
+    let firefox53catalog = extractor.extractWebCatalog(firefox53og);
+    expect(firefox53catalog.CSSStyleDeclaration).toContain('border');
   });
 });
