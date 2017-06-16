@@ -13,13 +13,14 @@ const fs = require('fs');
 const path = require('path');
 
 global.FOAM_FLAGS = {gcloud: true};
+require('foam2');
+
 require('../lib/confluence/set_ops.es6.js');
 require('../lib/datastore/datastore_container.es6.js');
 require('../lib/web_catalog/object_graph_importer.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
-require('foam2');
 
 const credentials = JSON.parse(fs.readFileSync(
     path.resolve(__dirname, '../.local/credentials.json')));
