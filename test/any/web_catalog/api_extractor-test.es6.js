@@ -311,4 +311,44 @@ describe('API extractor', function() {
       expect(extractor.getClassName_(4, og)).toBeNull();
     });
   });
+
+  describe('postProcess()', function() {
+    let og;
+    let apiCatalogs;
+    beforeEach(function() {
+      og = objectGraph.fromJSON({
+        'functions': {
+          '10001': 'Function',
+          '10002': 'Object',
+        },
+        types,
+      });
+      extractor.builtInFunctionProperties = ['toString', 'caller', 'arguments'];
+      extractor.builtInObjectProperties = [
+        'toString', 'valueOf', 'constructor',
+      ];
+      extractor.functionId = 10001;
+      extractor.objectId = 10002;
+      extractor.blacklistProperties = ['nonInterface'];
+      apiCatalogs = {
+        'interface': ['API1', 'API2'],
+        'nonInterface': ['API'],
+      };
+      extractor.postProcess_(apiCatalogs, og);
+    });
+    it('filters blacklisted properties', function() {
+      expect(apiCatalogs.nonInterface).toBeUndefined();
+    });
+    it('adds built-in properties for Function', function() {
+      expect(apiCatalogs.Function)
+        .toEqual(['toString', 'caller', 'arguments']);
+    });
+    it('adds built-in properties for Object', function() {
+      expect(apiCatalogs.Object)
+        .toEqual(['toString', 'valueOf', 'constructor']);
+    });
+    it('does not modify other interfaces', function() {
+      expect(apiCatalogs.interface).toEqual(['API1', 'API2']);
+    });
+  });
 });
