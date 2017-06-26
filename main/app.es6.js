@@ -19,11 +19,13 @@ let app = angular.module('confluence', ['ui.router']);
 require('../lib/client/api_service.es6.js');
 require('../lib/controller/api_catalog.es6.js');
 require('../lib/controller/api_confluence.es6.js');
+require('../lib/controller/default.es6.js');
 
 app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider.state({
     name: 'home',
     url: '/',
+    controller: 'defaultController',
     template: require('../static/view/home.html'),
   });
 
@@ -48,4 +50,3 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
   $urlRouterProvider.otherwise('/');
 });
-
