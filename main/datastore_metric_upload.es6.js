@@ -23,7 +23,7 @@ const credentials = JSON.parse(fs.readFileSync(
     path.resolve(__dirname, '../.local/credentials.json')));
 
 const logger = global.logger =
-    foam.lookup('foam.nanos.log.ConsoleLogger').create();
+    foam.lookup('foam.log.ConsoleLogger').create();
 
 const datastoreCtx = global.datastoreCtx =
     foam.lookup('org.chromium.apis.web.DatastoreContainer').create({
