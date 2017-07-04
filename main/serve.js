@@ -47,16 +47,16 @@ server.exportDirectory('/', `${__dirname}/../static/bundle`);
 // TODO(markdittmer): Can we count on DAO implementations to have a .name
 // property? That would be better than using the key on the context.
 const SkeletonBox = foam.lookup('foam.box.SkeletonBox');
-function registerDAO(name, opt_dao) {
-  var dao = ctx[name] || opt_dao;
+function registerDAO(name, dao) {
   foam.assert(dao, 'Broken use of helper: registerDAO()');
   ctx.registry.register(name, null, SkeletonBox.create({data: dao}, ctx));
 }
 
-registerDAO(daoContainer.RELEASE_NAME);
-registerDAO(daoContainer.WEB_INTERFACE_NAME);
-registerDAO(daoContainer.RELEASE_WEB_INTERFACE_JUNCTION_NAME);
-registerDAO(daoContainer.API_VELOCITY_NAME);
+registerDAO(daoContainer.RELEASE_NAME, ctx.releaseDAO);
+registerDAO(daoContainer.WEB_INTERFACE_NAME, ctx.webInterfaceDAO);
+registerDAO(daoContainer.RELEASE_WEB_INTERFACE_JUNCTION_NAME,
+            ctx.releaseWebInterfaceJunctionDAO);
+registerDAO(daoContainer.API_VELOCITY_NAME, ctx.apiVelocityDAO);
 
 const E = foam.lookup('foam.mlang.ExpressionsSingleton').create();
 const EQ = E.EQ.bind(E);
