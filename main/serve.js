@@ -8,7 +8,6 @@ const path = require('path');
 
 global.FOAM_FLAGS = {gcloud: true};
 require('foam2');
-require('../node_modules/foam2/src/foam/nanos/nanos.js');
 
 require('../lib/confluence/aggressive_removal.es6.js');
 require('../lib/confluence/api_velocity.es6.js');
@@ -25,13 +24,16 @@ let server = foam.lookup('foam.net.node.Server').create({
 
 const credentials = JSON.parse(fs.readFileSync(
     path.resolve(__dirname, '../.local/credentials.json')));
-const logger = foam.lookup('foam.nanos.log.ConsoleLogger').create();
-const ctx = foam.lookup('org.chromium.apis.web.DatastoreContainer').create({
-  gcloudAuthEmail: credentials.client_email,
-  gcloudAuthPrivateKey: credentials.private_key,
-  gcloudProjectId: credentials.project_id,
-  logger: logger,
-}).ctx.createSubContext(foam.lookup('foam.box.Context').create());
+const logger = foam.lookup('foam.log.ConsoleLogger').create();
+const daoContainer =
+    foam.lookup('org.chromium.apis.web.DatastoreContainer').create({
+      gcloudAuthEmail: credentials.client_email,
+      gcloudAuthPrivateKey: credentials.private_key,
+      gcloudProjectId: credentials.project_id,
+      logger: logger,
+    });
+const ctx = daoContainer.ctx
+    .createSubContext(foam.lookup('foam.box.Context').create());
 
 server.exportFile('/', `${__dirname}/../static/index.html`);
 server.exportDirectory('/images', `${__dirname}/../static/images`);
@@ -51,10 +53,10 @@ function registerDAO(name, opt_dao) {
   ctx.registry.register(name, null, SkeletonBox.create({data: dao}, ctx));
 }
 
-registerDAO('releaseDAO');
-registerDAO('webInterfaceDAO');
-registerDAO('releaseWebInterfaceJunctionDAO');
-registerDAO('apiVelocityDAO');
+registerDAO(daoContainer.RELEASE_NAME);
+registerDAO(daoContainer.WEB_INTERFACE_NAME);
+registerDAO(daoContainer.RELEASE_WEB_INTERFACE_JUNCTION_NAME);
+registerDAO(daoContainer.API_VELOCITY_NAME);
 
 const E = foam.lookup('foam.mlang.ExpressionsSingleton').create();
 const EQ = E.EQ.bind(E);
@@ -62,13 +64,13 @@ const Type = foam.lookup('org.chromium.apis.web.BrowserMetricDataType');
 const TYPE = foam.lookup('org.chromium.apis.web.BrowserMetricData').TYPE;
 
 registerDAO(
-    'failureToShipDAO',
+    daoContainer.FAILURE_TO_SHIP_NAME,
     ctx.browserMetricsDAO.where(EQ(TYPE, Type.FAILURE_TO_SHIP)));
 registerDAO(
-    'browserSpecificDAO',
+    daoContainer.BROWSER_SPECIFIC_NAME,
     ctx.browserMetricsDAO.where(EQ(TYPE, Type.BROWSER_SPECIFIC)));
 registerDAO(
-    'aggressiveRemovalDAO',
+    daoContainer.AGGRESSIVE_REMOVAL_NAME,
     ctx.browserMetricsDAO.where(EQ(TYPE, Type.AGGRESSIVE_REMOVAL)));
 
 // TODO(markdittmer): Explicitly select webSocketService port.
@@ -76,6 +78,6 @@ registerDAO(
 //
 // Start service by accessing lazily constructed property.
 ctx.webSocketService;
-console.log(` :: Serving web sockets from ${ctx.webSocketService.port}`);
+logger.log(`Serving web sockets from ${ctx.webSocketService.port}`);
 
 server.start();
