@@ -26,7 +26,7 @@
     "angular": "^1.6.3",
     "angular-ui-router": "^0.4.2",
     "d3": "^4.7.4",
-    "foam2": "git://github.com/foam-framework/foam2.git#beta-1",
+    "foam2": "git://github.com/foam-framework/foam2.git",
     "jquery": "^3.2.1",
     "materialize-css": "^0.98.1",
     "object-graph-js": "git://github.com/mdittmer/object-graph-js.git"

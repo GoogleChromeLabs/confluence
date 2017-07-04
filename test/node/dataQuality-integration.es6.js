@@ -44,7 +44,7 @@ describeLocal('data quality', function() {
           .then(function(release) { chrome = release; }),
       ctx.releaseDAO.find('Firefox_52.0_Windows_10.0')
           .then(function(release) { firefox = release; }),
-      ctx.releaseDAO.find('Safari_602.4.8_OSX_10.12.3')
+      ctx.releaseDAO.find('Safari_603.2.4_OSX_10.12.5')
           .then(function(release) { safari = release; }),
       ctx.releaseDAO.find('Edge_14.14393_Windows_10.0')
           .then(function(release) { edge = release; }),
