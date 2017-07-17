@@ -42,14 +42,27 @@ server.exportDirectory('/', `${__dirname}/../static/bundle`);
 // TODO(markdittmer): Unify this script by adding support for box-registered
 // DAOs to foam.net.node.Server.
 
-// Register DAOs in box context.
+// Register DAOs in box context. Wrap DAOs in ReadOnlyDAO for security and
+// LazyCacheDAO for performance.
 //
-// TODO(markdittmer): Can we count on DAO implementations to have a .name
-// property? That would be better than using the key on the context.
+// TODO(markdittmer): Customize MDAO indexes according to common queries.
+const ReadOnlyDAO = foam.lookup('foam.dao.ReadOnlyDAO');
+const LazyCacheDAO = foam.lookup('foam.dao.LazyCacheDAO');
+const MDAO = foam.lookup('foam.dao.MDAO');
 const SkeletonBox = foam.lookup('foam.box.SkeletonBox');
 function registerDAO(name, dao) {
   foam.assert(dao, 'Broken use of helper: registerDAO()');
-  ctx.registry.register(name, null, SkeletonBox.create({data: dao}, ctx));
+  var daoToRegister = foam.dao.ReadOnlyDAO.create({
+    delegate: LazyCacheDAO.create({
+      cacheOnSelect: true,
+      staleTimeout: 1000 * 60 * 60 * 24,
+      cache: MDAO.create({ of: dao.of }, ctx),
+      delegate: dao,
+    }, ctx)
+  }, ctx);
+  ctx.registry.register(name, null, SkeletonBox.create({
+    data: daoToRegister
+  }, ctx));
 }
 
 registerDAO(daoContainer.RELEASE_NAME, ctx.releaseDAO);
