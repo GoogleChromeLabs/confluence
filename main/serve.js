@@ -51,6 +51,7 @@ const LazyCacheDAO = foam.lookup('foam.dao.LazyCacheDAO');
 const MDAO = foam.lookup('foam.dao.MDAO');
 const SkeletonBox = foam.lookup('foam.box.SkeletonBox');
 function registerDAO(name, dao) {
+  foam.assert(dao, 'Broken use of helper: registerDAO()');
   var daoToRegister = foam.dao.ReadOnlyDAO.create({
     delegate: LazyCacheDAO.create({
       cacheOnSelect: true,
@@ -59,7 +60,6 @@ function registerDAO(name, dao) {
       delegate: dao,
     }, ctx)
   }, ctx);
-  foam.assert(dao, 'Broken use of helper: registerDAO()');
   ctx.registry.register(name, null, SkeletonBox.create({
     data: daoToRegister
   }, ctx));
