@@ -35,9 +35,6 @@ const datastoreCtx =
 
 const E = foam.lookup('foam.mlang.ExpressionsSingleton').create();
 
-
-
-
 const ApiVelocityData = foam.lookup('org.chromium.apis.web.ApiVelocityData');
 const apiVelocityDataPromise =
     datastoreCtx.apiVelocityDAO.where(E.EQ(ApiVelocityData.BROWSER_NAME, 'IE'))
@@ -56,23 +53,43 @@ const browserMetricsDataPromise =
 const Release = foam.lookup('org.chromium.apis.web.Release');
 const ReleaseWebInterfaceJunction =
     foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
-const releaseApiJunctionPromise =
+const QuickSink = foam.lookup('foam.dao.QuickSink');
+const releaseApiJunctionAndApiPromise =
     datastoreCtx.releaseDAO.where(E.EQ(Release.BROWSER_NAME, 'IE')).select()
     .then(releaseSink => Promise.all(releaseSink.array.map(release => {
       let promises = [];
-      datastoreCtx.releaseWebInterfaceJunctionDAO.where(
-          E.GT(ReleaseWebInterfaceJunction.SOURCE_ID, release.releaseKey))
-          .select(foam.lookup('foam.dao.QuickSink').create({
-            putFn: junction => promises.push(
-                datastoreCtx.releaseWebInterfaceJunctionDAO.remove(junction))
+      return datastoreCtx.releaseWebInterfaceJunctionDAO.where(
+          E.EQ(ReleaseWebInterfaceJunction.SOURCE_ID, release.releaseKey))
+          .select(QuickSink.create({
+            putFn: junction => {
+              logger.info(`Removing Release/API junction: ${junction.id}`);
+              promises.push(
+                  datastoreCtx.releaseWebInterfaceJunctionDAO.remove(junction));
+            }
           })).then(() => Promise.all(promises));
     }))).then(() => logger.info(`Removed all releases <--> API junctions with
-                                    browserName="IE"`));
+                                    browserName="IE"`))
+    // Remove interfaces that ar IE-only.
+    .then(() => {
+      let promises = [];
+      return datastoreCtx.webInterfaceDAO.select(QuickSink.create({
+        putfn: iface => {
+          datastoreCtx.releaseWebInterfaceJunctionDAO.where(
+              E.EQ(ReleaseWebInterfaceJunction.TARGET_ID, iface.interfaceKey))
+              .select(E.COUNT()).then(countSink => {
+                if (countSink.count === 0) {
+                  logger.info(`Removing orphaned API: ${iface.id}`);
+                  promises.push(datastoreCtx.webInterfaceDAO.remove(iface));
+                }
+              });
+        }
+      })).then(() => Promise.all(promises));
+    }).then(() => logger.info(`Removed all APIs junctions that were IE-only`));
 
 Promise.all([
   apiVelocityDataPromise,
   browserMetricsDataPromise,
-  releaseApiJunctionPromise,
+  releaseApiJunctionAndApiPromise,
 ]).then(() => {
   datastoreCtx.releaseDAO.where(E.EQ(Release.BROWSER_NAME, 'IE')).removeAll()
       .then(() => logger.info('Removed all releases with browserName="IE"'));
