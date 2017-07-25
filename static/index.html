@@ -22,16 +22,24 @@
         overflow: scroll;
         width: 100%;
       }
+      /* Consistent "brand-logo" */
+      header nav .brand-logo {
+        left: auto;
+        transform: none;
+        -webkit-transform: none;
+      }
     </style>
 </head>
 <body ng-app='confluence'>
   <header>
     <nav>
       <div class='nav-wrapper blue darken-2'>
+        <div style='margin-left: 20px'>
         <a class='brand-logo' ui-sref='home'>Web API Confluence</a>
+        </div>
         <ul class='right'>
-          <li><a ui-sref='catalog'>catalog</a></li>
-          <li><a ui-sref='confluence'>confluence</a></li>
+          <li><a ui-sref='catalog'>API Catalog</a></li>
+          <li><a ui-sref='confluence'>Confluence metrics</a></li>
         </ul>
       </div>
     </nav>
