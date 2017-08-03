@@ -19,7 +19,7 @@ require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 
 let server = foam.lookup('foam.net.node.Server').create({
-  port: 9010,
+  port: 8080,
 });
 
 const credentials = JSON.parse(fs.readFileSync(
