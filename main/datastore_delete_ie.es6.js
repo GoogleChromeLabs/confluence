@@ -38,9 +38,9 @@ const E = foam.lookup('foam.mlang.ExpressionsSingleton').create();
 const ApiVelocityData = foam.lookup('org.chromium.apis.web.ApiVelocityData');
 const apiVelocityDataPromise =
     datastoreCtx.apiVelocityDAO.where(E.EQ(ApiVelocityData.BROWSER_NAME, 'IE'))
-    .removeAll()
-    .then(() => logger.info(`Removed all API velocity data with
-                                browserName="IE"`));
+      .removeAll()
+      .then(() => logger.info(`Removed all API velocity data with
+                                  browserName="IE"`));
 const BrowserMetricData =
     foam.lookup('org.chromium.apis.web.BrowserMetricData');
 const browserMetricsDataPromise =
