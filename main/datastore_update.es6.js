@@ -20,7 +20,6 @@ require('../lib/confluence/browser_specific.es6.js');
 require('../lib/confluence/failure_to_ship.es6.js');
 require('../lib/confluence/set_ops.es6.js');
 require('../lib/datastore/datastore_container.es6.js');
-require('../lib/versioned_diff_dao.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
