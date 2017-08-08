@@ -239,18 +239,26 @@ function importData(importDAO, cacheDAO, syncDAO) {
   }
   function removeData(srcDAO, cmpDAO, dstDAO) {
     const sink = foam.dao.ArraySink.create();
-    return cmpDAO.select(E.SET_MINUS(srcDAO, sink))
-        .then(function() {
-          const array = sink.array;
-          logger.info(`Deleting ${array.length} ${srcDAO.of.id} from Datastore`);
-          let promises = [];
-          for (var i = 0; i < array.length; i++) {
-            promises.push(dstDAO.remove(array[i]));
-          }
-          return Promise.all(promises).then(function() {
-            logger.info(`Deleted ${array.length} ${srcDAO.of.id} from Datastore`);
-          });
-        });
+
+    // Quick sanity check against deleting entire database.
+    return srcDAO.select(E.COUNT()).then(function(countSink) {
+      foam.assert(countSink.value > 0,
+                  'Datastore update should not empty entire database' +
+                      ` (new data source for ${srcDAO.of.id} is empty)`);
+
+      // Remove records in cmp, but not src.
+      return cmpDAO.select(E.SET_MINUS(srcDAO, sink));
+    }).then(function() {
+      const array = sink.array;
+      logger.info(`Deleting ${array.length} ${srcDAO.of.id} from Datastore`);
+      let promises = [];
+      for (var i = 0; i < array.length; i++) {
+        promises.push(dstDAO.remove(array[i]));
+      }
+      return Promise.all(promises).then(function() {
+        logger.info(`Deleted ${array.length} ${srcDAO.of.id} from Datastore`);
+      });
+    });
   }
   function updateData(srcDAO, cmpDAO, dstDAO) {
     return Promise.all([
