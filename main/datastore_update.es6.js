@@ -127,28 +127,28 @@ const importer = pkg.ObjectGraphImporter.create({
 }, importCtx);
 
 // SyncDAOs connected to Datastore.
-let releaseSyncDAO = datastoreCtx.releaseDAO;
-let webInterfaceSyncDAO = datastoreCtx.webInterfaceDAO;
-let releaseWebInterfaceJunctionSyncDAO =
+const releaseSyncDAO = datastoreCtx.releaseDAO;
+const webInterfaceSyncDAO = datastoreCtx.webInterfaceDAO;
+const releaseWebInterfaceJunctionSyncDAO =
     datastoreCtx.releaseWebInterfaceJunctionDAO;
-let browserMetricsSyncDAO = datastoreCtx.browserMetricsDAO;
-let apiVelocitySyncDAO = datastoreCtx.apiVelocityDAO;
+const browserMetricsSyncDAO = datastoreCtx.browserMetricsDAO;
+const apiVelocitySyncDAO = datastoreCtx.apiVelocityDAO;
 
 // An unversioned cache of current Datastore.
-let releaseCacheDAO = cacheCtx.releaseDAO;
-let webInterfaceCacheDAO = cacheCtx.webInterfaceDAO;
-let releaseWebInterfaceJunctionCacheDAO =
+const releaseCacheDAO = cacheCtx.releaseDAO;
+const webInterfaceCacheDAO = cacheCtx.webInterfaceDAO;
+const releaseWebInterfaceJunctionCacheDAO =
     cacheCtx.releaseWebInterfaceJunctionDAO;
-let browserMetricsCacheDAO = cacheCtx.browserMetricsDAO;
-let apiVelocityCacheDAO = cacheCtx.apiVelocityDAO;
+const browserMetricsCacheDAO = cacheCtx.browserMetricsDAO;
+const apiVelocityCacheDAO = cacheCtx.apiVelocityDAO;
 
 // In-memory DAOs of new data to be imported.
-let releaseImportDAO = importCtx.releaseDAO;
-let webInterfaceImportDAO = importCtx.webInterfaceDAO;
-let releaseWebInterfaceJunctionImportDAO =
+const releaseImportDAO = importCtx.releaseDAO;
+const webInterfaceImportDAO = importCtx.webInterfaceDAO;
+const releaseWebInterfaceJunctionImportDAO =
     importCtx.releaseWebInterfaceJunctionDAO;
-let browserMetricsImportDAO = importCtx.browserMetricsDAO;
-let apiVelocityImportDAO = importCtx.apiVelocityDAO;
+const browserMetricsImportDAO = importCtx.browserMetricsDAO;
+const apiVelocityImportDAO = importCtx.apiVelocityDAO;
 
 //
 // Add indices to make relational queries faster.
@@ -159,7 +159,7 @@ while (junctionDAO && !foam.dao.MDAO.isInstance(junctionDAO)) {
   junctionDAO = junctionDAO.delegate;
 }
 if (junctionDAO) {
-  logger.warn('Adding junction DAO indices');
+  logger.info('Adding junction DAO indices');
   junctionDAO.addPropertyIndex(
       pkg.ReleaseWebInterfaceJunction.SOURCE_ID);
   junctionDAO.addPropertyIndex(
@@ -167,7 +167,7 @@ if (junctionDAO) {
   junctionDAO.addPropertyIndex(
       pkg.ReleaseWebInterfaceJunction.SOURCE_ID,
       pkg.ReleaseWebInterfaceJunction.TARGET_ID);
-  logger.warn('Added junction DAO indices');
+  logger.info('Added junction DAO indices');
 } else {
   logger.warn('No indexed DAO found in junction DAO delegate chain');
 }
