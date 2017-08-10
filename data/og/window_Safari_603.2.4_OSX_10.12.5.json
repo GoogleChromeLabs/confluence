@@ -29078,7 +29078,7 @@
     "10039": "Element",
     "10040": "Node",
     "10041": "EventTarget",
-    "10042": ")",
+    "10042": "",
     "10043": "XMLDocument",
     "10044": "Document",
     "10045": "URL",
@@ -29308,7 +29308,7 @@
     "10269": "RadioNodeList",
     "10270": "TextMetrics",
     "10271": "TimeRanges",
-    "10272": "e){if",
+    "10272": "",
     "10273": "ValidityState",
     "10274": "WebKitMediaKeyError",
     "10275": "CanvasGradient",
@@ -152690,7 +152690,7 @@
     "12776": 10752
   },
   "root": 10000,
-  "timestamp": 1497630550379,
+  "timestamp": 1502334253933,
   "types": {
     "boolean": 2,
     "exception": 7,

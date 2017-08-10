@@ -548,7 +548,7 @@
       "isNaN": 10212,
       "isSecureContext": 2,
       "length": 3,
-      "localStorage": 10066,
+      "localStorage": 10065,
       "location": 10599,
       "locationbar": 10596,
       "matchMedia": 10247,
@@ -1498,6 +1498,9 @@
       "unscopables": 5
     },
     "10065": {
+      "length": 3
+    },
+    "10066": {
       "+constructor+": 10112,
       "clear": 11508,
       "getItem": 11505,
@@ -1505,9 +1508,6 @@
       "length": 7,
       "removeItem": 11507,
       "setItem": 11506
-    },
-    "10066": {
-      "length": 3
     },
     "10068": {
       "length": 3
@@ -1870,7 +1870,7 @@
       "caller": 6,
       "length": 3,
       "name": 4,
-      "prototype": 10065
+      "prototype": 10066
     },
     "10113": {
       "arguments": 6,
@@ -19398,8 +19398,8 @@
       "prototype": 10581
     },
     "12473": {
-      "0.6191942751734503-1": 12514,
-      "0.6191942751734503-2": 12515
+      "0.48861675795452775-1": 12514,
+      "0.48861675795452775-2": 12515
     },
     "12474": {
       "length": 3,
@@ -31007,7 +31007,7 @@
   },
   "functions": {
     "10005": "WebGLRenderingContext",
-    "10006": ")",
+    "10006": "",
     "10007": "Path2D",
     "10008": "CanvasPattern",
     "10009": "Error",
@@ -31191,11 +31191,11 @@
     "10205": "AudioBufferSourceNode",
     "10206": "AudioBuffer",
     "10208": "AnalyserNode",
-    "10209": ")",
-    "10210": ")",
-    "10211": ")",
+    "10209": "",
+    "10210": "",
+    "10211": "",
     "10212": "isNaN",
-    "10213": ")",
+    "10213": "",
     "10214": "SVGMPathElement",
     "10215": "SVGElement",
     "10216": "Element",
@@ -31221,7 +31221,7 @@
     "10240": "print",
     "10241": "requestAnimationFrame",
     "10242": "cancelAnimationFrame",
-    "10243": "){}",
+    "10243": "",
     "10244": "captureEvents",
     "10245": "releaseEvents",
     "10246": "getComputedStyle",
@@ -31555,7 +31555,7 @@
     "10578": "ApplicationCache",
     "10579": "AnimationEvent",
     "10609": "captureStackTrace",
-    "10634": ")",
+    "10634": "",
     "10637": "isTypeSupported",
     "10641": "isArray",
     "10642": "from",
@@ -31658,11 +31658,11 @@
     "10870": "NumberFormat",
     "10871": "DateTimeFormat",
     "10872": "v8BreakIterator",
-    "10907": ")",
-    "10908": ")",
-    "10946": ")",
-    "10951": ")",
-    "10952": ")",
+    "10907": "",
+    "10908": "",
+    "10946": "",
+    "10951": "",
+    "10952": "",
     "10959": "debug",
     "10960": "error",
     "10961": "info",
@@ -31688,8 +31688,8 @@
     "10981": "timeStamp",
     "11208": "supports",
     "11209": "escape",
-    "11215": ")",
-    "11216": ")",
+    "11215": "",
+    "11216": "",
     "11218": "reload",
     "11219": "toString",
     "11220": "valueOf",
@@ -32443,9 +32443,9 @@
     "11975": "initTextEvent",
     "11976": "splitText",
     "11977": "getDestinationInsertionPoints",
-    "11978": "){this.parentNode&&this.parentNode.insertBefore",
-    "11979": "){this.parentNode&&this.parentNode.insertBefore",
-    "11980": "){this.parentNode&&this.parentNode.replaceChild",
+    "11978": "",
+    "11979": "",
+    "11980": "",
     "11981": "item",
     "11982": "cloneNode",
     "11983": "getSelection",
@@ -32824,8 +32824,8 @@
     "12362": "querySelector",
     "12363": "querySelectorAll",
     "12364": "attachShadow",
-    "12365": "){this.appendChild",
-    "12366": "){this.insertBefore",
+    "12365": "",
+    "12366": "",
     "12367": "remove",
     "12368": "getElementById",
     "12369": "querySelector",
@@ -32966,15 +32966,15 @@
     "12512": "clearStale",
     "12513": "isNodeReachable_",
     "12516": "Event",
-    "12517": ")",
-    "12518": ")",
-    "12519": ")",
-    "12520": ")",
-    "12521": ")",
-    "12522": ")",
-    "12523": ")",
-    "12524": ")",
-    "12525": ")",
+    "12517": "",
+    "12518": "",
+    "12519": "",
+    "12520": "",
+    "12521": "",
+    "12522": "",
+    "12523": "",
+    "12524": "",
+    "12525": "",
     "12627": "getCurrentPosition",
     "12628": "watchPosition",
     "12629": "clearWatch",
@@ -41273,6 +41273,8 @@
       }
     },
     "10065": {
+    },
+    "10066": {
       "clear": {
         "configurable": 1,
         "enumerable": 0,
@@ -41315,8 +41317,6 @@
         "value": 1,
         "writable": 1
       }
-    },
-    "10066": {
     },
     "10068": {
     },
@@ -123097,13 +123097,13 @@
       }
     },
     "12473": {
-      "0.6191942751734503-1": {
+      "0.48861675795452775-1": {
         "configurable": 1,
         "enumerable": 1,
         "value": 1,
         "writable": 1
       },
-      "0.6191942751734503-2": {
+      "0.48861675795452775-2": {
         "configurable": 1,
         "enumerable": 1,
         "value": 1,
@@ -167224,9 +167224,9 @@
     "10061": 10062,
     "10062": 10012,
     "10063": 10006,
-    "10065": 10004,
-    "10066": 10065,
-    "10068": 10065,
+    "10065": 10066,
+    "10066": 10004,
+    "10068": 10066,
     "10069": 10070,
     "10070": 10004,
     "10071": 10009,
@@ -169992,7 +169992,7 @@
     "12899": 11058
   },
   "root": 10000,
-  "timestamp": 1497630067274,
+  "timestamp": 1502333523705,
   "types": {
     "boolean": 2,
     "exception": 7,
