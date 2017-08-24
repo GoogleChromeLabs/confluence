@@ -268,7 +268,7 @@ function importData(importDAO, cacheDAO, syncDAO) {
   }
 
   return updateData(importDAO, cacheDAO, syncDAO).then(function() {
-    return syncDAO.synced;
+    return syncDAO.sync();
   }).then(function() {
     logger.info(`Imported ${importDAO.of.id} to Datastore`);
   });
