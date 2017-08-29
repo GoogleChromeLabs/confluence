@@ -33,32 +33,17 @@ const datastoreCtx = pkg.DatastoreContainer.create({
 
 function getLocalDAO(name, cls, ctx) {
   return foam.dao.JDAO.create({
+    of: cls,
     delegate: foam.dao.NullDAO.create({of: cls}, ctx),
     journal: foam.dao.NodeFileJournal.create({
+      of: cls,
       fd: fs.openSync(
           path.resolve(__dirname, `../data/${name}-journal.js`),
-          // Do not truncate journal.
-          'a+'),
+          // Truncate journal.
+          'w+'),
     }, ctx),
   }, ctx);
 }
-
-// let localCtx = pkg.DAOContainer.create();
-// const releaseLocalDAO = localCtx.releaseDAO = getLocalDAO(pkg.Release);
-// const webInterfaceLocalDAO = localCtx.webInterfaceDAO =
-//       getLocalDAO(pkg.WebInterface.id, pkg.WebInterface, localCtx);
-// const releaseWebInterfaceJunctionLocalDAO =
-//       localCtx.releaseWebInterfaceJunctionDAO =
-//       getLocalDAO(pkg.ReleaseWebInterfaceJunction.id,
-//                   pkg.ReleaseWebInterfaceJunction,
-//                   localCtx);
-// const browserMetricsLocalDAO = localCtx.browserMetricsDAO =
-//       getLocalDAO(pkg.BrowserMetricData.id,
-//                   pkg.BrowserMetricData,
-//                   localCtx);
-// const apiVelocityLocalDAO = localCtx.apiVelocityDAO =
-//       getLocalDAO(pkg.ApiVelocityData.id, pkg.ApiVelocityData, localCtx);
-// localCtx.validate();
 
 let releaseSyncDAO = datastoreCtx.releaseDAO;
 let webInterfaceSyncDAO = datastoreCtx.webInterfaceDAO;
@@ -67,49 +52,31 @@ let releaseWebInterfaceJunctionSyncDAO =
 let browserMetricsSyncDAO = datastoreCtx.browserMetricsDAO;
 let apiVelocitySyncDAO = datastoreCtx.apiVelocityDAO;
 
-releaseSyncDAO.syncRecordDAO = getLocalDAO(
-    `foam.dao.sync.VersionedSyncRecord-${pkg.Release.id}`,
-    pkg.Release,
-    datastoreCtx);
+// Overwrite delegates with local journaling DAO.
 releaseSyncDAO.delegate = getLocalDAO(
-    pkg.Release.id,
-    pkg.Release,
-    datastoreCtx);
-webInterfaceSyncDAO.syncRecordDAO = getLocalDAO(
-    `foam.dao.sync.VersionedSyncRecord-${pkg.WebInterface.id}`,
-    pkg.WebInterface,
+    pkg.VersionedRelease.id,
+    pkg.VersionedRelease,
     datastoreCtx);
 webInterfaceSyncDAO.delegate = getLocalDAO(
-    pkg.WebInterface.id,
-    pkg.WebInterface,
-    datastoreCtx);
-releaseWebInterfaceJunctionSyncDAO.syncRecordDAO = getLocalDAO(
-    `foam.dao.sync.VersionedSyncRecord-${pkg.ReleaseWebInterfaceJunction.id}`,
-    pkg.ReleaseWebInterfaceJunction,
+    pkg.VersionedWebInterface.id,
+    pkg.VersionedWebInterface,
     datastoreCtx);
 releaseWebInterfaceJunctionSyncDAO.delegate = getLocalDAO(
-    pkg.ReleaseWebInterfaceJunction.id,
-    pkg.ReleaseWebInterfaceJunction,
-    datastoreCtx);
-browserMetricsSyncDAO.syncRecordDAO = getLocalDAO(
-    `foam.dao.sync.VersionedSyncRecord-${pkg.BrowserMetricData.id}`,
-    pkg.BrowserMetricData,
+    pkg.VersionedReleaseWebInterfaceJunction.id,
+    pkg.VersionedReleaseWebInterfaceJunction,
     datastoreCtx);
 browserMetricsSyncDAO.delegate = getLocalDAO(
-    pkg.BrowserMetricData.id,
-    pkg.BrowserMetricData,
-    datastoreCtx);
-apiVelocitySyncDAO.syncRecordDAO = getLocalDAO(
-    `foam.dao.sync.VersionedSyncRecord-${pkg.ApiVelocityData.id}`,
-    pkg.ApiVelocityData,
+    pkg.VersionedBrowserMetricData.id,
+    pkg.VersionedBrowserMetricData,
     datastoreCtx);
 apiVelocitySyncDAO.delegate = getLocalDAO(
-    pkg.ApiVelocityData.id,
-    pkg.ApiVelocityData,
+    pkg.VersionedApiVelocityData.id,
+    pkg.VersionedApiVelocityData,
     datastoreCtx);
 
 logger.info('Syncing from datastore');
 Promise.all([
+  // Wait for SyncDAOs to be synced.
   releaseSyncDAO.synced,
   webInterfaceSyncDAO.synced,
   releaseWebInterfaceJunctionSyncDAO.synced,
@@ -119,13 +86,7 @@ Promise.all([
   logger.info('Synced from datastore');
   logger.info('Journaling data');
   return Promise.all([
-    // Finish journaling sync records.
-    releaseSyncDAO.syncRecordDAO.synced,
-    webInterfaceSyncDAO.syncRecordDAO.synced,
-    releaseWebInterfaceJunctionSyncDAO.syncRecordDAO.synced,
-    browserMetricsSyncDAO.syncRecordDAO.synced,
-    apiVelocitySyncDAO.syncRecordDAO.synced,
-    // Finish journaling data.
+    // Wait for journaling DAOs to be synced.
     releaseSyncDAO.delegate.synced,
     webInterfaceSyncDAO.delegate.synced,
     releaseWebInterfaceJunctionSyncDAO.delegate.synced,

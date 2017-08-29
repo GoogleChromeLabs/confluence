@@ -32,8 +32,10 @@ const credentials = JSON.parse(fs.readFileSync(
 
 function getLocalDAO(name, cls, ctx) {
   return foam.dao.JDAO.create({
+    of: cls,
     delegate: foam.dao.MDAO.create({of: cls}, ctx),
     journal: foam.dao.NodeFileJournal.create({
+      of: cls,
       fd: fs.openSync(
           path.resolve(__dirname, `../data/${name}-journal.js`),
           // Read-only JDAO.
@@ -44,26 +46,34 @@ function getLocalDAO(name, cls, ctx) {
 
 let localCtx = pkg.DAOContainer.create();
 const releaseLocalDAO = localCtx.releaseDAO =
-      getLocalDAO(pkg.Release.id, pkg.Release, localCtx);
+      getLocalDAO(pkg.VersionedRelease.id, pkg.VersionedRelease, localCtx);
 const webInterfaceLocalDAO = localCtx.webInterfaceDAO =
-      getLocalDAO(pkg.WebInterface.id, pkg.WebInterface, localCtx);
+      getLocalDAO(pkg.VersionedWebInterface.id, pkg.VersionedWebInterface, localCtx);
 const releaseWebInterfaceJunctionLocalDAO =
       localCtx.releaseWebInterfaceJunctionDAO =
-      getLocalDAO(pkg.ReleaseWebInterfaceJunction.id,
-                  pkg.ReleaseWebInterfaceJunction,
+      getLocalDAO(pkg.VersionedReleaseWebInterfaceJunction.id,
+                  pkg.VersionedReleaseWebInterfaceJunction,
                   localCtx);
 const browserMetricsLocalDAO = localCtx.browserMetricsDAO =
-      getLocalDAO(pkg.BrowserMetricData.id,
-                  pkg.BrowserMetricData,
+      getLocalDAO(pkg.VersionedBrowserMetricData.id,
+                  pkg.VersionedBrowserMetricData,
                   localCtx);
 const apiVelocityLocalDAO = localCtx.apiVelocityDAO =
-      getLocalDAO(pkg.ApiVelocityData.id, pkg.ApiVelocityData, localCtx);
+      getLocalDAO(pkg.VersionedApiVelocityData.id, pkg.VersionedApiVelocityData, localCtx);
 localCtx.validate();
 
+// Like foam.json.Storage, but strict.
+var outputter = foam.json.Outputter.create({
+  pretty: false,
+  formatDatesAsNumbers: true,
+  outputDefaultValues: false,
+  strict: true,
+  propertyPredicate: function(o, p) { return !p.storageTransient; }
+});
 function jsonify(name, dao) {
   return dao.select().then(function(sink) {
     fs.writeFileSync(path.resolve(__dirname, `../data/${name}.json`),
-                     foam.json.Storage.stringify(sink.array));
+                     outputter.stringify(sink.array, dao.of));
   });
 }
 
@@ -78,12 +88,12 @@ Promise.all([
   logger.info('Data loaded from journals');
   logger.info('JSONifying data');
   Promise.all([
-    jsonify(pkg.Release.id, releaseLocalDAO),
-    jsonify(pkg.WebInterface.id, webInterfaceLocalDAO),
-    jsonify(pkg.ReleaseWebInterfaceJunction.id,
+    jsonify(pkg.VersionedRelease.id, releaseLocalDAO),
+    jsonify(pkg.VersionedWebInterface.id, webInterfaceLocalDAO),
+    jsonify(pkg.VersionedReleaseWebInterfaceJunction.id,
             releaseWebInterfaceJunctionLocalDAO),
-    jsonify(pkg.BrowserMetricData.id, browserMetricsLocalDAO),
-    jsonify(pkg.ApiVelocityData.id, apiVelocityLocalDAO),
+    jsonify(pkg.VersionedBrowserMetricData.id, browserMetricsLocalDAO),
+    jsonify(pkg.VersionedApiVelocityData.id, apiVelocityLocalDAO),
   ]);
 }).then(function() {
   logger.info('Data JSONified');

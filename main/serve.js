@@ -17,52 +17,36 @@ require('../lib/datastore/datastore_container.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
+const pkg = org.chromium.apis.web;
 
-let server = foam.lookup('foam.net.node.Server').create({
+var versionedFactory = foam.version.VersionedClassFactorySingleton.create();
+versionedFactory.get(pkg.Release);
+versionedFactory.get(pkg.WebInterface);
+versionedFactory.get(pkg.ReleaseWebInterfaceJunction);
+versionedFactory.get(pkg.BrowserMetricData);
+versionedFactory.get(pkg.ApiVelocityData);
+
+let server = foam.net.node.Server.create({
   port: 8080,
 });
 
 const credentials = JSON.parse(fs.readFileSync(
     path.resolve(__dirname, '../.local/credentials.json')));
-const logger = foam.lookup('foam.log.ConsoleLogger').create();
-const daoContainer =
-    foam.lookup('org.chromium.apis.web.DatastoreContainer').create({
-      gcloudAuthEmail: credentials.client_email,
-      gcloudAuthPrivateKey: credentials.private_key,
-      gcloudProjectId: credentials.project_id,
-      logger: logger,
-    });
-const ctx = daoContainer.ctx
-    .createSubContext(foam.lookup('foam.box.Context').create());
+const logger = foam.log.ConsoleLogger.create();
+const daoContainer = pkg.DatastoreContainer.create({
+  mode: pkg.DatastoreContainerMode.WEB_SERVICE,
+  gcloudAuthEmail: credentials.client_email,
+  gcloudAuthPrivateKey: credentials.private_key,
+  gcloudProjectId: credentials.project_id,
+  logger: logger,
+});
+const ctx = daoContainer.ctx;
 
-server.exportFile('/', `${__dirname}/../static/index.html`);
-server.exportDirectory('/images', `${__dirname}/../static/images`);
-server.exportDirectory('/', `${__dirname}/../static/bundle`);
-
-// TODO(markdittmer): Unify this script by adding support for box-registered
-// DAOs to foam.net.node.Server.
-
-// Register DAOs in box context. Wrap DAOs in ReadOnlyDAO for security and
-// LazyCacheDAO for performance.
-//
-// TODO(markdittmer): Customize MDAO indexes according to common queries.
-const ReadOnlyDAO = foam.lookup('foam.dao.ReadOnlyDAO');
-const LazyCacheDAO = foam.lookup('foam.dao.LazyCacheDAO');
-const MDAO = foam.lookup('foam.dao.MDAO');
-const SkeletonBox = foam.lookup('foam.box.SkeletonBox');
 function registerDAO(name, dao) {
   foam.assert(dao, 'Broken use of helper: registerDAO()');
-  var daoToRegister = foam.dao.ReadOnlyDAO.create({
-    delegate: LazyCacheDAO.create({
-      cacheOnSelect: true,
-      staleTimeout: 1000 * 60 * 60 * 24,
-      cache: MDAO.create({ of: dao.of }, ctx),
-      delegate: dao,
-    }, ctx)
-  }, ctx);
-  ctx.registry.register(name, null, SkeletonBox.create({
-    data: daoToRegister
-  }, ctx));
+  const url = `/${name}`;
+  logger.info(`Exporting REST DAO endpoint: ${url}`);
+  server.exportDAO(dao, url);
 }
 
 registerDAO(daoContainer.RELEASE_NAME, ctx.releaseDAO);
@@ -71,10 +55,10 @@ registerDAO(daoContainer.RELEASE_WEB_INTERFACE_JUNCTION_NAME,
             ctx.releaseWebInterfaceJunctionDAO);
 registerDAO(daoContainer.API_VELOCITY_NAME, ctx.apiVelocityDAO);
 
-const E = foam.lookup('foam.mlang.ExpressionsSingleton').create();
+const E = foam.mlang.ExpressionsSingleton.create();
 const EQ = E.EQ.bind(E);
-const Type = foam.lookup('org.chromium.apis.web.BrowserMetricDataType');
-const TYPE = foam.lookup('org.chromium.apis.web.BrowserMetricData').TYPE;
+const Type = pkg.BrowserMetricDataType;
+const TYPE = pkg.BrowserMetricData.TYPE;
 
 registerDAO(
     daoContainer.FAILURE_TO_SHIP_NAME,
@@ -86,11 +70,9 @@ registerDAO(
     daoContainer.AGGRESSIVE_REMOVAL_NAME,
     ctx.browserMetricsDAO.where(EQ(TYPE, Type.AGGRESSIVE_REMOVAL)));
 
-// TODO(markdittmer): Explicitly select webSocketService port.
-// (Current default: 4000.)
-//
-// Start service by accessing lazily constructed property.
-ctx.webSocketService;
-logger.log(`Serving web sockets from ${ctx.webSocketService.port}`);
+// TODO(markdittmer): Add back local asset handlers when UI is stable again.
+// server.exportFile('/', path.resolve(__dirname, '/../static/index.html'));
+// server.exportDirectory('/images', path.resolve(__dirname, '../static/images'));
+// server.exportDirectory('/', path.resolve(__dirname, '../static/bundle'));
 
 server.start();
