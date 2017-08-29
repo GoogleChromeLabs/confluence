@@ -25,7 +25,7 @@ require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 const pkg = org.chromium.apis.web;
 
-var versionedFactory = foam.version.VersionedClassFactorySingleton.create();
+const versionedFactory = foam.version.VersionedClassFactorySingleton.create();
 versionedFactory.get(pkg.Release);
 versionedFactory.get(pkg.WebInterface);
 versionedFactory.get(pkg.ReleaseWebInterfaceJunction);
