@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 'use strict';
 
+console.log(`Fork spawned ${require('process').pid}`);
+
 //
 // Same as foam2/src/foam/box/node/forkScript.js, but require() application
 // code.
