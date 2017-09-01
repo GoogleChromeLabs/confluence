@@ -19,13 +19,6 @@ require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 const pkg = org.chromium.apis.web;
 
-var versionedFactory = foam.version.VersionedClassFactorySingleton.create();
-versionedFactory.get(pkg.Release);
-versionedFactory.get(pkg.WebInterface);
-versionedFactory.get(pkg.ReleaseWebInterfaceJunction);
-versionedFactory.get(pkg.BrowserMetricData);
-versionedFactory.get(pkg.ApiVelocityData);
-
 let server = foam.net.node.Server.create({
   port: 8080,
 });
@@ -70,9 +63,8 @@ registerDAO(
     daoContainer.AGGRESSIVE_REMOVAL_NAME,
     ctx.browserMetricsDAO.where(EQ(TYPE, Type.AGGRESSIVE_REMOVAL)));
 
-// TODO(markdittmer): Add back local asset handlers when UI is stable again.
-// server.exportFile('/', path.resolve(__dirname, '/../static/index.html'));
-// server.exportDirectory('/images', path.resolve(__dirname, '../static/images'));
-// server.exportDirectory('/', path.resolve(__dirname, '../static/bundle'));
+server.exportFile('/', path.resolve(__dirname, '../static/index.html'));
+server.exportDirectory('/images', path.resolve(__dirname, '../static/images'));
+server.exportDirectory('/', path.resolve(__dirname, '../static/bundle'));
 
 server.start();

@@ -17,14 +17,6 @@ require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 const pkg = org.chromium.apis.web;
 
-// Need versioned classes. (Usually auto-instantiated by SyncDAO).
-foam.version.VersionedClassFactorySingleton.create().get(pkg.Release);
-foam.version.VersionedClassFactorySingleton.create().get(pkg.WebInterface);
-foam.version.VersionedClassFactorySingleton.create()
-    .get(pkg.ReleaseWebInterfaceJunction);
-foam.version.VersionedClassFactorySingleton.create().get(pkg.BrowserMetricData);
-foam.version.VersionedClassFactorySingleton.create().get(pkg.ApiVelocityData);
-
 const logger = foam.log.ConsoleLogger.create();
 
 const credentials = JSON.parse(fs.readFileSync(

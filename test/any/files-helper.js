@@ -56,14 +56,4 @@ beforeAll(function() {
   require('../../lib/web_apis/version_history.es6.js');
   require('../../lib/web_apis/web_interface.es6.js');
   require('../../lib/web_catalog/api_extractor.es6.js');
-
-  // TODO(markdittmer): Track down which components are using these classes
-  // without loading them.
-  var pkg = org.chromium.apis.web;
-  var versionedFactory = foam.version.VersionedClassFactorySingleton.create();
-  versionedFactory.get(pkg.Release);
-  versionedFactory.get(pkg.WebInterface);
-  versionedFactory.get(pkg.ReleaseWebInterfaceJunction);
-  versionedFactory.get(pkg.BrowserMetricData);
-  versionedFactory.get(pkg.ApiVelocityData);
 });
