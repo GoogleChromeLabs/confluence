@@ -2,10 +2,14 @@
   "name": "web-api-confluence-dashboard",
   "version": "0.0.1",
   "description": "Web API Confluence Dashboard",
+  "engines": {
+    "node": "7.2.0"
+  },
   "scripts": {
     "coverage": "npm run coverageNode && npm run coverageWeb && istanbul-combine -d .coverage -p summary -r lcov -r html -r json -b . .node_coverage/coverage.json .web_coverage/*/coverage*.json && istanbul check-coverage --config config/istanbul.yml \".coverage/**/coverage*.json\"",
     "coverageNode": "JASMINE_CONFIG_PATH=./config/jasmine.json istanbul cover --config config/istanbul.yml --dir .node_coverage -- jasmine",
     "coverageWeb": "karma start ./config/karma.coverage.conf.js",
+    "start": "node main/serve.js",
     "serve": "zsh scripts/serve.sh",
     "test": "npm run testNode && npm run testWeb",
     "testNode": "JASMINE_CONFIG_PATH=./config/jasmine.json jasmine",
