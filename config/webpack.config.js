@@ -19,7 +19,7 @@ execSync(`mv '${FOAM_DIR}/foam-bin.js' '${ROOT_DIR}/static/bundle/foam.bundle.js
 module.exports = {
   entry: {
     app: [path.resolve(ROOT_DIR, 'main/app.es6')],
-    sync_worker: [path.resolve(ROOT_DIR, 'main/sync_worker.es6')],
+    worker: [path.resolve(ROOT_DIR, 'main/worker.es6')],
   },
   output: {
     filename: '[name].bundle.js',
