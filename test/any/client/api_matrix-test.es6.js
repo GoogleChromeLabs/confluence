@@ -137,8 +137,7 @@ describe('ApiMatrix', function() {
         });
     });
     it(`filters APIs by options.releaseOptions`, function(done) {
-      let promises = [];
-      promises.push(apiMatrix.toMatrix([
+      apiMatrix.toMatrix([
         'Chrome_55_Windows_10',
         'Edge_14_Windows_10',
         'Safari_10_OSX_601',
@@ -155,15 +154,16 @@ describe('ApiMatrix', function() {
           Chrome_55_Windows_10: true,
           Safari_10_OSX_601: true,
         });
-      }));
-      promises.push(apiMatrix.toMatrix([
-        'Chrome_55_Windows_10',
-        'Edge_14_Windows_10',
-        'Safari_10_OSX_601',
-      ], {
-        releaseOptions: {
-          'Chrome_55_Windows_10': false,
-        },
+      }).then(function() {
+        return apiMatrix.toMatrix([
+          'Chrome_55_Windows_10',
+          'Edge_14_Windows_10',
+          'Safari_10_OSX_601',
+        ], {
+          releaseOptions: {
+            'Chrome_55_Windows_10': false,
+          },
+        });
       }).then((interfaceMatrix) => {
         expect(interfaceMatrix.ApplePay.about).toEqual({
           Safari_10_OSX_601: true,
@@ -174,12 +174,10 @@ describe('ApiMatrix', function() {
         });
         expect(interfaceMatrix.Array).toBeUndefined();
         expect(interfaceMatrix.Audio.stop).toBeUndefined();
-      }));
-      Promise.all(promises).then(() => done());
+      }).then(done, done.fail);
     });
     it(`filters APIs by options.numAvailable`, function(done) {
-      let promises = [];
-      promises.push(apiMatrix.toMatrix([
+      apiMatrix.toMatrix([
         'Chrome_55_Windows_10',
         'Edge_14_Windows_10',
         'Safari_10_OSX_601',
@@ -193,20 +191,20 @@ describe('ApiMatrix', function() {
             },
           },
         });
-      }));
-      promises.push(apiMatrix.toMatrix([
-        'Chrome_55_Windows_10',
-        'Edge_14_Windows_10',
-        'Safari_10_OSX_601',
-      ], {
-        numAvailable: [2, 3],
+      }).then(function() {
+        return apiMatrix.toMatrix([
+          'Chrome_55_Windows_10',
+          'Edge_14_Windows_10',
+          'Safari_10_OSX_601',
+        ], {
+          numAvailable: [2, 3],
+        });
       }).then((interfaceMatrix) => {
         expect(interfaceMatrix.Array.find).toBeDefined();
         expect(interfaceMatrix.Audio.play).toBeDefined();
         expect(interfaceMatrix.Audio.stop).toBeDefined();
         expect(interfaceMatrix.ApplePay).toBeUndefined();
-      }));
-      Promise.all(promises).then(() => done());
+      }).then(done, done.fail);
     });
   });
 
