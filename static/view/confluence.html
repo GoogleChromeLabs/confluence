@@ -58,7 +58,6 @@
   </div>
   <!-- additional view. -->
   <api-catalog-table
-    api-matrix="apiMatrix"
     ng-repeat="view in additionalViews track by $index"
     ng-show="$parent.showTab === 4 + $index"
     releases="view.releases"

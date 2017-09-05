@@ -25,13 +25,6 @@ require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 const pkg = org.chromium.apis.web;
 
-const versionedFactory = foam.version.VersionedClassFactorySingleton.create();
-versionedFactory.get(pkg.Release);
-versionedFactory.get(pkg.WebInterface);
-versionedFactory.get(pkg.ReleaseWebInterfaceJunction);
-versionedFactory.get(pkg.BrowserMetricData);
-versionedFactory.get(pkg.ApiVelocityData);
-
 // Setup BaseDatastoreContainer for logging and authenticated Datastore access.
 const credentials = JSON.parse(fs.readFileSync(
     path.resolve(__dirname, '../.local/credentials.json')));

@@ -19,6 +19,7 @@ execSync(`mv '${FOAM_DIR}/foam-bin.js' '${ROOT_DIR}/static/bundle/foam.bundle.js
 module.exports = {
   entry: {
     app: [path.resolve(ROOT_DIR, 'main/app.es6')],
+    worker: [path.resolve(ROOT_DIR, 'main/worker.es6')],
   },
   output: {
     filename: '[name].bundle.js',
@@ -49,11 +50,6 @@ module.exports = {
     ],
   },
   plugins: [
-    new ChunkWebpack({
-      filename: 'vendors.bundle.js',
-      minChunks: Infinity,
-      name: 'vendors',
-    }),
     new webpack.ProvidePlugin({
         'window.$': 'jquery',
         'window.jQuery': 'jquery',
