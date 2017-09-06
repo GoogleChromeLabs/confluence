@@ -127,12 +127,10 @@ const events = foam.box.PromisedBox.create({
 }, ctx);
 
 // Forward apiMatrixController.newMatrix events to page.
-apiMatrixController.newMatrix.sub(function(_, __, matrix) {
+apiMatrixController.newMatrix.sub(function(_, __, newMatrixEvent) {
   events.send(foam.box.Message.create({
     object: foam.box.EventMessage.create({
-      args: [pkg.NewMatrixEvent.create({
-        matrix,
-      }, ctx)],
+      args: [pkg.NewMatrixEvent.create(newMatrixEvent, ctx)],
     }, ctx),
   }, ctx));
 });
