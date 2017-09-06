@@ -54,12 +54,13 @@
     releases="releases"
     able-to-delete-release="true"
     on-delete-release="removeRelease(release)"
-  ></api-catalog-table>
+    is-top-view="true"></api-catalog-table>
   <!-- Filtered view. -->
   <api-catalog-table
     ng-repeat="view in filteredViews track by $index"
     ng-show="$parent.showTab === 2 + $index"
     releases="view.releases"
-    release-options="view.releaseOptions">
+    release-options="view.releaseOptions"
+    is-top-view="true">
   </api-catalog-table>
 </div>
