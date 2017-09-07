@@ -1,110 +1,182 @@
 <style type="text/css">
   /* Set search bar"s height to 64px. Otherwise, the UI breaks,
-    it is a bug in materlize-css.*/
+     it is a bug in materlize-css.*/
   input[type="search"] {
     height: 64px !important;
   }
-  /* Sticky column interface / API column. */
+  .table-container {
+    /* Size of background-image shadow in th:before */
+    padding-bottom: 4px;
+    overflow: auto;
+  }
   .colhead {
     position: absolute;
     left: auto;
     top: auto;
     background-color: rgba(255, 255, 255, 0.5);
   }
+  .search-btn {
+    z-index: 40;
+  }
+  nav.main {
+    z-index: 30;
+  }
+  nav.search {
+    z-index: 20;
+  }
+  table {
+    position: relative;
+  }
+  td.wave-effects {
+    position: static;
+  }
+  th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f8f8;
+    z-index: 10;
+    border-bottom: 1px solid #d0d0d0;
+  }
+  th:before {
+    /* Negative-size of table-container margin-bottom */
+    bottom: -4px;
+    content: '';
+    /* Size of table-container margin-bottom */
+    height: 4px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    background-image: linear-gradient(to bottom,rgba(0,0,0,.12) 0%,rgba(0,0,0,0) 100%);
+  }
+  .head-cell-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  .head-cell-text {
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+  .head-cell-control {
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-right: 8px;
+  }
+  table thead th, table tbody tr, table tbody tr td {
+    border-radius: 0;
+  }
+  .centered-box {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 </style>
-<div class="card-panel">
-  <nav class="blue lighten-3">
-    <div class="nav-wrapper">
-      <ul class="left">
-        <!-- Pagination -->
-        <li class="waves-effect"
+<nav class="main blue lighten-3">
+  <div class="nav-wrapper">
+    <ul class="left">
+      <!-- Pagination -->
+      <li class="waves-effect"
           ng-class="{disabled: currentPage === 0}"
           ng-click="setPage(currentPage - 1)"
           ng-disabled="currentPage === 0">
-          <i class="material-icons">chevron_left</i>
-        </li>
-        <li class="waves-effect"
+        <i class="material-icons">chevron_left</i>
+      </li>
+      <li class="waves-effect"
           ng-class="{active: n === currentPage}"
           ng-repeat="n in range(pageLength, currentPage)">
-            <a ng-click="setPage(n)">{{n + 1}}</a>
-        </li>
-        <li class="waves-effect"
+        <a ng-click="setPage(n)">{{n + 1}}</a>
+      </li>
+      <li class="waves-effect"
           ng-class="{disabled: (currentPage) === pageLength - 1}"
           ng-click="setPage(currentPage + 1)"
           ng-disabled="currentPage === pageLength - 1">
-           <i class="material-icons">chevron_right</i>
-        </li>
-        <!-- Download CSV button -->
-        <li>
-          <a ng-click="downloadCSV()">
-            Download CSV<i class="material-icons right">file_download</i>
-          </a>
-        </li>
-        <!-- Expand all switch -->
-        <li class="switch">
-          <label class="white-text">
-            Expand All
-            <input type="checkbox" ng-model="expandAll">
-            <span class="lever"></span>
-          </label>
-        </li>
-      </ul>
-      <ul class="right">
-        <li>
-          <a class="btn-floating waves-effect blue darken-3
-              waves-light search-btn"
-            ng-click="showSearchBar=!showSearchBar">
-            <i class="material-icons">search</i>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-  <!-- Search Navbar -->
-  <nav class="blue lighten-3" ng-show="showSearchBar">
-    <div class="nav-wrapper">
-      <form>
-        <div class="input-field">
-          <input id="search" type="search" ng-model="searchKey"
-            ng-keyup="$event.keyCode == 13 && search($event)">
-          <label class="label-icon" for="search">
-            <i class="material-icons">search</i>
-          </label>
-          <i class="material-icons">close</i>
-        </div>
-      </form>
-    </div>
-  </nav>
-  <div class="full-width">
-    <table class="bordered highlight">
+        <i class="material-icons">chevron_right</i>
+      </li>
+      <!-- Download CSV button -->
+      <li>
+        <a ng-click="downloadCSV()">
+          Download CSV<i class="material-icons right">file_download</i>
+        </a>
+      </li>
+      <!-- Expand all switch -->
+      <li class="switch">
+        <label class="white-text">
+          Expand All
+          <input type="checkbox" ng-model="expandAll">
+          <span class="lever"></span>
+        </label>
+      </li>
+    </ul>
+    <ul class="right">
+      <li>
+        <a class="btn-floating waves-effect blue darken-3
+		  waves-light search-btn"
+           ng-click="showSearchBar=!showSearchBar">
+          <i class="material-icons">search</i>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<!-- Search Navbar -->
+<nav class="search blue lighten-3" ng-show="showSearchBar">
+  <div class="nav-wrapper">
+    <form>
+      <div class="input-field">
+        <input id="search" type="search" ng-model="searchKey"
+               ng-keyup="$event.keyCode == 13 && search($event)">
+        <label class="label-icon" for="search">
+          <i class="material-icons">search</i>
+        </label>
+        <i class="material-icons">close</i>
+      </div>
+    </form>
+  </div>
+</nav>
+<!-- API table -->
+<div class="table-container">
+  <table class="bordered highlight">
+    <thead>
       <tr>
-        <th>Interface / API</th>
-        <th ng-repeat="release in $ctrl.releases">
-          {{release.browserName}} {{release.browserVersion}}
-          {{release.osName}} {{release.osVersion}}
-          <i class="tiny material-icons close"
-            style="cursor:pointer"
-            ng-if="$ctrl.ableToDeleteRelease"
-            ng-click="removeRelease($event, release)">
-              close
-          </i>
-        </th>
+	<th>Interface / API</th>
+	<th ng-repeat="release in $ctrl.releases">
+	  <div class="head-cell-container">
+	    <div class="head-text">
+              {{release.browserName}} {{release.browserVersion}}
+              {{release.osName}} {{release.osVersion}}
+	    </div>
+	    <div class="head-cell-control">
+              <i class="tiny material-icons close"
+		 style="cursor:pointer"
+		 ng-if="$ctrl.ableToDeleteRelease"
+		 ng-click="removeRelease($event, release)">
+		close
+              </i>
+	    </div>
+	  </div>
+	</th>
       </tr>
+    </thead>
+    <tbody>
       <tr ng-repeat-start="interface in getInterfaceRange()"
-        ng-click="showCatalog(interface)">
-        <td class="waves-effect"
-          ng-class="{'grey lighten-1': showRows[interface] || expandAll}"
-          style="cursor:pointer; width:100%">{{interface}}</td>
+          ng-click="showCatalog(interface)">
+	<td class="colhead waves-effect"
+            ng-class="{'grey lighten-1': showRows[interface] || expandAll}"
+            style="cursor:pointer; width:100%">{{interface}}</td>
+	<td colspan="1000">&nbsp;</td>
       </tr>
       <tr ng-repeat-end ng-repeat="(api, results) in apiCatalogMatrix[interface]" ng-if="showRows[interface] || expandAll">
-        <td class="colhead">{{api}}</td>
-        <td ng-repeat="release in $ctrl.releases"
-          ng-class="{'red accent-1': !results[release.releaseKey],
-           'green accent-1': results[release.releaseKey]}">
-          <i class="material-icons" ng-if="results[release.releaseKey]">check</i>
-          <i class="material-icons" ng-if="!results[release.releaseKey]">close</i>
-        </td>
+	<td class="colhead">{{api}}</td>
+	<td class="centered" ng-repeat="release in $ctrl.releases"
+            ng-class="{'red accent-1': !results[release.releaseKey],
+                      'green accent-1': results[release.releaseKey]}">
+	  <div class="centered-box">
+            <i class="material-icons" ng-if="results[release.releaseKey]">check</i>
+            <i class="material-icons" ng-if="!results[release.releaseKey]">close</i>
+	  </div>
+	</td>
       </tr>
-    </table>
-  </div>
+    </tbody>
+  </table>
 </div>
