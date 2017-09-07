@@ -1,66 +1,86 @@
-<br>
+<style>
+  .flex-right {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+  .pad {
+    padding: 24px;
+  }
+  api-catalog-table {
+    flex-grow: 1;
+    flex-shrink: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .btn {
+    z-index: 50;
+  }
+  .dropdown-content {
+    z-index: 60 !important;
+  }
+
+</style>
 <!-- Release Dropdown Dropdown Structure -->
 <!-- The releaseList is a nested dropdown list.
-  It is grouped by browserName and version.-->
+     It is grouped by browserName and version.-->
 <ul id="releaseList" class="dropdown-content"
-  style="position:fixed;z-index:1;left:70%;top:10%">
+    style="position:fixed;z-index:1;left:70%;top:10%">
   <li ng-repeat-start="(browserName, versions) in releaseGroups"
-    class="blue-text text-darken-3 grey lighten-5"
-    value="{{browserName}}">
-      <a ng-click="expandReleaseList($event, browserName)">
-        {{browserName}}
-      </a>
+      class="blue-text text-darken-3 grey lighten-5"
+      value="{{browserName}}">
+    <a ng-click="expandReleaseList($event, browserName)">
+      {{browserName}}
+    </a>
   </li>
   <li ng-repeat-start="(version, releases) in versions"
-    class="blue-text text-darken-3 grey lighten-4"
-    ng-show="expandReleaseDropdown[browserName]"
-    ng-click="expandReleaseDropdown[browserName][version] ?
-      expandReleaseDropdown[browserName][version] = {} :
-      expandReleaseDropdown[browserName][version] = false"
-    value="{{browserName + version}}">
+      class="blue-text text-darken-3 grey lighten-4"
+      ng-show="expandReleaseDropdown[browserName]"
+      ng-click="expandReleaseDropdown[browserName][version] ?
+		expandReleaseDropdown[browserName][version] = {} :
+		expandReleaseDropdown[browserName][version] = false"
+      value="{{browserName + version}}">
     <a style="margin-left: 15px"
-      ng-click="expandReleaseList($event, browserName, version)">
+       ng-click="expandReleaseList($event, browserName, version)">
       {{version}}
     </a>
   </li>
   <li
-    ng-repeat="release in releases"
-    class="blue-text text-darken-3 grey lighten-3"
-    ng-show="expandReleaseDropdown[browserName][version]"
-    value="{{browserName + version + release.osName + release.osVersion}}">
+      ng-repeat="release in releases"
+      class="blue-text text-darken-3 grey lighten-3"
+      ng-show="expandReleaseDropdown[browserName][version]"
+      value="{{browserName + version + release.osName + release.osVersion}}">
     <a style="margin-left: 30px"
-      ng-click="addRelease(release)">
+       ng-click="addRelease(release)">
       {{release.osName + release.osVersion}}
     </a>
   </li>
   <span ng-repeat-end></span>
   <span ng-repeat-end></span>
 </ul>
-<div class="row">
-  <div class="col s2">
+<div class="flex-right">
+  <div class="pad">
     <a class="add-release-dropdown btn blue darken-3 white"
-      style="position: absolute;"
-      data-activates="releaseList">
+       data-activates="releaseList">
       Add Release
       <i class="material-icons right">
-        arrow_drop_down
+	arrow_drop_down
       </i>
     </a>
   </div>
 </div>
 
-<div class="container" ng-show="releases.length !== 0">
-  <api-catalog-table
+<api-catalog-table
     releases="releases"
     able-to-delete-release="true"
     on-delete-release="removeRelease(release)"
     is-top-view="true"></api-catalog-table>
-  <!-- Filtered view. -->
-  <api-catalog-table
+<!-- Filtered view. -->
+<api-catalog-table
     ng-repeat="view in filteredViews track by $index"
     ng-show="$parent.showTab === 2 + $index"
     releases="view.releases"
     release-options="view.releaseOptions"
     is-top-view="true">
-  </api-catalog-table>
-</div>
+</api-catalog-table>

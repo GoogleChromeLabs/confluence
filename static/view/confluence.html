@@ -1,3 +1,22 @@
+<style>
+  .tabs {
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+  .tab-content {
+    flex-grow: 1;
+    flex-shrink: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .chart-tab {
+    overflow: auto;
+  }
+  api-catalog-table {
+    display: flex;
+    flex-direction: column;
+  }
+</style>
 <ul id="tabs" class="tabs" ng-show="releaseKeys.length!==0">
   <li class="tab">
     <a ng-click="showTab=0" class="blue-text text-darken-2">API Velocity</a>
@@ -16,8 +35,8 @@
   </li>
 </ul>
 
-<div class="container">
-  <div ng-show="showTab===0">
+<div class="tab-content">
+  <div class="chart-tab" ng-show="showTab===0">
     <api-velocity-chart
       ng-repeat="(release, apiVelocity) in apiVelocityMetrics"
       chart-id="release + '-api-velocity'"
@@ -26,7 +45,7 @@
       new-diff-view="createNewDiffView(minuend, subtrahend)"
     ></api-velocity-chart>
   </div>
-  <div ng-show="showTab===1">
+  <div class="chart-tab" ng-show="showTab===1">
     <browser-metric-chart
       ng-if="failureToShipMetric"
       chart-id="failure-to-ship-chart"
@@ -36,7 +55,7 @@
     >
     </browser-metric-chart>
   </div>
-  <div ng-show="showTab===2">
+  <div class="chart-tab" ng-show="showTab===2">
     <browser-metric-chart
       ng-if="aggressiveRemovalMetric"
       chart-id="aggressive-removal-apis-chart"
@@ -46,7 +65,7 @@
     >
     </browser-metric-chart>
   </div>
-  <div ng-show="showTab===3">
+  <div class="chart-tab" ng-show="showTab===3">
     <browser-metric-chart
       ng-if="browserSpecificMetric"
       chart-id="browser-specific-apis-chart"
