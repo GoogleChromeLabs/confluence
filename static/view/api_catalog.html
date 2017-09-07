@@ -1,4 +1,27 @@
-<br>
+<style>
+  .flex-right {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+  .pad {
+    padding: 24px;
+  }
+  api-catalog-table {
+    flex-grow: 1;
+    flex-shrink: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .btn {
+    z-index: 50;
+  }
+  .dropdown-content {
+    z-index: 60 !important;
+  }
+
+</style>
 <!-- Release Dropdown Dropdown Structure -->
 <!-- The releaseList is a nested dropdown list.
   It is grouped by browserName and version.-->
@@ -36,30 +59,27 @@
   <span ng-repeat-end></span>
   <span ng-repeat-end></span>
 </ul>
-<div class="row">
-  <div class="col s2">
+<div class="flex-right">
+  <div class="pad">
     <a class="add-release-dropdown btn blue darken-3 white"
-      style="position: absolute;"
-      data-activates="releaseList">
+       data-activates="releaseList">
       Add Release
       <i class="material-icons right">
-        arrow_drop_down
+	arrow_drop_down
       </i>
     </a>
   </div>
 </div>
 
-<div class="container" ng-show="releases.length !== 0">
-  <api-catalog-table
+<api-catalog-table
     releases="releases"
     able-to-delete-release="true"
     on-delete-release="removeRelease(release)"
-  ></api-catalog-table>
-  <!-- Filtered view. -->
-  <api-catalog-table
+></api-catalog-table>
+<!-- Filtered view. -->
+<api-catalog-table
     ng-repeat="view in filteredViews track by $index"
     ng-show="$parent.showTab === 2 + $index"
     releases="view.releases"
     release-options="view.releaseOptions">
-  </api-catalog-table>
-</div>
+</api-catalog-table>
