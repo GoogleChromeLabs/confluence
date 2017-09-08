@@ -100,7 +100,7 @@ describeLocal('data quality', function() {
 
   // TODO(markdittmer): Enable this and delete any/api_extractor-integration's
   // firefox-related test once new data is pushed to datastore.
-  xit(`should copy Firefox CSS2Properties into CSSStyleDeclaration. E.g.,
+  it(`should copy Firefox CSS2Properties into CSSStyleDeclaration. E.g.,
       CSSStyleDeclaration.border should exist`, function(done) {
     expectAPILookup(true, firefox, mkAPI('CSSStyleDeclaration', 'border'))
         .then(done, done.fail);

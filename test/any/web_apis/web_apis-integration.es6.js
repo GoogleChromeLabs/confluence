@@ -25,20 +25,25 @@ describe('WebAPI and api extractor', function() {
     let apiMatrix = foam.lookup('org.chromium.apis.web.ApiMatrix')
         .create(null, apiImporter);
 
+    let MatrixMetadata = foam.lookup('org.chromium.apis.web.MatrixMetadata');
+
     apiImporter.import('Chrome', '56', 'Windows', '10',
         apiExtractor.extractWebCatalog(og.fromJSON(chrome56)));
     apiImporter.import('Edge', '14.14393', 'Windows', '10',
         apiExtractor.extractWebCatalog(og.fromJSON(edge14)));
     apiImporter.import('Safari', '602.4.8', 'OSX', '10',
         apiExtractor.extractWebCatalog(og.fromJSON(safari602)));
-    apiMatrix.toMatrix([
-      'Chrome_56_Windows_10',
-      'Edge_14.14393_Windows_10',
-      'Safari_602.4.8_OSX_10',
-    ]).then((webCatalogMatrix) =>{
+    apiMatrix.toMatrix(MatrixMetadata.create({
+      id: 'test',
+      releaseKeys: [
+        'Chrome_56_Windows_10',
+        'Edge_14.14393_Windows_10',
+        'Safari_602.4.8_OSX_10',
+      ],
+    })).then((webCatalogMatrix) => {
       webCatalog = webCatalogMatrix;
       done();
-    });
+    }, done.fail);
   });
 
   it('filters out constant primitive properties', function() {
