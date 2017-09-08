@@ -8,7 +8,9 @@ describe('ApiMatrix', function() {
   let WebInterface;
   let Junction;
   let ApiMatrix;
+  let MatrixMetadata;
   let apiMatrix;
+  let matrix;
 
   let release = function(browserName, browserVersion,
     osName, osVersion) {
@@ -30,11 +32,12 @@ describe('ApiMatrix', function() {
     });
   };
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     Release = foam.lookup('org.chromium.apis.web.Release');
     WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
     Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
     ApiMatrix = foam.lookup('org.chromium.apis.web.ApiMatrix');
+    MatrixMetadata = foam.lookup('org.chromium.apis.web.MatrixMetadata');
 
     let container = global.createDAOContainer();
     let releaseDAO = container.releaseDAO;
@@ -65,16 +68,26 @@ describe('ApiMatrix', function() {
     webInterfaceDAO.put(webInterface('ApplePay', 'about'));
 
     apiMatrix = ApiMatrix.create(null, container);
+    releaseDAO.select().then(arraySink => {
+      const releaseKeys = arraySink.array.map(release => release.releaseKey);
+      return apiMatrix.toMatrix(MatrixMetadata.create({
+        id: 'test',
+        releaseKeys,
+      }));
+    }).then(theMatrix => matrix = theMatrix).then(done);
   });
 
   describe('toMatrix()', function() {
     it(`contains correct interface and API information, when all releases
         are selected`, function(done) {
-        apiMatrix.toMatrix([
-          'Chrome_55_Windows_10',
-          'Edge_14_Windows_10',
-          'Safari_10_OSX_601',
-        ]).then((interfaceMatrix) => {
+        apiMatrix.toMatrix(MatrixMetadata.create({
+          id: 'test',
+          releaseKeys: [
+            'Chrome_55_Windows_10',
+            'Edge_14_Windows_10',
+            'Safari_10_OSX_601',
+          ],
+        })).then((interfaceMatrix) => {
           expect(interfaceMatrix.ApplePay.about).toEqual({
             Safari_10_OSX_601: true,
           });
@@ -100,10 +113,13 @@ describe('ApiMatrix', function() {
       });
     it(`contains correct interface and API information, when part of
       keys are selected.`, function(done) {
-        apiMatrix.toMatrix([
-          'Chrome_55_Windows_10',
-          'Edge_14_Windows_10',
-        ]).then((interfaceMatrix) => {
+        apiMatrix.toMatrix(MatrixMetadata.create({
+          id: 'test',
+          releaseKeys: [
+            'Chrome_55_Windows_10',
+            'Edge_14_Windows_10',
+          ],
+        })).then((interfaceMatrix) => {
           expect(interfaceMatrix.Array.find).toEqual({
             Chrome_55_Windows_10: true,
             Edge_14_Windows_10: true,
@@ -119,17 +135,23 @@ describe('ApiMatrix', function() {
       });
     it('returns empty object when given array of release keys is empty.',
       function(done) {
-        apiMatrix.toMatrix([]).then((interfaceMatrix) => {
+        apiMatrix.toMatrix(MatrixMetadata.create({
+          id: 'test',
+          releaseKeys: [],
+        })).then((interfaceMatrix) => {
           expect(interfaceMatrix).toEqual({});
           done();
         });
     });
     it('rejects promise if unknown release key are given.',
       function(done) {
-        apiMatrix.toMatrix([
+        apiMatrix.toMatrix(MatrixMetadata.create({
+          id: 'test',
+          releaseKeys: [
           'Chrome_55_Windows_10',
           'IE_10_Windows_8',
-        ]).then(() => {
+          ],
+        })).then(() => {
           fail('toMatrix promise resolved on unknwon release key.');
         }, (reason) => {
           expect(reason).toEqual(new Error('IE_10_Windows_8 does not exist.'));
@@ -137,16 +159,18 @@ describe('ApiMatrix', function() {
         });
     });
     it(`filters APIs by options.releaseOptions`, function(done) {
-      apiMatrix.toMatrix([
-        'Chrome_55_Windows_10',
-        'Edge_14_Windows_10',
-        'Safari_10_OSX_601',
-      ], {
+      apiMatrix.toMatrix(MatrixMetadata.create({
+        id: 'test',
+        releaseKeys: [
+          'Chrome_55_Windows_10',
+          'Edge_14_Windows_10',
+          'Safari_10_OSX_601',
+        ],
         releaseOptions: {
           'Chrome_55_Windows_10': true,
           'Edge_14_Windows_10': false,
         },
-      }).then((interfaceMatrix) => {
+      })).then((interfaceMatrix) => {
         expect(interfaceMatrix.ApplePay).toBeUndefined();
         expect(interfaceMatrix.Array).toBeUndefined();
         expect(interfaceMatrix.Audio.play).toBeUndefined();
@@ -155,15 +179,17 @@ describe('ApiMatrix', function() {
           Safari_10_OSX_601: true,
         });
       }).then(function() {
-        return apiMatrix.toMatrix([
-          'Chrome_55_Windows_10',
-          'Edge_14_Windows_10',
-          'Safari_10_OSX_601',
-        ], {
+        return apiMatrix.toMatrix(MatrixMetadata.create({
+          id: 'test',
+          releaseKeys: [
+            'Chrome_55_Windows_10',
+            'Edge_14_Windows_10',
+            'Safari_10_OSX_601',
+          ],
           releaseOptions: {
             'Chrome_55_Windows_10': false,
           },
-        });
+        }));
       }).then((interfaceMatrix) => {
         expect(interfaceMatrix.ApplePay.about).toEqual({
           Safari_10_OSX_601: true,
@@ -177,13 +203,15 @@ describe('ApiMatrix', function() {
       }).then(done, done.fail);
     });
     it(`filters APIs by options.numAvailable`, function(done) {
-      apiMatrix.toMatrix([
-        'Chrome_55_Windows_10',
-        'Edge_14_Windows_10',
-        'Safari_10_OSX_601',
-      ], {
+      apiMatrix.toMatrix(MatrixMetadata.create({
+        id: 'test',
+        releaseKeys: [
+          'Chrome_55_Windows_10',
+          'Edge_14_Windows_10',
+          'Safari_10_OSX_601',
+        ],
         numAvailable: 1,
-      }).then((interfaceMatrix) => {
+      })).then((interfaceMatrix) => {
         expect(interfaceMatrix).toEqual({
           ApplePay: {
             about: {
@@ -192,13 +220,15 @@ describe('ApiMatrix', function() {
           },
         });
       }).then(function() {
-        return apiMatrix.toMatrix([
-          'Chrome_55_Windows_10',
-          'Edge_14_Windows_10',
-          'Safari_10_OSX_601',
-        ], {
+        return apiMatrix.toMatrix(MatrixMetadata.create({
+          id: 'test',
+          releaseKeys: [
+            'Chrome_55_Windows_10',
+            'Edge_14_Windows_10',
+            'Safari_10_OSX_601',
+          ],
           numAvailable: [2, 3],
-        });
+        }));
       }).then((interfaceMatrix) => {
         expect(interfaceMatrix.Array.find).toBeDefined();
         expect(interfaceMatrix.Audio.play).toBeDefined();
@@ -208,67 +238,58 @@ describe('ApiMatrix', function() {
     });
   });
 
-  describe('toCSV()', function() {
+  describe('matrixToCSV()', function() {
     it(`produces correct csv string when all releases are selected`,
-    function(done) {
-      apiMatrix.toCSV([
-        'Chrome_55_Windows_10',
-        'Edge_14_Windows_10',
-        'Safari_10_OSX_601',
-      ]).then((csvStr) => {
-        expect(csvStr).toEqual(
-          'Interface,API,Chrome_55_Windows_10,Edge_14_Windows_10,' +
-          'Safari_10_OSX_601\n' + 'ApplePay,about,false,false,true\n' +
-          'Array,find,true,true,true\n' + 'Audio,play,false,true,true\n' +
-          'Audio,stop,true,false,true\n');
-        done();
-      });
-    });
+       function() {
+         const csvStr = apiMatrix.matrixToCSV([
+           'Chrome_55_Windows_10',
+           'Edge_14_Windows_10',
+           'Safari_10_OSX_601',
+         ], matrix);
+         expect(csvStr).toEqual(
+             'Interface,API,Chrome_55_Windows_10,Edge_14_Windows_10,' +
+               'Safari_10_OSX_601\n' + 'ApplePay,about,false,false,true\n' +
+               'Array,find,true,true,true\n' + 'Audio,play,false,true,true\n' +
+               'Audio,stop,true,false,true\n');
+       });
     it(`produces correct csv string when part of releases are selected`,
-    function(done) {
-      apiMatrix.toCSV([
-        'Chrome_55_Windows_10',
-        'Edge_14_Windows_10',
-      ]).then((csvStr) => {
-        expect(csvStr).toEqual(
-          'Interface,API,Chrome_55_Windows_10,Edge_14_Windows_10\n' +
-          'Array,find,true,true\n' + 'Audio,play,false,true\n' +
-          'Audio,stop,true,false\n');
-        done();
-      });
-    });
+       function() {
+         const csvStr = apiMatrix.matrixToCSV([
+           'Chrome_55_Windows_10',
+           'Edge_14_Windows_10',
+         ], matrix);
+         expect(csvStr).toEqual(
+             'Interface,API,Chrome_55_Windows_10,Edge_14_Windows_10\n' +
+               'Array,find,true,true\n' + 'Audio,play,false,true\n' +
+               'Audio,stop,true,false\n');
+       });
     it('returns empty csv when given array of release keys is empty.',
-      function(done) {
-        apiMatrix.toCSV([]).then((csvStr) => {
-          expect(csvStr).toEqual('Interface,API\n');
-          done();
-        });
-    });
-    it('rejects promise if unknown release key are given.',
-      function(done) {
-        apiMatrix.toCSV([
-          'Chrome_55_Windows_10',
-          'IE_10_Windows_8',
-        ]).then(() => {
-          fail('toCSV promise resolved on unknwon release key.');
-        }, (reason) => {
-          expect(reason).toEqual(new Error('IE_10_Windows_8 does not exist.'));
-          done();
-        });
-    });
+       function() {
+         const csvStr = apiMatrix.matrixToCSV([], matrix);
+         expect(csvStr).toEqual('Interface,API\n');
+       });
+    xit('rejects promise if unknown release key are given.',
+       function(done) {
+         apiMatrix.matrixToCSV([
+           'Chrome_55_Windows_10',
+           'IE_10_Windows_8',
+         ], matrix).then(() => {
+           fail('toCSV promise resolved on unknwon release key.');
+         }, (reason) => {
+           expect(reason).toEqual(new Error('IE_10_Windows_8 does not exist.'));
+           done();
+         });
+       }).pend('TODO(markdittmer): Should matrixToCSV() validate releaseKeys?');
     it('has a table header with the same order of given release keys',
-      function(done) {
-        apiMatrix.toCSV([
-          'Edge_14_Windows_10',
-          'Safari_10_OSX_601',
-          'Chrome_55_Windows_10',
-        ]).then((csvStr) => {
-          expect(csvStr.split('\n')[0]).toEqual(
-            'Interface,API,Edge_14_Windows_10,' +
-            'Safari_10_OSX_601,Chrome_55_Windows_10'
-          );
-          done();
-        });
-      });
+       function() {
+         const csvStr = apiMatrix.matrixToCSV([
+           'Edge_14_Windows_10',
+           'Safari_10_OSX_601',
+           'Chrome_55_Windows_10',
+         ], matrix);
+         expect(csvStr.split('\n')[0]).toEqual(
+             'Interface,API,Edge_14_Windows_10,' +
+               'Safari_10_OSX_601,Chrome_55_Windows_10');
+       });
   });
 });
