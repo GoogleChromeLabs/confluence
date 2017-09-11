@@ -9,6 +9,12 @@
     padding-bottom: 4px;
     overflow: auto;
   }
+  .table-container .progress {
+    position: absolute;
+    z-index: 15;
+    border-radius: 0;
+    margin: 0;
+  }
   .colhead {
     position: absolute;
     left: auto;
@@ -136,6 +142,9 @@
 </nav>
 <!-- API table -->
 <div class="table-container">
+  <div ng-if="!$ctrl.isLoaded()" class="progress blue">
+    <div class="indeterminate blue lighten-2"></div>
+  </div>
   <table class="bordered highlight">
     <thead>
       <tr>
