@@ -41,16 +41,19 @@
       }
     </style>
 </head>
-<body ng-app='confluence'>
+<body ng-app="confluence">
   <header>
-    <nav>
+    <nav ng-controller="headerController">
       <div class='nav-wrapper blue darken-2'>
         <div style='margin-left: 20px'>
-        <a class='brand-logo' ui-sref='home'>Web API Confluence</a>
+	  <div class="brand-logo">
+            <a ui-sref="home">Web API Confluence</a>
+	    <span class="header-label">{{headerLabel ? '> ' + headerLabel : ''}}</span>
+	  </div>
         </div>
-        <ul class='right'>
-          <li><a ui-sref='catalog'>API Catalog</a></li>
-          <li><a ui-sref='confluence'>Confluence metrics</a></li>
+        <ul class="right">
+          <li><a ui-sref="catalog">API Catalog</a></li>
+          <li><a ui-sref="confluence">Confluence metrics</a></li>
         </ul>
       </div>
     </nav>
@@ -58,12 +61,12 @@
 
   <main><ui-view></ui-view></main>
 
-  <footer class='page-footer blue darken-2'>
-    <div class='footer-copyright blue darken-2'>
-      <div class='container'>
+  <footer class="page-footer blue darken-2">
+    <div class="footer-copyright blue darken-2">
+      <div class="container">
         Copyright 2017 The Chromium Authors
-        <a class='grey-text text-lighten-4 right'
-          href='https://github.com/GoogleChrome/confluence'>
+        <a class="grey-text text-lighten-4 right"
+          href="https://github.com/GoogleChrome/confluence">
           Github
         </a>
       </div>
