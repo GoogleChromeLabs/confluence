@@ -7,3 +7,6 @@ env: flex
 resources:
   cpu: 4
   memory_gb: 4
+automatic_scaling:
+  min_num_instances: 5
+  max_num_instances: 30
