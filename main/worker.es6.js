@@ -23,6 +23,8 @@ const pkg = org.chromium.apis.web;
 
 const ctx = foam.box.Context.create({
   myname: '/worker',
+  unsafe: false,
+  classWhitelist: require('../data/class_whitelist.json'),
 });
 
 //
