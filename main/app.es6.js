@@ -6,7 +6,7 @@
 require('materialize-css/dist/js/materialize.js');
 require('materialize-css/dist/css/materialize.css');
 require('angular');
-require('angular-ui-router');
+require('@uirouter/angularjs');
 
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
@@ -20,6 +20,7 @@ require('../lib/client/api_service.es6.js');
 require('../lib/controller/api_catalog.es6.js');
 require('../lib/controller/api_confluence.es6.js');
 require('../lib/controller/default.es6.js');
+require('../lib/controller/header.es6.js');
 
 app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider.state({
