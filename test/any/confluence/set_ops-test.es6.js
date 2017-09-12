@@ -119,7 +119,7 @@ describe('Set ops', () => {
 
       set.orderBy(Num.ID).select(E.SET_MINUS(nullSet))
           .then(sink => {
-            expect(sink.a.map(num => num.id))
+            expect(sink.array.map(num => num.id))
                 .toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
             done();
           });
@@ -136,7 +136,7 @@ describe('Set ops', () => {
 
       set.select(E.SET_MINUS(subtrahend))
           .then(sink => {
-            expect(sink.a).toEqual([]);
+            expect(sink.array).toEqual([]);
 
             done();
           });
@@ -156,7 +156,7 @@ describe('Set ops', () => {
       // {0..9} \ {0, 2, 4, 6, 8}
       set.orderBy(Num.ID).select(E.SET_MINUS(subtrahend))
           .then(sink => {
-            expect(sink.a.map(num => num.id))
+            expect(sink.array.map(num => num.id))
                 .toEqual([1, 3, 5, 7, 9]);
 
             done();
@@ -183,7 +183,7 @@ describe('Set ops', () => {
       set.orderBy(Num.ID)
           .select(E.SET_MINUS(subtrahend1, E.SET_MINUS(subtrahend2)))
           .then(sink => {
-            expect(sink.a.map(num => num.id))
+            expect(sink.array.map(num => num.id))
                 .toEqual([0, 2, 4, 6, 8]);
 
             done();
@@ -209,7 +209,7 @@ describe('Set ops', () => {
       // {0..9} \ {1, 7} \ {3, 5, 9}
       set.orderBy(Num.ID).select(E.SET_MINUS([subtrahend1, subtrahend2]))
           .then(sink => {
-            expect(sink.a.map(num => num.id))
+            expect(sink.array.map(num => num.id))
                 .toEqual([0, 2, 4, 6, 8]);
 
             done();
@@ -228,7 +228,7 @@ describe('Set ops', () => {
 
       set.orderBy(Num.ID).select(E.SET_MINUS(subtrahend))
           .then(sink => {
-            expect(sink.a.map(num => num.id))
+            expect(sink.array.map(num => num.id))
                 .toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
 
             done();
@@ -252,7 +252,7 @@ describe('Set ops', () => {
       // {0..9} \ {0, 2, 4, 6, 8}
       set.orderBy(Num.ID).select(E.SET_MINUS(subtrahend))
           .then(sink => {
-            expect(sink.a.map(num => num.id))
+            expect(sink.array.map(num => num.id))
                 .toEqual([1, 3, 5, 7, 9]);
 
             done();
@@ -272,7 +272,7 @@ describe('Set ops', () => {
 
       set.orderBy(Num.ID).select(E.INTERSECT(sameSet))
           .then(sink => {
-            expect(sink.a.map(num => num.id))
+            expect(sink.array.map(num => num.id))
                 .toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
             done();
           });
@@ -288,7 +288,7 @@ describe('Set ops', () => {
 
       set.orderBy(Num.ID).select(E.INTERSECT(nullSet))
           .then(sink => {
-            expect(sink.a.map(num => num.id)).toEqual([]);
+            expect(sink.array.map(num => num.id)).toEqual([]);
             done();
           });
     });
@@ -307,7 +307,7 @@ describe('Set ops', () => {
       // {0..9} INTERSECT {0, 2, 4, 6, 8}
       set.orderBy(Num.ID).select(E.INTERSECT(secondary))
           .then(sink => {
-            expect(sink.a.map(num => num.id))
+            expect(sink.array.map(num => num.id))
                 .toEqual([0, 2, 4, 6, 8]);
 
             done();
@@ -328,7 +328,7 @@ describe('Set ops', () => {
       // {0, 2, 4, 6, 8} INTERSECT {0..9}
       set.orderBy(Num.ID).select(E.INTERSECT(secondary))
           .then(sink => {
-            expect(sink.a.map(num => num.id))
+            expect(sink.array.map(num => num.id))
                 .toEqual([0, 2, 4, 6, 8]);
 
             done();
@@ -355,7 +355,7 @@ describe('Set ops', () => {
       set.orderBy(Num.ID)
           .select(E.INTERSECT(secondary1, E.INTERSECT(secondary2)))
           .then(sink => {
-            expect(sink.a.map(num => num.id))
+            expect(sink.array.map(num => num.id))
                 .toEqual([7]);
 
             done();
@@ -382,7 +382,7 @@ describe('Set ops', () => {
       set.orderBy(Num.ID)
           .select(E.INTERSECT([secondary1, secondary2]))
           .then(sink => {
-            expect(sink.a.map(num => num.id))
+            expect(sink.array.map(num => num.id))
                 .toEqual([7]);
 
             done();
@@ -406,7 +406,7 @@ describe('Set ops', () => {
       // {0..9} INTERSECT {0, 2, 4, 6, 8}
       set.orderBy(Num.ID).select(E.INTERSECT(secondary))
           .then(sink => {
-            expect(sink.a.map(num => num.id))
+            expect(sink.array.map(num => num.id))
                 .toEqual([0, 2, 4, 6, 8]);
 
             done();
@@ -449,7 +449,7 @@ describe('Set ops', () => {
       secondary.put(mkNum(1));
 
       E.UNION(primary, secondary).select().then(sink => {
-        expect(sink.a.map(num => num.id).sort()).toEqual([0, 1]);
+        expect(sink.array.map(num => num.id).sort()).toEqual([0, 1]);
         done();
       });
     });
@@ -463,7 +463,7 @@ describe('Set ops', () => {
       secondary.put(mkNum(1));
 
       E.UNION(primary, secondary).select().then(sink => {
-        expect(sink.a.map(num => num.id).sort()).toEqual([0, 1]);
+        expect(sink.array.map(num => num.id).sort()).toEqual([0, 1]);
         done();
       });
     });
@@ -478,7 +478,7 @@ describe('Set ops', () => {
       tertiary.put(mkNum(2));
 
       E.UNION(primary, E.UNION(secondary, tertiary)).select().then(sink => {
-        expect(sink.a.map(num => num.id).sort()).toEqual([0, 1, 2]);
+        expect(sink.array.map(num => num.id).sort()).toEqual([0, 1, 2]);
         done();
       });
     });
@@ -493,7 +493,7 @@ describe('Set ops', () => {
       tertiary.put(mkNum(2));
 
       E.UNION(primary, secondary, tertiary).select().then(sink => {
-        expect(sink.a.map(num => num.id).sort()).toEqual([0, 1, 2]);
+        expect(sink.array.map(num => num.id).sort()).toEqual([0, 1, 2]);
         done();
       });
     });
@@ -517,7 +517,7 @@ describe('Set ops', () => {
       cDAO.put(mkNum(6));
 
       E.UNION(aDAO, E.UNION(bDAO, cDAO)).select().then(sink => {
-        expect(sink.a.map(num => num.id).sort()).toEqual([0, 1, 2, 3, 4, 5, 6]);
+        expect(sink.array.map(num => num.id).sort()).toEqual([0, 1, 2, 3, 4, 5, 6]);
         done();
       });
     });

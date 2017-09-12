@@ -61,7 +61,7 @@ describe('ApiVelocity', () => {
     ]).then(() => apiVelocity.run())
         .then(() => apiVelocity.apiVelocityDAO.select())
         .then(sink => {
-          expect(sortedEquals(sink.a, [
+          expect(sortedEquals(sink.array, [
             ApiVelocityData.create({
               releaseDate: release.releaseDate,
               browserName: release.browserName,
@@ -132,7 +132,7 @@ describe('ApiVelocity', () => {
     ]).then(() => apiVelocity.run())
         .then(() => apiVelocity.apiVelocityDAO.select())
         .then(sink => {
-          expect(sortedEquals(sink.a, [
+          expect(sortedEquals(sink.array, [
             ApiVelocityData.create({
               releaseDate: release1.releaseDate,
               browserName: release1.browserName,
@@ -212,7 +212,7 @@ describe('ApiVelocity', () => {
     ]).then(() => apiVelocity.run())
         .then(() => apiVelocity.apiVelocityDAO.select())
         .then(sink => {
-          expect(sortedEquals(sink.a, [
+          expect(sortedEquals(sink.array, [
             ApiVelocityData.create({
               releaseDate: alpha.releaseDate,
               browserName: alpha.browserName,
