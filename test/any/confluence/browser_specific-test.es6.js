@@ -127,7 +127,7 @@ describe('BrowserSpecific', function() {
       return browserSpecific.browserSpecificDAO.select();
     }).then(function(sink) {
       expect(sortedEquals(
-        sink.a,
+        sink.array,
         [
           mkData(0, date1, alpha, [], [beta, charlie]),
           mkData(1, date1, beta, [], [alpha, charlie]),
@@ -191,7 +191,7 @@ describe('BrowserSpecific', function() {
       return browserSpecific.browserSpecificDAO.select();
     }).then(function(sink) {
       expect(sortedEquals(
-        sink.a,
+        sink.array,
         [
           mkData(0, date1, alpha1, [], [beta1]),
           mkData(1, date3, alpha2, [], [beta2]),
@@ -284,10 +284,10 @@ describe('BrowserSpecific', function() {
       // browser-specific because alpha2 didn't ship it, and alpha2 is within
       // the grace period. However, it does count when it's still shipping in
       // alpha3 (which has alpha2_1, but not alpha2, in its grace period).
-      expect(sink.a[1].release.id).toBe('Alpha_2.1_Windows_10');
-      expect(sink.a[1].value).toBe(0);
-      expect(sink.a[2].release.id).toBe('Alpha_3_Windows_10');
-      expect(sink.a[2].value).toBe(1);
+      expect(sink.array[1].release.id).toBe('Alpha_2.1_Windows_10');
+      expect(sink.array[1].value).toBe(0);
+      expect(sink.array[2].release.id).toBe('Alpha_3_Windows_10');
+      expect(sink.array[2].value).toBe(1);
       done();
     });
   });
@@ -365,8 +365,8 @@ describe('BrowserSpecific', function() {
       // The important bit: Adding interface to alpha3 didn't count as
       // browser-specific because charlie2 shipped it (even though neither
       // charlie3, nor any version of beta shipped it).
-      expect(sink.a[0].release.id).toBe('Alpha_2.1_Windows_10');
-      expect(sink.a[0].value).toBe(0);
+      expect(sink.array[0].release.id).toBe('Alpha_2.1_Windows_10');
+      expect(sink.array[0].value).toBe(0);
       done();
     });
   });
