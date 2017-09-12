@@ -111,7 +111,7 @@ describe('AggressiveRemoval', function() {
     }).then(function() {
       return aggressiveRemoval.aggressiveRemovalDAO.select();
     }).then(function(sink) {
-      var array = sink.a;
+      var array = sink.array;
       // One data point satisfies computation constraints:
       // 1. Computed from date with at least one version from each browser,
       // 2. Computed from date with at least two versions >1yr-old from browser
@@ -234,7 +234,7 @@ describe('AggressiveRemoval', function() {
     }).then(function() {
       return aggressiveRemoval.aggressiveRemovalDAO.select();
     }).then(function(sink) {
-      var array = sink.a;
+      var array = sink.array;
       // One data point satisfies computation constraints:
       // 1. Computed from date with at least one version from each browser,
       // 2. Computed from date with at least two versions >1yr-old from browser
@@ -380,7 +380,7 @@ describe('AggressiveRemoval', function() {
     }).then(function() {
       return aggressiveRemoval.aggressiveRemovalDAO.select();
     }).then(function(sink) {
-      var array = sink.a;
+      var array = sink.array;
       // One data point satisfies computation constraints:
       // 1. Computed from date with at least one version from each browser,
       // 2. Computed from date with at least two versions >1yr-old from browser
@@ -527,7 +527,7 @@ describe('AggressiveRemoval', function() {
     }).then(function() {
       return aggressiveRemoval.aggressiveRemovalDAO.select();
     }).then(function(sink) {
-      var array = sink.a;
+      var array = sink.array;
       // Two data points satisfies computation constraints:
       // 1. Computed from date with at least one version from each browser,
       // 2. Computed from date with at least two versions >1yr-old from browser
@@ -656,7 +656,7 @@ describe('AggressiveRemoval', function() {
     }).then(function() {
       return aggressiveRemoval.aggressiveRemovalDAO.select();
     }).then(function(sink) {
-      var array = sink.a;
+      var array = sink.array;
       // One data point satisfies computation constraints:
       // 1. Computed from date with at least one version from each browser,
       // 2. Computed from date with at least two versions >1yr-old from browser
