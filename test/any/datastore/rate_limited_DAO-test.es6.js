@@ -30,15 +30,15 @@ describe('RateLimitedDAO', function() {
     rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 3}));
     jasmine.clock().tick(55);
     arrayDAO.select().then((arraySink) => {
-      expect(arraySink.a.length).toBe(1);
+      expect(arraySink.array.length).toBe(1);
     });
     jasmine.clock().tick(50);
     arrayDAO.select().then((arraySink) => {
-      expect(arraySink.a.length).toBe(2);
+      expect(arraySink.array.length).toBe(2);
     });
     jasmine.clock().tick(50);
     arrayDAO.select().then((arraySink) => {
-      expect(arraySink.a.length).toBe(3);
+      expect(arraySink.array.length).toBe(3);
     });
     done();
   });
@@ -48,7 +48,7 @@ describe('RateLimitedDAO', function() {
     rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 3}));
     jasmine.clock().tick(160);
     arrayDAO.select().then((arraySink) => {
-      expect(arraySink.a.map((Item) => Item.id)).toEqual(
+      expect(arraySink.array.map((Item) => Item.id)).toEqual(
         [1, 2, 3]);
         done();
     });
@@ -60,7 +60,7 @@ describe('RateLimitedDAO', function() {
       rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 3}));
       jasmine.clock().tick(70);
       arrayDAO.select().then((arraySink) => {
-        expect(arraySink.a.map((Item) => Item.id)).toEqual(
+        expect(arraySink.array.map((Item) => Item.id)).toEqual(
           [1]);
           done();
       });
@@ -68,7 +68,7 @@ describe('RateLimitedDAO', function() {
       rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 5}));
       jasmine.clock().tick(150);
       arrayDAO.select().then((arraySink) => {
-        expect(arraySink.a.map((Item) => Item.id)).toEqual(
+        expect(arraySink.array.map((Item) => Item.id)).toEqual(
           [1, 2, 3, 4]);
           done();
       });
@@ -77,7 +77,7 @@ describe('RateLimitedDAO', function() {
       rateLimitedDAO.put(test.RateLimitedDAO.Item.create({id: 8}));
       jasmine.clock().tick(300);
       arrayDAO.select().then((arraySink) => {
-        expect(arraySink.a.map((Item) => Item.id)).toEqual(
+        expect(arraySink.array.map((Item) => Item.id)).toEqual(
           [1, 2, 3, 4, 5, 6, 7, 8]);
           done();
       });

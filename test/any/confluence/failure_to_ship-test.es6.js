@@ -126,7 +126,7 @@ describe('FailureToShip', function() {
     }).then(function() {
       return failureToShip.failureToShipDAO.select();
     }).then(function(sink) {
-      expect(sortedEquals(sink.a, [
+      expect(sortedEquals(sink.array, [
         // Alpha fails to ship BC.
         mkData(1, date1, alpha, [], [beta, charlie]),
         // Beta fails to ship AC.
@@ -191,7 +191,7 @@ describe('FailureToShip', function() {
     }).then(function() {
       return failureToShip.failureToShipDAO.select();
     }).then(function(sink) {
-      expect(sortedEquals(sink.a, [
+      expect(sortedEquals(sink.array, [
         mkData(0, date1, alpha1, [], [beta1]),
         mkData(0, date3, alpha2, [alpha1], [beta2]),
         mkData(0, date1, beta1, [], [alpha1]),
@@ -286,8 +286,8 @@ describe('FailureToShip', function() {
       // This is because charlie2, which is within the grace period, did not
       // ship the API; failure to ship only registers when ALL releases of other
       // browsers within the grace period shipped the API.
-      expect(sink.a[1].release.id).toBe('Alpha_2.1_Windows_10');
-      expect(sink.a[1].value).toBe(0);
+      expect(sink.array[1].release.id).toBe('Alpha_2.1_Windows_10');
+      expect(sink.array[1].value).toBe(0);
       done();
     });
   });
