@@ -49,6 +49,7 @@
   "foam.mlang.sink.Unique",
   "org.chromium.apis.web.ApiVelocityData",
   "org.chromium.apis.web.BrowserMetricData",
+  "org.chromium.apis.web.BrowserMetricDataType",
   "org.chromium.apis.web.ConfluenceSyncDAO",
   "org.chromium.apis.web.DataLoadedEvent",
   "org.chromium.apis.web.NewMatrixEvent",
