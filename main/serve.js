@@ -19,6 +19,18 @@ require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 const pkg = org.chromium.apis.web;
 
+foam.CLASS({
+  refines: 'foam.net.node.Handler',
+
+  documentation: `Report raw message (no potentially identifying metadata) in
+      request handlers`,
+
+  methods: [
+    function reportWarnMsg(req, msg) { this.warn(msg); },
+    function reportErrorMsg(req, msg) { this.error(msg); },
+  ],
+});
+
 let server = foam.net.node.Server.create({
   port: 8080,
 });
