@@ -101,6 +101,8 @@ Failing to ship an API that other major vendors provide requires web developers
 to use special code paths to remain interoperable. Smaller values are good;
 larger values are bad.
 
+### Aggressive Removal
+
 #### Definition
 
 The Aggressive Removal metric counts APIs that The Browser once provided, but no
@@ -111,6 +113,8 @@ longer does, and all other browsers provide after the Grace Period.
 Removing an API from only one browser risks breaking existing sites that
 (reasonably) assume that all browsers support the API. Smaller values are good;
 larger values are bad.
+
+### Browser-Specific
 
 #### Definition
 
@@ -167,11 +171,14 @@ simplify this process soon. If you have all the prerequisites, read on…
 2. Copy `/path/to/mdittmer/web-apis/data/og/*.json` to
    `/path/to/GoogleChrome/confluence/data/og`.
 
-3. In `/path/to/GoogleChrome/confluence`, run `node --max_old_space_size=16384
-   ./main/datastore_update.es6.js`. This will take a long time, but it will push
-   new data to your Cloud Datastore database (default partition).
+3. In `/path/to/GoogleChrome/confluence`, install your Cloud Datastore
+   credentials at `.local/credentials.json`.
 
-4. Optional: run `node --max_old_space_size=16384 ./main/journal_update.es6.js`
+4. Run `node --max_old_space_size=16384 ./main/datastore_update.es6.js`. This
+   will take a long time, but it will push new data to your Cloud Datastore
+   database (default partition).
+
+5. Optional: run `node --max_old_space_size=16384 ./main/journal_update.es6.js`
    to update your local data snapshot. This is not strictly necessary, but Cloud
    Datastore-backed service instances will take longer to initialize their cache
    if they have a stale local snapshot.
