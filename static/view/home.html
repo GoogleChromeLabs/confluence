@@ -3,6 +3,17 @@
     overflow: auto;
     padding: 8px 24px;
   }
+  .card-image img {
+    max-height: 400px;
+    padding: 24px;
+  }
+  p {
+    margin: 0;
+    padding: 24px;
+  }
+  .divide {
+    border-top: 1px solid rgba(160, 160, 160, 0.2);
+  }
 </style>
 <div class="content">
   <h2 class="header">Web API Confluence</h2>
@@ -11,17 +22,25 @@
       <img ng-src="images/elastic-band.png">
     </div>
     <div class="card-stacked">
-      <div class="card-content">
-        <p>A web UI for visualizing API confluence metrics. These metrics are intended to capture how browser vendors are stretching the elastic band of the web platform.
-        <hr><br>
-        <b>Stretching is good</b>: Browsers should be implementing new APIs to add value to the platform.
-        <br>
-        <br>
-        <b>Breaking is bad</b>: Implementing too many new APIs before other browsers catch up, or failing to remove APIs other browsers don't intend to ship causes fragmentation.</p>
+      <div>
+        <p class="flow-text">
+	  A web service and UI for visualizing API confluence metrics. These
+	  metrics are intended to capture how browser vendors are stretching
+	  the elastic band of the web platform.
+	</p>
+        <p class="divide flow-text">
+	  <b>Stretching is good</b>: Browsers should be implementing new APIs
+	  to add value to the platform.
+	</p>
+        <p class="divide flow-text">
+          <b>Breaking is bad</b>: Implementing too many new APIs before other
+          browsers catch up, or failing to remove APIs other browsers don't
+          intend to ship causes fragmentation.
+	</p>
       </div>
       <div class="card-action">
-        <a ui-sref="catalog" class="blue-text">catalog</a>
-        <a ui-sref="confluence" class="blue-text">confluence</a>
+        <a ui-sref="confluence" class="blue-text right btn-flat">confluence</a>
+        <a ui-sref="catalog" class="blue-text right btn-flat">catalog</a>
       </div>
     </div>
   </div>
