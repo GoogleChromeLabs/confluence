@@ -23,17 +23,24 @@ let server = foam.net.node.Server.create({
   port: 8080,
 });
 
-const credentials = JSON.parse(fs.readFileSync(
-    path.resolve(__dirname, '../.local/credentials.json')));
 const logger = foam.log.ConsoleLogger.create();
-const daoContainer = pkg.DatastoreContainer.create({
+let credentials = null;
+try {
+  credentials = require('../.local/credentials.json');
+} catch (e) {
+  logger.warn(`No Cloud Datastore credentails found. Using read-only copy of
+                   local data snapshot`);
+}
+const daoContainer = credentials ? pkg.DatastoreContainer.create({
   mode: pkg.DatastoreContainerMode.WEB_SERVICE,
   gcloudAuthEmail: credentials.client_email,
   gcloudAuthPrivateKey: credentials.private_key,
   gcloudProjectId: credentials.project_id,
   logger: logger,
+}) : pkg.DAOContainer.create({
+  logger: logger,
 });
-const ctx = daoContainer.ctx;
+const ctx = daoContainer.ctx || daoContainer;
 
 function registerDAO(name, dao) {
   foam.assert(dao, 'Broken use of helper: registerDAO()');
