@@ -53,7 +53,6 @@
   "org.chromium.apis.web.ConfluenceSyncDAO",
   "org.chromium.apis.web.DataLoadedEvent",
   "org.chromium.apis.web.NewMatrixEvent",
-  "org.chromium.apis.web.NewMatrixEvent",
   "org.chromium.apis.web.Release",
   "org.chromium.apis.web.ReleaseWebInterfaceJunction",
   "org.chromium.apis.web.VersionedApiVelocityData",
