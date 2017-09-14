@@ -9,6 +9,9 @@
     display: flex;
     flex-direction: column;
   }
+  .text-content {
+    padding: 24px;
+  }
   .chart-tab {
     overflow: auto;
   }
@@ -16,19 +19,28 @@
     display: flex;
     flex-direction: column;
   }
+  .pad-h {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .tabs {
+    /* Same as <nav> element from Materialize */
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2)
+  }
 </style>
-<ul id="tabs" class="tabs" ng-show="releaseKeys.length!==0">
+<h3 class="heading pad-h">Confluence Metrics</h3>
+<ul id="tabs" class="tabs blue darken-3" ng-show="releaseKeys.length!==0">
   <li class="tab">
-    <a ng-click="showTab=0" class="blue-text text-darken-2">API Velocity</a>
+    <a ng-click="showTab=0" class="white-text">API Velocity</a>
   </li>
   <li class="tab">
-    <a ng-click="showTab=1" class="blue-text text-darken-2">Failue to Ship</a>
+    <a ng-click="showTab=1" class="white-text">Failue to Ship</a>
   </li>
   <li class="tab">
-    <a ng-click="showTab=2" class="blue-text text-darken-2">Aggressive removal</a>
+    <a ng-click="showTab=2" class="white-text">Aggressive removal</a>
   </li>
   <li class="tab">
-    <a ng-click="showTab=3" class="blue-text text-darken-2">Browser-Specific APIs</a>
+    <a ng-click="showTab=3" class="white-text">Browser-Specific APIs</a>
   </li>
   <li class="tab" ng-repeat="view in additionalViews track by $index">
     <a ng-click="$parent.showTab=4+$index">{{"#view"+$index}}</a>
@@ -37,50 +49,109 @@
 
 <div class="tab-content">
   <div class="chart-tab" ng-show="showTab===0">
-    <api-velocity-chart
-      ng-repeat="(release, apiVelocity) in apiVelocityMetrics"
-      chart-id="release + '-api-velocity'"
-      title="release + ' API Velocity'"
-      api-velocity="apiVelocity"
-      new-diff-view="createNewDiffView(minuend, subtrahend)"
-    ></api-velocity-chart>
+    <div class="text-content flow-text">
+      <h4 class="heading">API Velocity</h4>
+      <p>
+        API Velocity indicates the rate at which browsers are adding and
+        removing APIs. The trend line tracks the count of APIs in each
+        release. The hight of the green and red regions indicate the number
+        of APIs added and removed, respectively, in each release.
+      </p>
+    </div>
+    <div class="container">
+      <api-velocity-chart
+          ng-repeat="(release, apiVelocity) in apiVelocityMetrics"
+          chart-id="release + '-api-velocity'"
+          title="release + ' API Velocity'"
+          api-velocity="apiVelocity"
+          new-diff-view="createNewDiffView(minuend, subtrahend)"
+      ></api-velocity-chart>
+    </div>
   </div>
   <div class="chart-tab" ng-show="showTab===1">
-    <browser-metric-chart
-      ng-if="failureToShipMetric"
-      chart-id="failure-to-ship-chart"
-      title="Failure To Ship Metric"
-      browser-metric="failureToShipMetric"
-      create-new-view="newFailureToShipView(release, prevReleases, comparedReleases)"
-    >
-    </browser-metric-chart>
+    <div class="text-content flow-text">
+      <h4 class="heading">Failure to Ship</h4>
+      <p>
+        The Failure to Ship metric is intended to indicate when browsers are
+        not shipping APIs that developers can reasonably assume is a part of
+        the web platform (lower is better).
+      </p>
+    </div>
+    <div class="container">
+      <browser-metric-chart
+          ng-if="failureToShipMetric"
+          chart-id="failure-to-ship-chart"
+          title="Failure To Ship Metric"
+          browser-metric="failureToShipMetric"
+          create-new-view="newFailureToShipView(release, prevReleases, comparedReleases)"
+      >
+      </browser-metric-chart>
+    </div>
+    <div class="text-content flow-text">
+      <p>
+        This metric is computed relative to a one-year "Grace Period" prior
+        to each data point. It measures the number of APIs that each browser
+        provides for the duration of the Grace Period, but all other browsers
+        do provide throughout the Grace Period.
+      </p>
+    </div>
   </div>
   <div class="chart-tab" ng-show="showTab===2">
-    <browser-metric-chart
-      ng-if="aggressiveRemovalMetric"
-      chart-id="aggressive-removal-apis-chart"
-      title="Aggressive Removal APIs"
-      browser-metric="aggressiveRemovalMetric"
-      create-new-view="newAggressiveRemovalView(release, prevReleases, comparedReleases)"
-    >
-    </browser-metric-chart>
+    <div class="text-content flow-text">
+      <h4 class="heading">Aggressive Removal</h4>
+      <p>
+        The Aggressive Removal metric is intended to indicate when browsers
+        are removing APIs that developers can reasonably assume are still a
+        part of the web platform (lower is better).
+      </p>
+    </div>
+    <div class="container">
+      <browser-metric-chart
+          ng-if="aggressiveRemovalMetric"
+          chart-id="aggressive-removal-apis-chart"
+          title="Aggressive Removal APIs"
+          browser-metric="aggressiveRemovalMetric"
+          create-new-view="newAggressiveRemovalView(release, prevReleases, comparedReleases)"
+      >
+      </browser-metric-chart>
+    </div>
+    <div class="text-content flow-text">
+      <p>
+        This metric is computed relative to a one-year "Grace Period" prior
+        to each data point. It measures the number of APIs removed from
+        each browser prior to the Grace Period, that have not been added
+        back in the latest relase following the Grace Period, and that are
+        provided in all other browsers in the latest relase following the
+        Grace Period.
+      </p>
+    </div>
   </div>
   <div class="chart-tab" ng-show="showTab===3">
-    <browser-metric-chart
-      ng-if="browserSpecificMetric"
-      chart-id="browser-specific-apis-chart"
-      title="Browser Specific APIs"
-      browser-metric="browserSpecificMetric"
-      create-new-view="newBrowserSpecificView(release, prevReleases, comparedReleases)"
-    >
-    </browser-metric-chart>
+    <div class="text-content flow-text">
+      <h4 class="heading">Browser-Specific</h4>
+      <p>
+        The Browser-Specific metric is intended to indicate when browsers are
+        shipping APIs that developers cannot reasonably assume are a part of
+        the web platform (lower is better).
+      </p>
+    </div>
+    <div class="container">
+      <browser-metric-chart
+          ng-if="browserSpecificMetric"
+          chart-id="browser-specific-apis-chart"
+          title="Browser Specific APIs"
+          browser-metric="browserSpecificMetric"
+          create-new-view="newBrowserSpecificView(release, prevReleases, comparedReleases)"
+      >
+      </browser-metric-chart>
+    </div>
+    <div class="text-content flow-text">
+      <p>
+        This metric is computed relative to a one-year "Grace Period" prior
+        to each data point. It measures the number of APIs that each
+        browser provides for the duration of the Grace Period, but all
+        other browsers do not provide throughout the Grace Period.
+      </p>
+    </div>
   </div>
-  <!-- additional view. -->
-  <api-catalog-table
-    ng-repeat="view in additionalViews track by $index"
-    ng-show="$parent.showTab === 4 + $index"
-    releases="view.releases"
-    release-options="view.releaseOptions"
-    num-available="view.numAvailable">
-  </api-catalog-table>
 </div>

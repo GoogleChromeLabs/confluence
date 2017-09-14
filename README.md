@@ -65,10 +65,10 @@ Browser.
 
 **Definition**: *Grace Period*: Most metrics are deliberately calculated with
 respect to releases of browsers *other than* The Browser sometime in the
-future. This avoids penalizing The Browser for making a change (i.e., shipping
+past. This avoids penalizing The Browser for making a change (i.e., shipping
 or removing an API) when other browsers respond in kind. Currently, the Grace
-Period used for all metrics that have one is one year. The “a year later” in the
-above example refers to the Aggressive Removal Grace Period.
+Period used for all metrics that have one is one year. The "a year later" in
+the above example refers to the Aggressive Removal Grace Period.
 
 *API Confluence metrics* are API counts assessed for a particular browser at a
 particular point in time. Most metrics are computed on every date that *any*
@@ -94,34 +94,38 @@ wild variation is bad.
 
 #### Definition
 
-The Failure to Ship metric counts APIs that The Browser does not provide, but
-all other browsers provide after the Grace Period.
+The Failure to Ship metric indicates the number of APIs that The Browser
+provides for the duration of the Grace Period, but all other browsers do
+provide throughout the Grace Period.
 
 #### Rationale
 
-Failing to ship an API that other major vendors provide requires web developers
-to use special code paths to remain interoperable. Smaller values are good;
-larger values are bad.
+Failing to ship an API that other major vendors provide requires web
+developers to use special code paths to remain interoperable. Smaller values
+are good; larger values are bad.
 
 ### Aggressive Removal
 
 #### Definition
 
-The Aggressive Removal metric counts APIs that The Browser once provided, but no
-longer does, and all other browsers provide after the Grace Period.
+The Aggressive Removal metric indicates the number of APIs removed from a The
+Browser prior to the Grace Period, that have not been added back in the
+latest relase following the Grace Period, and that are provided in all other
+browsers in the latest relase following the Grace Period.
 
 #### Rationale
 
 Removing an API from only one browser risks breaking existing sites that
-(reasonably) assume that all browsers support the API. Smaller values are good;
-larger values are bad.
+(reasonably) assume that all browsers support the API. Smaller values are
+good; larger values are bad.
 
 ### Browser-Specific
 
 #### Definition
 
-The Browser-Specific metric counts APIs that The Browser provides, but all other
-browsers do not provide after the Grace Period.
+The Browser-Specific metric indicates the number of APIs that The Browser
+provides for the duration of the Grace Period, but all other browsers do not
+provide throughout the Grace Period.
 
 #### Rationale
 
