@@ -24,6 +24,9 @@
   #intro .card-stacked {
     border-left: 1px solid rgba(160, 160, 160, 0.2);
   }
+  .header.darken-3 {
+    color: #fff;
+  }
 </style>
 <div class="content">
   <h2 class="header">Web API Confluence</h2>
@@ -51,17 +54,16 @@
     </div>
   </div>
   <div class="card horizontal">
-    <div class="card-stacked">
+    <div class="card-stacked flow-text">
       <div>
-      <h3 class="header">The Catalog</h3>
-      <p class="divide flow-text">
-	The API Catalog lists attributes/properties and operations/methods
-	exposed on constructor functions and their prototypes. These data are
-	gathered from the JavaScript object graph exposed on major browser
-	releases going back more than two years. The catalog constitutes the
-	raw data from which aggregate <i>API Confluence
-	metrics</i> are computed.
-      </p>
+        <h3 class="header blue darken-3">The Catalog</h3>
+        <p class="divide">
+	  The API Catalog lists properties and methods exposed on constructor
+	  functions and their prototypes. These data are gathered from the
+	  JavaScript object graph exposed on major browser releases from the
+	  past several years. The catalog constitutes the raw data from which
+	  aggregate <i>API Confluence metrics</i> are computed.
+        </p>
       </div>
       <div class="card-action">
         <a ui-sref="catalog" class="blue-text right btn-flat">open catalog</a>
@@ -71,27 +73,27 @@
   <div class="card horizontal">
     <div class="card-stacked flow-text">
       <div>
-      <h3 class="header">The Metrics</h3>
-      <p class="divide">
-	API confluence metrics are just counts of "APIs" for a particular
-	browser version. By "API" is meant a property or method on an
-	interface exposed by the browser. Examples include:
-      </p>
-      <blockquote>
-	<code>Window.location</code><br>
-	<code>Document.write()</code><br>
-	<code>RTCPeerConnection.currentRemoteDescription</code>
-      </blockquote>
-      <p>
-	Most metrics attempt to capture a count of <i>bad APIs</i>. For example,
-	the <i>Failure to Ship</i> metric counts APIs that a browser release
-	is missing, and all other browsers have been providing the API for at
-	least a year.
-      </p>
-      <p>
-	A precise of the metrics can be found
-	<a href="https://github.com/GoogleChrome/confluence#the-metrics">here</a>.
-      </p>
+        <h3 class="header blue darken-3">The Metrics</h3>
+        <p class="divide">
+	  API confluence metrics are just counts of "APIs" for a particular
+	  browser version. By "API" is meant a property or method on an
+	  interface exposed by the browser. Examples include:
+        </p>
+        <blockquote>
+	  <code>Window.location</code><br>
+	  <code>Document.write()</code><br>
+	  <code>RTCPeerConnection.currentRemoteDescription</code>
+        </blockquote>
+        <p>
+	  Most metrics attempt to capture a count of <i>bad APIs</i>. For example,
+	  the <i>Failure to Ship</i> metric counts APIs that a browser release
+	  is missing, and all other browsers have been providing the API for at
+	  least a year.
+        </p>
+        <p>
+	  A precise of the metrics can be found
+	  <a href="https://github.com/GoogleChrome/confluence#the-metrics">here</a>.
+        </p>
       </div>
       <div class="card-action">
         <a ui-sref="confluence" class="blue-text right btn-flat">open metrics</a>

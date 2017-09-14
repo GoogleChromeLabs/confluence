@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title></title>
-    <script type='text/javascript' src='vendors.bundle.js'></script>
-    <script type='text/javascript' src='foam.bundle.js'></script>
-    <script type='text/javascript' src='app.bundle.js'></script>
+  <head>
+    <title></title>
+    <script type="text/javascript" src="vendors.bundle.js"></script>
+    <script type="text/javascript" src="foam.bundle.js"></script>
+    <script type="text/javascript" src="app.bundle.js"></script>
     <!--Import Google Icon Font-->
-    <link href='http://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <style type='text/css'>
+    <style type="text/css">
       /* Sticky Footer */
       body {
         display: flex;
@@ -39,38 +39,51 @@
         transform: none;
         -webkit-transform: none;
       }
+      footer.page-footer {
+        padding-top: 4px;
+      }
+      footer .footer-copyright {
+        justify-content: space-between;
+        margin: 0 20px;
+      }
+      .footer-copyright a {
+        font-weight: normal;
+      }
     </style>
-</head>
-<body ng-app="confluence">
-  <header>
-    <nav ng-controller="headerController">
-      <div class='nav-wrapper blue darken-2'>
-        <div style='margin-left: 20px'>
-	  <div class="brand-logo">
-            <a ui-sref="home">Web API Confluence</a>
-	    <span class="header-label">{{headerLabel ? '> ' + headerLabel : ''}}</span>
-	  </div>
+  </head>
+  <body ng-app="confluence">
+    <header>
+      <nav ng-controller="headerController">
+        <div class="nav-wrapper blue darken-2">
+          <div style="margin-left: 20px">
+	    <div class="brand-logo">
+              <a ui-sref="home">Web API Confluence</a>
+	      <span class="header-label">{{headerLabel ? '> ' + headerLabel : ''}}</span>
+	    </div>
+          </div>
+          <ul class="right">
+            <li><a ui-sref="catalog">API Catalog</a></li>
+            <li><a ui-sref="confluence">Confluence Metrics</a></li>
+          </ul>
         </div>
-        <ul class="right">
-          <li><a ui-sref="catalog">API Catalog</a></li>
-          <li><a ui-sref="confluence">Confluence metrics</a></li>
-        </ul>
-      </div>
-    </nav>
-  </header>
+      </nav>
+    </header>
 
-  <main><ui-view></ui-view></main>
+    <main><ui-view></ui-view></main>
 
-  <footer class="page-footer blue darken-2">
-    <div class="footer-copyright blue darken-2">
-      <div class="container">
+    <footer class="page-footer blue darken-2">
+      <div class="footer-copyright blue darken-2">
         Copyright 2017 The Chromium Authors
-        <a class="grey-text text-lighten-4 right"
-          href="https://github.com/GoogleChrome/confluence">
-          Github
+        <a class="grey-text text-lighten-4"
+           href="https://github.com/GoogleChrome/confluence">
+          Code on Github
         </a>
+        <div class="">
+          Feedback:
+          <a class="grey-text text-lighten-4" href="mailto:ecosystem-infra@chromium.org?subject=FEEDBACK: Web API Confluence Dashboard">Email</a> or
+          <a class="grey-text text-lighten-4" href="https://groups.google.com/a/chromium.org/forum/#!newtopic/ecosystem-infra">Google Groups</a>
+        </div>
       </div>
-    </div>
-  </footer>
-</body>
+    </footer>
+  </body>
 </html>

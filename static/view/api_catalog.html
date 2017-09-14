@@ -1,12 +1,17 @@
 <style>
-  .flex-right {
+  .flex-head {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     flex-grow: 0;
     flex-shrink: 0;
   }
-  .pad {
-    padding: 24px;
+  .pad-h {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .pad-v {
+    padding-top: 24px;
+    padding-bottom: 24px;
   }
   api-catalog-table {
     flex-grow: 1;
@@ -59,8 +64,9 @@
   <span ng-repeat-end></span>
   <span ng-repeat-end></span>
 </ul>
-<div class="flex-right">
-  <div class="pad">
+<div class="flex-head">
+  <h3 class="heading pad-h">API Catalog</h3>
+  <div class="pad-h pad-v">
     <a class="add-release-dropdown btn blue darken-3 white"
        data-activates="releaseList">
       Add Release
