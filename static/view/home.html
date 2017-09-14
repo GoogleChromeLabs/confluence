@@ -3,44 +3,98 @@
     overflow: auto;
     padding: 8px 24px;
   }
+  .flex-centered {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
   .card-image img {
+    flex-grow: 0;
+    flex-shrink: 0;
     max-height: 400px;
     padding: 24px;
   }
-  p {
+  .card-stacked p, .card-stacked h3 {
     margin: 0;
     padding: 24px;
   }
   .divide {
     border-top: 1px solid rgba(160, 160, 160, 0.2);
   }
+  #intro .card-stacked {
+    border-left: 1px solid rgba(160, 160, 160, 0.2);
+  }
 </style>
 <div class="content">
   <h2 class="header">Web API Confluence</h2>
-  <div class="card horizontal">
-    <div class="card-image">
+  <div id="intro" class="card horizontal">
+    <div class="card-image flex-centered">
       <img ng-src="images/elastic-band.png">
     </div>
-    <div class="card-stacked">
+    <div class="card-stacked flex-centered flow-text">
       <div>
-        <p class="flow-text">
+        <p>
 	  A web service and UI for visualizing API confluence metrics. These
 	  metrics are intended to capture how browser vendors are stretching
 	  the elastic band of the web platform.
 	</p>
-        <p class="divide flow-text">
+        <p class="divide">
 	  <b>Stretching is good</b>: Browsers should be implementing new APIs
 	  to add value to the platform.
 	</p>
-        <p class="divide flow-text">
+        <p class="divide">
           <b>Breaking is bad</b>: Implementing too many new APIs before other
           browsers catch up, or failing to remove APIs other browsers don't
           intend to ship causes fragmentation.
 	</p>
       </div>
+    </div>
+  </div>
+  <div class="card horizontal">
+    <div class="card-stacked">
+      <div>
+      <h3 class="header">The Catalog</h3>
+      <p class="divide flow-text">
+	The API Catalog lists attributes/properties and operations/methods
+	exposed on constructor functions and their prototypes. These data are
+	gathered from the JavaScript object graph exposed on major browser
+	releases going back more than two years. The catalog constitutes the
+	raw data from which aggregate <i>API Confluence
+	metrics</i> are computed.
+      </p>
+      </div>
       <div class="card-action">
-        <a ui-sref="confluence" class="blue-text right btn-flat">confluence</a>
-        <a ui-sref="catalog" class="blue-text right btn-flat">catalog</a>
+        <a ui-sref="catalog" class="blue-text right btn-flat">open catalog</a>
+      </div>
+    </div>
+  </div>
+  <div class="card horizontal">
+    <div class="card-stacked flow-text">
+      <div>
+      <h3 class="header">The Metrics</h3>
+      <p class="divide">
+	API confluence metrics are just counts of "APIs" for a particular
+	browser version. By "API" is meant a property or method on an
+	interface exposed by the browser. Examples include:
+      </p>
+      <blockquote>
+	<code>Window.location</code><br>
+	<code>Document.write()</code><br>
+	<code>RTCPeerConnection.currentRemoteDescription</code>
+      </blockquote>
+      <p>
+	Most metrics attempt to capture a count of <i>bad APIs</i>. For example,
+	the <i>Failure to Ship</i> metric counts APIs that a browser release
+	is missing, and all other browsers have been providing the API for at
+	least a year.
+      </p>
+      <p>
+	A precise of the metrics can be found
+	<a href="https://github.com/GoogleChrome/confluence#the-metrics">here</a>.
+      </p>
+      </div>
+      <div class="card-action">
+        <a ui-sref="confluence" class="blue-text right btn-flat">open metrics</a>
       </div>
     </div>
   </div>
