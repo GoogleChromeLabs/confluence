@@ -20,7 +20,6 @@ require('../lib/client/api_service.es6.js');
 require('../lib/controller/api_catalog.es6.js');
 require('../lib/controller/api_confluence.es6.js');
 require('../lib/controller/default.es6.js');
-require('../lib/controller/header.es6.js');
 
 app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider.state({
