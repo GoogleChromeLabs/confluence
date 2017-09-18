@@ -14,7 +14,7 @@ require('../lib/confluence/api_velocity.es6.js');
 require('../lib/confluence/browser_specific.es6.js');
 require('../lib/confluence/failure_to_ship.es6.js');
 require('../lib/datastore/datastore_container.es6.js');
-require('../lib/server/cache_handler.es6.js');
+require('../lib/server/server.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
@@ -32,7 +32,7 @@ foam.CLASS({
   ],
 });
 
-let server = foam.net.node.Server.create({
+let server = pkg.Server.create({
   port: 8080,
 });
 
