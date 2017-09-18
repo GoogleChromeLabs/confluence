@@ -14,6 +14,7 @@ require('../lib/confluence/api_velocity.es6.js');
 require('../lib/confluence/browser_specific.es6.js');
 require('../lib/confluence/failure_to_ship.es6.js');
 require('../lib/datastore/datastore_container.es6.js');
+require('../lib/server/cache_handler.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
@@ -58,7 +59,12 @@ function registerDAO(name, dao) {
   foam.assert(dao, 'Broken use of helper: registerDAO()');
   const url = `/${name}`;
   logger.info(`Exporting REST DAO endpoint: ${url}`);
-  server.exportDAO(dao, url);
+  server.addHandler(pkg.CacheHandler.create({
+    delegate: foam.net.node.RestDAOHandler.create({
+      dao: dao,
+      urlPath: url,
+    }, server),
+  }, server));
 }
 
 registerDAO(daoContainer.RELEASE_NAME, ctx.releaseDAO);
