@@ -59,7 +59,6 @@ function registerDAO(name, dao) {
   foam.assert(dao, 'Broken use of helper: registerDAO()');
   const url = `/${name}`;
   logger.info(`Exporting REST DAO endpoint: ${url}`);
-
   server.exportDAO(dao, url);
 }
 
