@@ -59,25 +59,7 @@ function registerDAO(name, dao) {
   foam.assert(dao, 'Broken use of helper: registerDAO()');
   const url = `/${name}`;
   logger.info(`Exporting REST DAO endpoint: ${url}`);
-
-  const cacheHandler = pkg.CacheHandler.create({
-    delegate: foam.net.node.RestDAOHandler.create({
-      dao: dao,
-      urlPath: url,
-    }, server),
-  }, server);
-
-  // NOTE: Plumbing of DAO reset events through boxes works with
-  // dao.listen(sink), but NOT with dao.on.reset(listener). Use a QuickSink
-  // instead of a listener.
-  dao.listen(foam.dao.QuickSink.create({
-    resetFn: function() {
-      logger.info(`DAO reset (${dao.of.id}): Clearing request cache`);
-      cacheHandler.clearCache();
-    },
-  }));
-
-  server.addHandler(cacheHandler);
+  server.exportDAO(dao, url);
 }
 
 registerDAO(daoContainer.RELEASE_NAME, ctx.releaseDAO);
