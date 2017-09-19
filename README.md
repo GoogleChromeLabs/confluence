@@ -139,7 +139,7 @@ Want to contribute to Web API Confluence? Great!
 
 ### Filing issues and contributing code
 
-Please use Github’s issue tracker and pull request features.
+Please use GitHub’s issue tracker and pull request features.
 
 ### Running locally
 
