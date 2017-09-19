@@ -8,7 +8,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 function win() {
-    printf "\n${GREEN}$1${NC}\n"
+  printf "\n${GREEN}$1${NC}\n"
 }
 
 function warn() {
@@ -28,10 +28,10 @@ pushd "${WD}/../node_modules/foam2"
 FOAM2_VERSION=$(git rev-parse HEAD)
 popd
 
-if [ "${CONFLUENCE_VERSION}" == "${FOAM2_VERSION}" ]; then
+if [ "${CONFLUENCE_VERSION}" = "${FOAM2_VERSION}" ]; then
   error "FOAM2 not not under version control"
   exit 1
-done
+fi
 win "Preparing build for Confluence@${CONFLUENCE_VERSION}, FOAM2@${FOAM2_VERSION}"
 
 webpack --config "${WD}/../config/webpack.prod.js"
@@ -41,6 +41,6 @@ if [ "$?" != "0" ]; then
 fi
 win "Deploying"
 
-gcloud set project web-confluence
-gcloud app deploy --version="confluence-${CONFLUENCE_VERSION}_foam2-${FOAM2_VERSION}"
+gcloud config set project web-confluence
+gcloud app deploy --version="confluence-${CONFLUENCE_VERSION:0:7}--foam2-${FOAM2_VERSION:0:7}"
 win "App deployed!"
