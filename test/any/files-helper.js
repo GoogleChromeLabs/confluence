@@ -28,6 +28,7 @@ function requireBrowserCode() {
 
 function requireNodeCode() {
   // Code invoking Node JS APIs.
+  require('../../lib/datastore/dao.js');
   require('../../lib/datastore/datastore_container.es6.js');
   require('../../lib/web_catalog/object_graph_importer.es6.js');
 }

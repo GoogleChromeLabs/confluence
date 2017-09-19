@@ -13,6 +13,7 @@
     "serve": "zsh scripts/serve.sh",
     "test": "npm run testNode && npm run testWeb",
     "testNode": "JASMINE_CONFIG_PATH=./config/jasmine.json jasmine",
+    "testThirdParty": "test/third_party/install.sh && test/third_party/run_tests.sh",
     "testWeb": "karma start ./config/karma.all.conf.js"
   },
   "repository": {
@@ -27,6 +28,7 @@
   "author": "Mark Dittmer, Jing Tao",
   "homepage": "https://github.com/GoogleChrome/confluence#readme",
   "dependencies": {
+    "@google-cloud/datastore": "^1.0.2",
     "angular": "^1.6.3",
     "@uirouter/angularjs": "^1.0.0",
     "d3": "^4.7.4",
