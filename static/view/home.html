@@ -27,8 +27,11 @@
   .header.darken-3 {
     color: #fff;
   }
-  .caveat {
+  .caveat, .warning {
     padding: 0.5em;
+  }
+  blockquote.warning {
+    border-left: 5px solid #fff176;
   }
 </style>
 <div class="content">
@@ -109,4 +112,9 @@
       </div>
     </div>
   </div>
+  <blockquote class="yellow lighten-4 warning">
+    Status in standards is not part of the data or analysis, and there is no
+    guarantee that a widely-supported API is interoperable in its details, or
+    will remain part of the web platform.
+  </blockquote>
 </div>
