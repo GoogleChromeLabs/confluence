@@ -10,7 +10,7 @@ const C = require('./webpack.constants.js');
 const common = require('./webpack.common.js');
 
 const execSync = require('child_process').execSync;
-execSync(`node '${C.FOAM_DIR}/tools/build.js'  ${C.FOAM_FLAGS} ${C.FOAM_BIN_TMP_PATH}`);
+execSync(`node '${C.FOAM_DIR}/tools/build.js'  ${C.FOAM_FLAGS} "${C.FOAM_BIN_TMP_PATH}"`);
 
 module.exports = merge(common, {
   devtool: false,

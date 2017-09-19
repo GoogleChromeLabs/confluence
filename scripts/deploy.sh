@@ -19,23 +19,33 @@ function error() {
     printf "\n${RED}$1${NC}\n"
 }
 
+DIFF_OUTPUT=$(git diff --stat)
+CLEAN_OUTPUT=$(git clean --dry-run)
 
-pushd "${WD}/.."
+if [[ "${DIFF_OUTPUT}" != "" || "${CLEAN_OUTPUT}" != "" ]]; then
+  error "Your working tree is not clean"
+  exit 1
+fi
+
+pushd "${WD}/.." > /dev/null
 CONFLUENCE_VERSION=$(git rev-parse HEAD)
-popd
+popd > /dev/null
 
-pushd "${WD}/../node_modules/foam2"
+pushd "${WD}/../node_modules/foam2" > /dev/null
 FOAM2_VERSION=$(git rev-parse HEAD)
-popd
+popd > /dev/null
 
-if [ "${CONFLUENCE_VERSION}" = "${FOAM2_VERSION}" ]; then
-  error "FOAM2 not not under version control"
+if [[ "${CONFLUENCE_VERSION}" = "" ]]; then
+  error "Main source is not under version control. Is this not a git clone?"
+  exit 1
+fi
+if [[ "${CONFLUENCE_VERSION}" = "" || "${CONFLUENCE_VERSION}" = "${FOAM2_VERSION}" ]]; then
+  error "FOAM2 is not under version control. Did you forget to symlink /path/to/foam2 -> node_modules/foam2?"
   exit 1
 fi
 win "Preparing build for Confluence@${CONFLUENCE_VERSION}, FOAM2@${FOAM2_VERSION}"
 
-webpack --config "${WD}/../config/webpack.prod.js"
-if [ "$?" != "0" ]; then
+if ! webpack --config "${WD}/../config/webpack.prod.js"; then
   error "webpack failed"
   exit 1
 fi
@@ -43,4 +53,4 @@ win "Deploying"
 
 gcloud config set project web-confluence
 gcloud app deploy --version="confluence-${CONFLUENCE_VERSION:0:7}--foam2-${FOAM2_VERSION:0:7}"
-win "App deployed!"
+win "App deployed! Exiting."
