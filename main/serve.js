@@ -33,7 +33,7 @@ foam.CLASS({
 });
 
 let server = pkg.Server.create({
-  port: 8080,
+  port: 8888,
 });
 
 const logger = foam.log.ConsoleLogger.create();

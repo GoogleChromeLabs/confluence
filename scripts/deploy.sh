@@ -39,7 +39,7 @@ if [[ "${CONFLUENCE_VERSION}" = "" ]]; then
   error "Main source is not under version control. Is this not a git clone?"
   exit 1
 fi
-if [[ "${CONFLUENCE_VERSION}" = "" || "${CONFLUENCE_VERSION}" = "${FOAM2_VERSION}" ]]; then
+if [[ "${FOAM2_VERSION}" = "" || "${CONFLUENCE_VERSION}" = "${FOAM2_VERSION}" ]]; then
   error "FOAM2 is not under version control. Did you forget to symlink /path/to/foam2 -> node_modules/foam2?"
   exit 1
 fi
