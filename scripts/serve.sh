@@ -35,7 +35,7 @@ function stop() {
 trap stop INT
 
 warn "STARTING WEBPACK"
-webpack --watch --progress --config "${WD}/../config/webpack.config.js" &
+webpack --watch --progress --config "${WD}/../config/webpack.dev.js" &
 Webpack_PID=$!
 win "WEBPACK STARTED (PID=${Webpack_PID})"
 

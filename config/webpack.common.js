@@ -4,35 +4,34 @@
 'use strict';
 
 const path = require('path');
+
 const webpack = require('webpack');
-const ChunkWebpack = webpack.optimize.CommonsChunkPlugin;
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
-const ROOT_DIR = path.resolve(__dirname, '..');
-const FOAM_DIR = path.resolve(__dirname, '../node_modules/foam2');
-const BUNDLE_DIR = path.resolve(__dirname, '../static/bundle');
-
-const execSync = require('child_process').execSync;
-execSync(`node '${FOAM_DIR}/tools/build.js'  web,gcloud`);
-execSync(`mkdir -p '${ROOT_DIR}/static/bundle'`);
-execSync(`mv '${FOAM_DIR}/foam-bin.js' '${ROOT_DIR}/static/bundle/foam.bundle.js'`);
+const C = require('./webpack.constants.js');
 
 module.exports = {
   entry: {
-    app: [path.resolve(ROOT_DIR, 'main/app.es6')],
-    worker: [path.resolve(ROOT_DIR, 'main/worker.es6')],
+    // Copied in each webpack.<configuration>.js, when FOAM_FLAGS are finalized.
+    foam: [path.resolve(C.ROOT_DIR, '.local/foam-bin')],
+    app: [path.resolve(C.ROOT_DIR, 'main/app.es6')],
   },
   output: {
     filename: '[name].bundle.js',
-    path: BUNDLE_DIR,
+    path: C.BUNDLE_DIR,
   },
   module: {
-    loaders: [
+    rules: [
+      {
+        test: /worker\.(es6\.)?js$/,
+        loader: 'worker-loader',
+        options: {name: '[name].bundle.js'},
+      },
       {
         test: /\.es6\.js$/,
         loader: 'babel-loader',
-        query: {
+        options: {
           presets: ['es2015'],
-          plugins: ['transform-runtime'],
         },
       },
       {
@@ -50,9 +49,16 @@ module.exports = {
     ],
   },
   plugins: [
+    new CleanWebpackPlugin([C.BUNDLE_PROJECT_DIR], {root: C.ROOT_DIR}),
     new webpack.ProvidePlugin({
         'window.$': 'jquery',
         'window.jQuery': 'jquery',
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendors',
+      minChunks: function(module) {
+        return module.context && module.context.indexOf('node_modules') !== -1;
+      },
     }),
   ],
   resolve: {
