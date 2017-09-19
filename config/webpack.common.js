@@ -55,7 +55,7 @@ module.exports = {
         'window.jQuery': 'jquery',
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
+      name: 'vendors',
       minChunks: function(module) {
         return module.context && module.context.indexOf('node_modules') !== -1;
       },
