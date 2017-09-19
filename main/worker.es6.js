@@ -4,7 +4,7 @@
 'use strict';
 
 self.window = self.global = self;
-importScripts('vendor.bundle.js', 'foam.bundle.js');
+importScripts('vendors.bundle.js', 'foam.bundle.js');
 
 require('../lib/client/api_confluence.es6.js');
 require('../lib/client/api_matrix.es6.js');
