@@ -31,7 +31,7 @@
     "angular": "^1.6.3",
     "@uirouter/angularjs": "^1.0.0",
     "d3": "^4.7.4",
-    "foam2": "git://github.com/foam-framework/foam2.git",
+    "foam2": "git://github.com/foam-framework/foam2.git#confluence",
     "jquery": "^3.2.1",
     "materialize-css": "^0.98.1",
     "object-graph-js": "git://github.com/mdittmer/object-graph-js.git"

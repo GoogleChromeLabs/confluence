@@ -19,19 +19,16 @@ function error() {
     printf "\n${RED}$1${NC}\n"
 }
 
-DIFF_OUTPUT=$(git diff --stat)
-CLEAN_OUTPUT=$(git clean --dry-run)
-
-if [[ "${DIFF_OUTPUT}" != "" || "${CLEAN_OUTPUT}" != "" ]]; then
-  error "Your working tree is not clean"
-  exit 1
-fi
-
 pushd "${WD}/.." > /dev/null
+CONFLUENCE_DIFF_OUTPUT=$(git diff --stat)
+CONFLUENCE_CLEAN_OUTPUT=$(git clean --dry-run)
 CONFLUENCE_VERSION=$(git rev-parse HEAD)
 popd > /dev/null
 
 pushd "${WD}/../node_modules/foam2" > /dev/null
+FOAM2_DIFF_OUTPUT=$(git diff --stat)
+FOAM2_CLEAN_OUTPUT=$(git clean --dry-run)
+FOAM2_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 FOAM2_VERSION=$(git rev-parse HEAD)
 popd > /dev/null
 
@@ -41,6 +38,19 @@ if [[ "${CONFLUENCE_VERSION}" = "" ]]; then
 fi
 if [[ "${FOAM2_VERSION}" = "" || "${CONFLUENCE_VERSION}" = "${FOAM2_VERSION}" ]]; then
   error "FOAM2 is not under version control. Did you forget to symlink /path/to/foam2 -> node_modules/foam2?"
+  exit 1
+fi
+if [[ "${CONFLUENCE_DIFF_OUTPUT}" != "" || "${CONFLUENCE_CLEAN_OUTPUT}" != "" ]]; then
+  error "Your working tree is not clean"
+  exit 1
+fi
+if [[ "${FOAM2_DIFF_OUTPUT}" != "" || "${FOAM2_CLEAN_OUTPUT}" != "" ]]; then
+  error "FOAM2 working tree is not clean"
+  exit 1
+fi
+# TODO(markdittmer): Keep package.json branch name and this branch name in sync.
+if [[ "${FOAM2_BRANCH}" != "confluence" ]]; then
+  error "FOAM2 checked out to wrong branch: ${FOAM2_BRANCH}"
   exit 1
 fi
 win "Preparing build for Confluence@${CONFLUENCE_VERSION}, FOAM2@${FOAM2_VERSION}"
