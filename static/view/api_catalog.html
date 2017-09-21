@@ -13,12 +13,6 @@
     padding-top: 24px;
     padding-bottom: 24px;
   }
-  api-catalog-table {
-    flex-grow: 1;
-    flex-shrink: 1;
-    display: flex;
-    flex-direction: column;
-  }
   .btn {
     z-index: 50;
   }
@@ -78,11 +72,13 @@
 </div>
 
 <api-catalog-table
+    class="flex-fill-vertical"
     releases="releases"
     able-to-delete-release="true"
     on-delete-release="removeRelease(release)"></api-catalog-table>
 <!-- Filtered view. -->
 <api-catalog-table
+    class="flex-fill-vertical"
     ng-repeat="view in filteredViews track by $index"
     ng-show="$parent.showTab === 2 + $index"
     releases="view.releases"
