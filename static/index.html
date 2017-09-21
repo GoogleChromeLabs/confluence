@@ -20,29 +20,18 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <style type="text/css">
-      /* Sticky Footer */
-      body {
+      .flex-fill-vertical {
         display: flex;
         flex-direction: column;
+        flex-grow: 1;
+        flex-shrink: 1;
+        min-height: 0;
+      }
+      /* Sticky Footer */
+      body {
         height: 100vh;
         width: 100vw;
 	overflow: hidden;
-      }
-      main {
-	display: flex;
-	flex-direction: column;
-	flex-grow: 1;
-	flex-shrink: 1;
-      }
-      ui-view {
-	display: flex;
-	flex-direction: column;
-	flex-grow: 1;
-	flex-shrink: 1;
-      }
-      .full-width {
-        overflow: scroll;
-        width: 100%;
       }
       /* Consistent "brand-logo" */
       header nav .brand-logo {
@@ -62,7 +51,7 @@
       }
     </style>
   </head>
-  <body ng-app="confluence">
+  <body class="flex-fill-vertical" ng-app="confluence">
     <header>
       <nav>
         <div class="nav-wrapper blue darken-2">
@@ -79,7 +68,9 @@
       </nav>
     </header>
 
-    <main><ui-view></ui-view></main>
+    <main class="flex-fill-vertical">
+      <ui-view class="flex-fill-vertical"></ui-view>
+    </main>
 
     <footer class="page-footer blue darken-2">
       <div class="footer-copyright blue darken-2">
