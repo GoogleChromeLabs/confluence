@@ -77,7 +77,7 @@ describe('Datastore updater (set ops + versioned DAOs)', () => {
       dstOpsStarted++;
     }
     function dstRemove(o) {
-      dstDAO.put(o);
+      dstDAO.remove(o);
       dstOpsStarted++;
     }
     datastoreDAO.listen(QuickSink.create({
@@ -131,7 +131,7 @@ describe('Datastore updater (set ops + versioned DAOs)', () => {
           id: 5,
           data: 'unlike5deletedToUndeleted',
         }));
-        dstPut(VersionedItem.create({
+        dstRemove(VersionedItem.create({
           id: 7,
           data: 'toBeStillDeleted7',
         }));
@@ -174,7 +174,7 @@ describe('Datastore updater (set ops + versioned DAOs)', () => {
 
         expect(a[6].id).toBe(7);
         expect(a[6].deleted_).toBe(true);
-        expect(a[2].version_).toBe(deleted7version);
+        expect(a[6].version_).toBe(deleted7version);
 
         expect(a.length).toBe(7);
       }).then(done, done.fail);
