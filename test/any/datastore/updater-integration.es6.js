@@ -95,6 +95,16 @@ describe('Datastore updater (set ops + versioned DAOs)', () => {
       });
     }
 
+    // Arrange for mock Datastore DAO to contain:
+    //
+    // {id: 2, data: 'dst2', deleted_: false}
+    // {id: 3, data: 'same3', deleted_: false}
+    // {id: 4, data: 'same4deletedToUndeleted', deleted_: true}
+    // {id: 5, data: 'unlike5deletedToUndeleted', deleted_: true}
+    // {id: 6, data: 'toBeDeleted6', deleted_: false}
+    // {id: 7, data: 'toBeStillDeleted7', deleted_: true}
+    //
+    // All those with deleted_: true must be added, then removed.
     dstPut(VersionedItem.create({
       id: 2,
       data: 'dst2',
@@ -122,61 +132,63 @@ describe('Datastore updater (set ops + versioned DAOs)', () => {
     let same3version;
     let deleted7version;
     dstDAO.sync().then(() => dstWait())
-      .then(() => {
-        dstRemove(VersionedItem.create({
-          id: 4,
-          data: 'same4deletedToUndeleted',
-        }));
-        dstRemove(VersionedItem.create({
-          id: 5,
-          data: 'unlike5deletedToUndeleted',
-        }));
-        dstRemove(VersionedItem.create({
-          id: 7,
-          data: 'toBeStillDeleted7',
-        }));
-        return dstDAO.sync().then(() => dstWait());
-      }).then(() => datastoreDAO.find(3))
-      .then(same3 => same3version = same3.version_)
-      .then(() => datastoreDAO.find(7))
-      .then(deleted7 => {
-        deleted7version = deleted7.version_;
-        expect(deleted7.deleted_).toBe(true);
-      }).then(() => updater.unversionData(dstDAO, cacheDAO))
-      .then(() => updater.importData(srcDAO, cacheDAO, dstDAO))
-      .then(() => dstDAO.sync())
-      .then(() => datastoreDAO.select())
-      .then(arraySink => {
-        const a = arraySink.array;
-        expect(a[0].id).toBe(1);
-        expect(a[0].data).toBe('src1');
-        expect(a[0].deleted_).toBe(false);
+        .then(() => {
+          dstRemove(VersionedItem.create({
+            id: 4,
+            data: 'same4deletedToUndeleted',
+          }));
+          dstRemove(VersionedItem.create({
+            id: 5,
+            data: 'unlike5deletedToUndeleted',
+          }));
+          dstPut(VersionedItem.create({
+            id: 7,
+            data: 'toBeStillDeleted7',
+          }));
+          return dstDAO.sync().then(() => dstWait());
+        }).then(() => datastoreDAO.find(3))
+        .then(same3 => same3version = same3.version_)
+        .then(() => datastoreDAO.find(7))
+        .then(deleted7 => {
+          deleted7version = deleted7.version_;
+          expect(deleted7.deleted_).toBe(true);
+        }).then(() => updater.unversionData(dstDAO, cacheDAO))
+        .then(() => updater.importData(srcDAO, cacheDAO, dstDAO))
+        .then(() => dstDAO.sync())
+        .then(() => datastoreDAO.select())
+        .then(arraySink => {
+          // Check that data now reflect the contents of srcDAO that were to be
+          // synced to mock Datastore DAO.
+          const a = arraySink.array;
+          expect(a[0].id).toBe(1);
+          expect(a[0].data).toBe('src1');
+          expect(a[0].deleted_).toBe(false);
 
-        expect(a[1].id).toBe(2);
-        expect(a[1].data).toBe('src2');
-        expect(a[1].deleted_).toBe(false);
+          expect(a[1].id).toBe(2);
+          expect(a[1].data).toBe('src2');
+          expect(a[1].deleted_).toBe(false);
 
-        expect(a[2].id).toBe(3);
-        expect(a[2].data).toBe('same3');
-        expect(a[2].deleted_).toBe(false);
-        expect(a[2].version_).toBe(same3version);
+          expect(a[2].id).toBe(3);
+          expect(a[2].data).toBe('same3');
+          expect(a[2].deleted_).toBe(false);
+          expect(a[2].version_).toBe(same3version);
 
-        expect(a[3].id).toBe(4);
-        expect(a[3].data).toBe('same4deletedToUndeleted');
-        expect(a[3].deleted_).toBe(false);
+          expect(a[3].id).toBe(4);
+          expect(a[3].data).toBe('same4deletedToUndeleted');
+          expect(a[3].deleted_).toBe(false);
 
-        expect(a[4].id).toBe(5);
-        expect(a[4].data).toBe('different5deletedToUndeleted');
-        expect(a[4].deleted_).toBe(false);
+          expect(a[4].id).toBe(5);
+          expect(a[4].data).toBe('different5deletedToUndeleted');
+          expect(a[4].deleted_).toBe(false);
 
-        expect(a[5].id).toBe(6);
-        expect(a[5].deleted_).toBe(true);
+          expect(a[5].id).toBe(6);
+          expect(a[5].deleted_).toBe(true);
 
-        expect(a[6].id).toBe(7);
-        expect(a[6].deleted_).toBe(true);
-        expect(a[6].version_).toBe(deleted7version);
+          expect(a[6].id).toBe(7);
+          expect(a[6].deleted_).toBe(true);
+          expect(a[2].version_).toBe(deleted7version);
 
-        expect(a.length).toBe(7);
-      }).then(done, done.fail);
+          expect(a.length).toBe(7);
+        }).then(done, done.fail);
   });
 });
