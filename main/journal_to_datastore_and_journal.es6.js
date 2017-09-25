@@ -50,9 +50,7 @@ function getJournalDAO(name, cls, ctx, mode) {
     delegate: foam.dao.MDAO.create({of: cls}, ctx),
     journal: foam.dao.NodeFileJournal.create({
       of: cls,
-      fd: fs.openSync(
-          filename,
-          mode),
+      fd: fs.openSync(filename, mode),
     }, ctx),
   }, ctx);
 }
