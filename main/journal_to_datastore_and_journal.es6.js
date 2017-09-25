@@ -74,7 +74,7 @@ const cacheCtx = pkg.DAOContainer.create({
 
 // Context for local data to be imported into Datastore.
 const importCtx = pkg.DAOContainer.create({
-  releaseDAO: getReadJournalDAO(pkg.VersionedRelease.id, pkg.Release, ctx),
+  releaseDAO: getReadJournalDAO(pkg.Release.id, pkg.Release, ctx),
   webInterfaceDAO: getReadJournalDAO(
       pkg.WebInterface.id, pkg.WebInterface, ctx),
   releaseWebInterfaceJunctionDAO: getReadJournalDAO(
