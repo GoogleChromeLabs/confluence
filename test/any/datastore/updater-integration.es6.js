@@ -58,7 +58,7 @@ describe('Datastore updater (set ops + versioned DAOs)', () => {
     updater = DatastoreUpdater.create();
   });
 
-  it('should only perform necessary put/remove updates', () => {
+  it('should only perform necessary put/remove updates', done => {
     srcDAO.put(Item.create({id: 1, data: 'src1'})); // Newly added.
     srcDAO.put(Item.create({id: 2, data: 'src2'})); // Updated.
     srcDAO.put(Item.create({id: 3, data: 'same3'})); // Not updated.
@@ -177,6 +177,6 @@ describe('Datastore updater (set ops + versioned DAOs)', () => {
         expect(a[2].version_).toBe(deleted7version);
 
         expect(a.length).toBe(7);
-      });
+      }).then(done, done.fail);
   });
 });
