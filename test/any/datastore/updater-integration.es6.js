@@ -142,7 +142,7 @@ describe('Datastore updater (set ops + versioned DAOs)', () => {
       .then(deleted7 => {
         deleted7version = deleted7.version_;
         expect(deleted7.deleted_).toBe(true);
-      }).then(() => updater.unversion(dstDAO, cacheDAO))
+      }).then(() => updater.unversionData(dstDAO, cacheDAO))
       .then(() => updater.importData(srcDAO, cacheDAO, dstDAO))
       .then(() => dstDAO.sync())
       .then(() => datastoreDAO.select())
