@@ -17,6 +17,15 @@ module.exports = merge(common, {
   module: {
     rules: [
       {
+        test: C.ES6_REG_EXP,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: C.ES6_LOADER_OPTIONS_PROD,
+          },
+        ],
+      },
+      {
         test: C.FOAM_BIN_REG_EXP,
         use: [
           {

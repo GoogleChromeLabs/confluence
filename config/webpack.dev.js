@@ -16,11 +16,13 @@ module.exports = merge(common, {
   module: {
     rules: [
       {
-        test: /\.es6\.js$/,
-        loader: 'babel-loader',
-        options: {
-          plugins: ['transform-runtime'],
-        },
+        test: C.ES6_REG_EXP,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: C.ES6_LOADER_OPTIONS_DEV,
+          },
+        ],
       },
     ],
   },
