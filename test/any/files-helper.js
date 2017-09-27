@@ -50,6 +50,7 @@ beforeAll(function() {
   require('../../lib/dao_container.es6.js');
   require('../../lib/datastore/rate_limited_DAO.es6.js');
   require('../../lib/datastore/rate_limiter.es6.js');
+  require('../../lib/datastore/updater.es6.js');
   require('../../lib/web_apis/api_importer.es6.js');
   require('../../lib/web_apis/release.es6.js');
   require('../../lib/web_apis/release_interface_relationship.es6.js');
