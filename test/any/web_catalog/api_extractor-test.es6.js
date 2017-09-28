@@ -236,9 +236,14 @@ describe('API extractor', function() {
           '10020': {
             '+constructor+': 10030,
           },
+          '10030': {
+            'length': 3,
+            'name': 4,
+            'prototype': 10020,
+          },
         },
         'protos': {
-          '10010': '10020',
+          '10010': 10020,
         },
         'functions': {
           '10030': 'hiddenClass',
@@ -261,16 +266,18 @@ describe('API extractor', function() {
           '10040': {
             '+constructor+': 10050,
           },
+          '10050': {
+            'length': 3,
+            'name': 4,
+            'prototype': 10040,
+          },
         },
         'protos': {
-          '10010': '10020',
-          '10020': '10030',
-          '10030': '10040',
+          '10010': 10020,
+          '10020': 10030,
+          '10030': 10040,
         },
         'functions': {
-          '10020': 'noClass',
-          '10030': 'noClass',
-          '10040': 'classPrototype',
           '10050': 'hiddenClass',
         },
         types,
@@ -289,14 +296,11 @@ describe('API extractor', function() {
           },
         },
         'protos': {
-          '10010': '10020',
-          '10020': '10030',
-          '10030': '6',
+          '10010': 10020,
+          '10020': 10030,
+          '10030': 6,
         },
-        'functions': {
-          '10020': 'noClass',
-          '10030': 'noClass',
-        },
+        'functions': {},
         types,
       });
       expect(extractor.getClassName_(10010, og)).toBeNull();
