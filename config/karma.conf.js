@@ -97,51 +97,45 @@ configurator.srcGlobs = [
   '../lib/**/*.js',
 ];
 
+const C = require('./webpack.constants.js');
 configurator.webpackConfig = {
   module: {
     rules: [
       {
         test: /worker\.(es6\.)?js$/,
-        loader: 'worker-loader',
-        options: {name: '[name].bundle.js'},
+        use: [
+          {
+            loader: 'worker-loader',
+            options: {name: '[name].bundle.js'},
+          }
+        ],
       },
       {
-        test: /\.es6\.js$/,
-        loader: 'babel-loader',
-        options: {
-          plugins: [
-            // presets: ['es2015'] without strict mode:
-            'check-es2015-constants',
-            'transform-es2015-arrow-functions',
-            'transform-es2015-block-scoped-functions',
-            'transform-es2015-block-scoping',
-            'transform-es2015-classes',
-            'transform-es2015-computed-properties',
-            'transform-es2015-destructuring',
-            'transform-es2015-duplicate-keys',
-            'transform-es2015-for-of',
-            'transform-es2015-function-name',
-            'transform-es2015-literals',
-            'transform-es2015-object-super',
-            'transform-es2015-parameters',
-            'transform-es2015-shorthand-properties',
-            'transform-es2015-spread',
-            'transform-es2015-sticky-regex',
-            'transform-es2015-template-literals',
-            'transform-es2015-typeof-symbol',
-            'transform-es2015-unicode-regex',
-            'transform-regenerator',
-            'transform-es2015-block-scoping',
-            'transform-es2015-arrow-functions',
-            'transform-es2015-template-literals',
-            ['transform-es2015-modules-commonjs', {strict: false}],
-
-            'transform-runtime',
-
-          ],
-          // No, really. Without strict mode.
-          parserOpts: {strictMode: false},
-        },
+        test: C.ES6_REG_EXP,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: C.ES6_LOADER_OPTIONS_DEV,
+          },
+        ],
+      },
+      {
+        test: /\.html$/,
+        use: [{loader: 'html-loader'}],
+      },
+      {
+        test: /\.css$/,
+        // TODO(markdittmer): Why doesn't this work with use: [{loader: ...}]?
+        loader: 'style-loader!css-loader',
+      },
+      {
+        test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+        use: [{loader: 'file-loader?name=fonts/[name].[ext]'}],
+      },
+      {
+        test: /worker\.(es6\.)?js$/,
+        loader: 'worker-loader',
+        options: {name: '[name].bundle.js'},
       },
       {
         test: /\.html$/,

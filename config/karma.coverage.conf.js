@@ -11,12 +11,18 @@ const base = require('./karma.conf.js');
 
 // Prepend istanbul-instrumenter-loader to default loaders.
 let webpack = base.webpackConfig;
-let loaders = [{
-  test: /\.js$/,
-  include: path.resolve(__dirname, '../lib/'),
-  loader: 'istanbul-instrumenter-loader',
-}].concat(webpack.module.loaders);
-webpack.module.loaders = loaders;
+
+webpack.module.rules = [
+  {
+    test: /\.js$/,
+    use: [
+      {
+        loader: 'istanbul-instrumenter-loader',
+        options: {include: path.resolve(__dirname, '../lib/')},
+      },
+    ],
+  },
+].concat(webpack.module.rules);
 
 const files = base.deps
   .concat(base.helpers)
