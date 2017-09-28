@@ -3,11 +3,6 @@
 // found in the LICENSE file.
 'use strict';
 
-//
-// Update API and metrics data in Datastore. This script assumes that it is
-// the only writer to the datastore namespace.
-//
-
 const fs = require('fs');
 const path = require('path');
 
@@ -42,15 +37,15 @@ const ctx = foam.__context__.createSubContext({
   logger: logger,
 });
 
-function getJournalDAO(name, cls, ctx, mode) {
+function getJournalDAO(name, cls, ctx, flags) {
   const filename = path.resolve(__dirname, `../data/${name}-journal.js`);
-  logger.info(`Creating JDAO (mode=${mode}) in ${filename}`);
+  logger.info(`Creating JDAO (flags=${flags}) in ${filename}`);
   return foam.dao.JDAO.create({
     of: cls,
     delegate: foam.dao.MDAO.create({of: cls}, ctx),
     journal: foam.dao.NodeFileJournal.create({
       of: cls,
-      fd: fs.openSync(filename, mode),
+      fd: fs.openSync(filename, flags),
     }, ctx),
   }, ctx);
 }
@@ -84,7 +79,6 @@ const importCtx = pkg.DAOContainer.create({
   apiVelocityDAO: getReadJournalDAO(
       pkg.ApiVelocityData.id, pkg.ApiVelocityData, ctx),
 }, ctx);
-
 
 // Context for reading from / writing to Datastore.
 //
@@ -145,6 +139,17 @@ const releaseWebInterfaceJunctionImportDAO =
 const browserMetricsImportDAO = importCtx.browserMetricsDAO;
 const apiVelocityImportDAO = importCtx.apiVelocityDAO;
 
+// Persistent DAOs of data that is exported. These will be later decorated with
+// versioning after Datastore versions are synced. Note that using
+// datastoreCtx.<dao>.delegate means that, after Datastore SyncDAO syncs, these
+// export DAOs will be populated with the current data from Datastore.
+const releaseExportDAO = datastoreCtx.releaseDAO.delegate;
+const webInterfaceExportDAO = datastoreCtx.webInterfaceDAO.delegate;
+const releaseWebInterfaceJunctionExportDAO =
+    datastoreCtx.releaseWebInterfaceJunctionDAO.delegate;
+const browserMetricsExportDAO = datastoreCtx.browserMetricsDAO.delegate;
+const apiVelocityExportDAO = datastoreCtx.apiVelocityDAO.delegate;
+
 //
 // Generic algorithm for data import:
 // (1) In parallel:
@@ -157,15 +162,15 @@ const apiVelocityImportDAO = importCtx.apiVelocityDAO;
 const updater = pkg.DatastoreUpdater.create();
 function doImport(sync, load, daosArray) {
   return Promise.all([
-    sync().then(function() {
-      return Promise.all(daosArray.map(function(daos) {
+    Promise.all(daosArray.map(sync)).then(() => {
+      return Promise.all(daosArray.map(daos => {
         return updater.unversionData(daos.sync, daos.cache);
       }));
     }),
     load(),
-  ]).then(function() {
+  ]).then(() => {
     return Promise.all(daosArray.map(function(daos) {
-      return updater.importData(daos.import, daos.cache, daos.sync);
+      return updater.importData(daos.import, daos.cache, daos.export);
     }));
   });
 }
@@ -174,17 +179,24 @@ function doImport(sync, load, daosArray) {
 // Sync + load functions.
 //
 
-function syncDatastoreData() {
-  logger.info('Syncing Datastore data');
-  return Promise.all([
-    releaseSyncDAO.synced,
-    webInterfaceSyncDAO.synced,
-    releaseWebInterfaceJunctionSyncDAO.synced,
-    browserMetricsSyncDAO.synced,
-    apiVelocitySyncDAO.synced,
-  ]).then(function() {
-    logger.info('Synced Datastore data');
-  });
+function syncDatastoreData(daos) {
+  function addVersioningToExportDAO(exportDAO, ctx) {
+    return foam.dao.VersionNoDAO.create({
+      of: exportDAO.of,
+      delegate: exportDAO,
+    }, ctx);
+  }
+
+  logger.info(`Syncing Datastore data: ${daos.sync.of.id}`);
+  // Sync data from Datastore.
+  return daos.sync.synced
+      // Wrap export DAO in versioning DAO
+      .then(() => addVersioningToExportDAO(daos.export, ctx))
+      // Overwrite "export DAO" with versioned export DAO.
+      .then(exportDAO => daos.export = exportDAO)
+      .then(() => {
+        logger.info(`Synced Datastore data: ${daos.sync.of.id}`);
+      });
 }
 
 function loadJournaledData() {
@@ -209,25 +221,30 @@ doImport(syncDatastoreData, loadJournaledData, [
     sync: releaseSyncDAO,
     cache: releaseCacheDAO,
     import: releaseImportDAO,
+    export: releaseExportDAO,
   },
   {
     sync: webInterfaceSyncDAO,
     cache: webInterfaceCacheDAO,
     import: webInterfaceImportDAO,
+    export: webInterfaceExportDAO,
   },
   {
     sync: releaseWebInterfaceJunctionSyncDAO,
     cache: releaseWebInterfaceJunctionCacheDAO,
     import: releaseWebInterfaceJunctionImportDAO,
+    export: releaseWebInterfaceJunctionExportDAO,
   },
   {
     sync: browserMetricsSyncDAO,
     cache: browserMetricsCacheDAO,
     import: browserMetricsImportDAO,
+    export: browserMetricsExportDAO,
   },
   {
     sync: apiVelocitySyncDAO,
     cache: apiVelocityCacheDAO,
     import: apiVelocityImportDAO,
+    export: apiVelocityExportDAO,
   },
 ]);
