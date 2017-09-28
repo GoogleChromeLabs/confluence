@@ -61,7 +61,7 @@ describe('API extractor', function() {
           'prototype': 10004,
         },
         '10004': {  // Object.prototype
-          '+constructor+': 10019,
+          '+constructor+': 10003,
           '+toLocaleString+': 6,
           '+toString+': 6,
           '+valueOf+': 6,
@@ -126,6 +126,12 @@ describe('API extractor', function() {
         '10017': {  // HiddenInterface.prototype
           '+constructor+': 10018,
         },
+        '10018': {  // HiddenInterface
+          'caller': 7,
+          'length': 3,
+          'name': 4,
+          'prototype': 10017,
+        },
       },
       'functions': {
         '10001': 'Function',
@@ -137,7 +143,6 @@ describe('API extractor', function() {
         '10015': 'functionAPI',
         '10016': 'ProtoInterface',
         '10018': 'HiddenInterface',
-        '10019': 'Object',
       },
       'metadata': {
         '10000': {  // window
@@ -329,11 +334,13 @@ describe('API extractor', function() {
         },
         '10017': {
         },
+        '10018': {
+        },
       },
       'protos': {
-        '10005': '10016',
-        '10013': '10017',
-        '10014': '10004',
+        '10005': 10016,
+        '10013': 10017,
+        '10014': 10004,
       },
       'root': 10000,
       'types': {
