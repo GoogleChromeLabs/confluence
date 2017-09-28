@@ -43,7 +43,7 @@ const ctx = foam.__context__.createSubContext({
 });
 
 function getJournalDAO(name, cls, ctx, mode) {
-  const filename = path.resolve(__dirname, `../data/${name}-journal.js`);
+  const filename = path.resolve(__dirname, `../data/journal/${name}-journal.js`);
   logger.info(`Creating JDAO (mode=${mode}) in ${filename}`);
   return foam.dao.JDAO.create({
     of: cls,
