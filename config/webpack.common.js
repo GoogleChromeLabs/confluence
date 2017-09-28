@@ -24,27 +24,24 @@ module.exports = {
     rules: [
       {
         test: /worker\.(es6\.)?js$/,
-        loader: 'worker-loader',
-        options: {name: '[name].bundle.js'},
-      },
-      {
-        test: /\.es6\.js$/,
-        loader: 'babel-loader',
-        options: {
-          presets: ['es2015'],
-        },
+        use: [
+          {
+            loader: 'worker-loader',
+            options: {name: '[name].bundle.js'},
+          }
+        ],
       },
       {
         test: /\.html$/,
-        loader: 'html-loader',
+        use: [{loader: 'html-loader'}],
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader',
+        use: [{loader: 'style-loader'}, {loader: 'css-loader'}],
       },
       {
         test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
-        loader: 'file-loader?name=fonts/[name].[ext]',
+        use: [{loader: 'file-loader?name=fonts/[name].[ext]'}],
       },
     ],
   },

@@ -97,24 +97,26 @@ configurator.srcGlobs = [
   '../lib/**/*.js',
 ];
 
+const C = require('./webpack.constants.js');
 configurator.webpackConfig = {
   module: {
-    loaders: [
+    rules: [
       {
-        test: /\.es6\.js$/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015'],
-          plugins: ['transform-runtime'],
-        },
+        test: C.ES6_REG_EXP,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: C.ES6_LOADER_OPTIONS_DEV,
+          },
+        ],
       },
       {
         test: /\.html$/,
-        loader: 'html-loader',
+        use: [{loader: 'html-loader'}],
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader',
+        use: [{loader: 'style-loader'}, {loader: 'css-loader'}],
       },
       {
         test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
