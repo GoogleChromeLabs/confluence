@@ -38,7 +38,7 @@ function getLocalDAO(name, cls, ctx) {
     journal: foam.dao.NodeFileJournal.create({
       of: cls,
       fd: fs.openSync(
-          path.resolve(__dirname, `../data/${name}-journal.js`),
+          path.resolve(__dirname, `../data/journal/${name}-journal.js`),
           // Truncate journal.
           'w+'),
     }, ctx),

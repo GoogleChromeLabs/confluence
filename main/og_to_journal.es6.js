@@ -27,7 +27,7 @@ const pkg = org.chromium.apis.web;
 const logger = foam.log.ConsoleLogger.create();
 
 function getJournalDAO(name, cls, ctx, mode) {
-  const filename = path.resolve(__dirname, `../data/${name}-journal.js`);
+  const filename = path.resolve(__dirname, `../data/journal/${name}-journal.js`);
   logger.info(`Creating JDAO (mode=${mode}) in ${filename}`);
   return foam.dao.JDAO.create({
     of: cls,
@@ -52,7 +52,7 @@ const ctx = pkg.DAOContainer.create(null, foam.__context__.createSubContext({
 }));
 
 const importer = pkg.ObjectGraphImporter.create({
-  objectGraphPath: path.resolve(__dirname, '../data/og'),
+  objectGraphPath: path.resolve(__dirname, '../data/object-graph'),
 }, ctx);
 
 ctx.releaseDAO = getOverwriteJournalDAO(pkg.Release.id, pkg.Release, ctx);
