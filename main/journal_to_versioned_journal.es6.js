@@ -82,8 +82,10 @@ const importCtx = pkg.DAOContainer.create({
 
 // Context for reading from / writing to Datastore.
 //
-// TODO(markdittmer): Figure out why partitioning isn't working. This component
-// was originally to be instantiated in context:
+// TODO(markdittmer): Update after
+// https://github.com/foam-framework/foam2/issues/694 is fixed.
+//
+// This component was originally to be instantiated in context:
 //
 // foam.__context__.createSubContext({
 //   datastoreNamespaceId: 'someDatastoreNamespace'
