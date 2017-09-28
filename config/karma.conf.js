@@ -102,15 +102,6 @@ configurator.webpackConfig = {
   module: {
     rules: [
       {
-        test: /worker\.(es6\.)?js$/,
-        use: [
-          {
-            loader: 'worker-loader',
-            options: {name: '[name].bundle.js'},
-          }
-        ],
-      },
-      {
         test: C.ES6_REG_EXP,
         use: [
           {
@@ -125,25 +116,7 @@ configurator.webpackConfig = {
       },
       {
         test: /\.css$/,
-        // TODO(markdittmer): Why doesn't this work with use: [{loader: ...}]?
-        loader: 'style-loader!css-loader',
-      },
-      {
-        test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
-        use: [{loader: 'file-loader?name=fonts/[name].[ext]'}],
-      },
-      {
-        test: /worker\.(es6\.)?js$/,
-        loader: 'worker-loader',
-        options: {name: '[name].bundle.js'},
-      },
-      {
-        test: /\.html$/,
-        loader: 'html-loader',
-      },
-      {
-        test: /\.css$/,
-        loader: 'style-loader!css-loader',
+        use: [{loader: 'style-loader'}, {loader: 'css-loader'}],
       },
       {
         test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,

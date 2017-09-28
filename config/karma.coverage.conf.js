@@ -15,12 +15,8 @@ let webpack = base.webpackConfig;
 webpack.module.rules = [
   {
     test: /\.js$/,
-    use: [
-      {
-        loader: 'istanbul-instrumenter-loader',
-        options: {include: path.resolve(__dirname, '../lib/')},
-      },
-    ],
+    use: {loader: 'istanbul-instrumenter-loader'},
+    include: path.resolve(__dirname, '../lib/'),
   },
 ].concat(webpack.module.rules);
 

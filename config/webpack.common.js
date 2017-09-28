@@ -37,8 +37,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        // TODO(markdittmer): Why doesn't this work with use: [{loader: ...}]?
-        loader: 'style-loader!css-loader',
+        use: [{loader: 'style-loader'}, {loader: 'css-loader'}],
       },
       {
         test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
