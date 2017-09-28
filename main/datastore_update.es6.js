@@ -123,7 +123,7 @@ const datastoreCtx = pkg.DatastoreContainer.create({
 }).ctx;
 
 const importer = pkg.ObjectGraphImporter.create({
-  objectGraphPath: path.resolve(__dirname, '../data/og'),
+  objectGraphPath: path.resolve(__dirname, '../data/object-graph'),
 }, importCtx);
 
 // SyncDAOs connected to Datastore.
