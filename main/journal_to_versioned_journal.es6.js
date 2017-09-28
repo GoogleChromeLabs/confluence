@@ -37,15 +37,15 @@ const ctx = foam.__context__.createSubContext({
   logger: logger,
 });
 
-function getJournalDAO(name, cls, ctx, mode) {
+function getJournalDAO(name, cls, ctx, flags) {
   const filename = path.resolve(__dirname, `../data/${name}-journal.js`);
-  logger.info(`Creating JDAO (mode=${mode}) in ${filename}`);
+  logger.info(`Creating JDAO (flags=${flags}) in ${filename}`);
   return foam.dao.JDAO.create({
     of: cls,
     delegate: foam.dao.MDAO.create({of: cls}, ctx),
     journal: foam.dao.NodeFileJournal.create({
       of: cls,
-      fd: fs.openSync(filename, mode),
+      fd: fs.openSync(filename, flags),
     }, ctx),
   }, ctx);
 }
@@ -140,7 +140,9 @@ const browserMetricsImportDAO = importCtx.browserMetricsDAO;
 const apiVelocityImportDAO = importCtx.apiVelocityDAO;
 
 // Persistent DAOs of data that is exported. These will be later decorated with
-// versioning after Datastore versions are synced.
+// versioning after Datastore versions are synced. Note that using
+// datastoreCtx.<dao>.delegate means that, after Datastore SyncDAO syncs, these
+// export DAOs will be populated with the current data from Datastore.
 const releaseExportDAO = datastoreCtx.releaseDAO.delegate;
 const webInterfaceExportDAO = datastoreCtx.webInterfaceDAO.delegate;
 const releaseWebInterfaceJunctionExportDAO =
