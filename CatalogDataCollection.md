@@ -51,7 +51,7 @@ Each browser release is associated with a list of APIs based on an
     `SomeFunction.prototype.__proto__` is not `SomeOtherFunction.prototype`,
     then store its own properties as APIs of `SomeFunction` (same with
     `SomeFunction.prototype.__proto__.__proto__`, etc.);
-4. **Store APIs of instances**: Some browser versions include important APIs,
+5. **Store APIs of instances**: Some browser versions include important APIs,
    but only expose them on instances of the object. Luckily, such instances tend
    to lurk somewhere on the test page's object graph (e.g.,
    `document.body.style` exposes `CSSStyleDeclaration` on some browser
@@ -75,7 +75,8 @@ Let fns    := Map: ObjectGraph id -> [Strings]:
 
 Let protos := Map: ObjectGraph id -> [ObjectGraph ids]:
                    All objects that are some "Foo.prototype" mapped to all such
-                   foos
+                   foos; e.g., when Foo.prototype = Bar.prototype, protos will
+                   contain id-of-Foo.prototype -> [id-of-Foo, id-of-Bar]
 
 Let libs   := Map: ObjectGraph id -> [Strings]:
                    All objects that are properties of the global object and
