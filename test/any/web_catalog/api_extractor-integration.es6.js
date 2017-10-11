@@ -18,9 +18,9 @@
 
 // Integration tests.
 describe('API extractor', function() {
-  let objectGraph;
+  let ObjectGraph;
   let og;
-  let extractor;
+  let ApiExtractor;
   let apiCatalog;
 
   // TODO(markdittmer): firefox53 data required for test that is to be moved.
@@ -28,12 +28,12 @@ describe('API extractor', function() {
 
   // Load non-FOAM-related data once.
   beforeAll(function() {
-    objectGraph = global.ObjectGraph;
+    ObjectGraph = global.ObjectGraph;
 
     // TODO(markdittmer): firefox53 data required for test that is to be moved.
-    firefox53og = objectGraph.fromJSON(global.DATA.firefox53);
+    firefox53og = ObjectGraph.fromJSON(global.DATA.firefox53);
 
-    og = objectGraph.fromJSON({
+    og = ObjectGraph.fromJSON({
       'data': {
         '10000': {  // window
           'Function': 10001,
@@ -45,12 +45,13 @@ describe('API extractor', function() {
           'nonObjectLibrary': 10010,
           'FunctionNonInterface': 10011,
           'constant': 3,
+          'window': 10000,
         },
         '10001': {  // Function
           'name': 4,
           'prototype': 10002,
         },
-        '10002': {  // Function.prootype
+        '10002': {  // Function.prototype
           'caller': 7,
           'length': 3,
           'name': 4,
@@ -68,11 +69,11 @@ describe('API extractor', function() {
         },
         '10005': {  // FunctionInterface
           'prototype': 10006,
+          'caller': 7,
+          'length': 3,
         },
         '10006': {  // FunctionInterface.prototype
           'meaningfulAPI': 6,
-          'caller': 7,
-          'length': 3,
         },
         '10007': {  // AnObjectInterface
           'prototype': 10008,
@@ -104,15 +105,14 @@ describe('API extractor', function() {
         },
         '10011': {  // FunctionNonInterface
           'prototype': 10012,
-        },
-        '10012': {  // FunctionNonInterface.prototype
           'caller': 7,
           'length': 3,
           'name': 4,
         },
+        '10012': {  // FunctionNonInterface.prototype
+        },
         '10013': {
           'hiddenAPI': 3,
-          'notOwnProperty': 3,
         },
         '10014': {
           'hiddenAPI': 3,
@@ -122,6 +122,7 @@ describe('API extractor', function() {
         },
         '10016': {  // FunctionInterface.__proto__
           'meaningfulAPI': 3,
+          'prototype': 10019,
         },
         '10017': {  // HiddenInterface.prototype
           '+constructor+': 10018,
@@ -131,6 +132,9 @@ describe('API extractor', function() {
           'length': 3,
           'name': 4,
           'prototype': 10017,
+        },
+        '10019': { // FunctionInterface.__proto__.prototype
+          '+constructor+': 10016,
         },
       },
       'functions': {
@@ -182,7 +186,7 @@ describe('API extractor', function() {
             'writable': 0,
           },
         },
-        '10002': {  // Function.prootype
+        '10002': {  // Function.prototype
           'constructor': {
             'writable': 1,
           },
@@ -278,8 +282,8 @@ describe('API extractor', function() {
           'constObjectProperty': {
             'writable': 0,
           },
-          'constantProperty': {
-            'writable': 0,
+          'constantNumber': {
+            'value': 1,
           },
         },
         '10010': {  // nonObjectLibrary
@@ -358,11 +362,11 @@ describe('API extractor', function() {
 
   // Instantiate data related to FOAM classes each time (in each test context).
   beforeEach(function() {
-    extractor = org.chromium.apis.web.ApiExtractor.create({});
-    apiCatalog = extractor.extractWebCatalog(og);
+    ApiExtractor = org.chromium.apis.web.ApiExtractor;
+    apiCatalog = ApiExtractor.create().extractWebCatalog(og);
   });
 
-  describe('First level interfaec', function() {
+  describe('First level interface', function() {
     it('is included if it contains meaningful properties', function() {
       expect(apiCatalog.FunctionNonInterface).toBeUndefined();
       expect(apiCatalog.FunctionInterface).toBeDefined();
@@ -385,17 +389,29 @@ describe('API extractor', function() {
           apiCatalog.FunctionInterface.sort());
     });
     it('is contained in Window interface as API', function() {
-      expect(apiCatalog.Window.sort()).toEqual(['Function', 'Object',
-        'FunctionInterface', 'DuplicateFunctionInterface', 'AnObjectInterface',
-        'ObjectLibrary', 'nonObjectLibrary', 'FunctionNonInterface',
-        'constant'].sort());
+      expect(apiCatalog.Window.sort()).toEqual([
+        'Function',
+        'Object',
+        'FunctionInterface',
+        'DuplicateFunctionInterface',
+        'AnObjectInterface',
+        'ObjectLibrary',
+        'nonObjectLibrary',
+        'FunctionNonInterface',
+        'constant',
+        'window',
+      ].sort());
     });
   });
 
   it('extracts api for Object and Function without filtering built-in APIs.',
     function() {
-      expect(apiCatalog.Object.sort()).toEqual(['arguments',
-        'constructor', 'toLocaleString', 'toString', 'valueOf'].sort());
+      expect(apiCatalog.Object.sort()).toEqual([
+        'constructor',
+        'toLocaleString',
+        'toString',
+        'valueOf',
+      ].sort());
       expect(apiCatalog.Function.sort()).toEqual([
         'prototype', 'caller', 'length', 'name'].sort());
     });
@@ -436,7 +452,7 @@ describe('API extractor', function() {
   // datastore updated to contain new values.
   it(`promotes Firefox 53 CSS2Properties to CSSStyleDeclaration (e.g., border
       property)`, function() {
-    let firefox53catalog = extractor.extractWebCatalog(firefox53og);
+    let firefox53catalog = ApiExtractor.create().extractWebCatalog(firefox53og);
     expect(firefox53catalog.CSSStyleDeclaration).toContain('border');
   });
 });
