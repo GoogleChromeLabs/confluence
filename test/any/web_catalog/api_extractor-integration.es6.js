@@ -448,11 +448,4 @@ describe('API extractor', function() {
     expect(apiCatalog.ObjectLibrary).toContain('constObjectProperty');
     expect(apiCatalog.ObjectLibrary).not.toContain('constantNumber');
   });
-  // TODO(markdittmer): Move this test to node/dataQuality-integration after
-  // datastore updated to contain new values.
-  it(`promotes Firefox 53 CSS2Properties to CSSStyleDeclaration (e.g., border
-      property)`, function() {
-    let firefox53catalog = ApiExtractor.create().extractWebCatalog(firefox53og);
-    expect(firefox53catalog.CSSStyleDeclaration).toContain('border');
-  });
 });
