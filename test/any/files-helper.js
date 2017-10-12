@@ -52,6 +52,8 @@ beforeAll(function() {
   require('../../lib/datastore/rate_limiter.es6.js');
   require('../../lib/datastore/updater.es6.js');
   require('../../lib/http_jdao.es6.js');
+  require('../../lib/http_json_dao.es6.js');
+  require('../../lib/http_json_dao_container.es6.js');
   require('../../lib/web_apis/api_importer.es6.js');
   require('../../lib/web_apis/release.es6.js');
   require('../../lib/web_apis/release_interface_relationship.es6.js');
