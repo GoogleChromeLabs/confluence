@@ -234,4 +234,77 @@ describe('API extractor', () => {
       expect(Object.keys(alphaWithConstantsCatalog).length).toBe(3);
     }).then(done, done.fail);
   });
+
+  it('should combine multiple instances and prototypes without duplicates', done => {
+    function Alpha() {}
+    Alpha.prototype.alpha = function alpha() {};
+    let superAlpha = Object.create(Alpha.prototype);
+    superAlpha.alpha = function alpha() {};
+    superAlpha.superAlpha = function superAlpha() {};
+    let superDuperAlpha = Object.create(superAlpha);
+    superDuperAlpha.alpha = function alpha() {};
+    superDuperAlpha.superAlpha = function superAlpha() {};
+    superDuperAlpha.superDuperAlpha = function superDuperAlpha() {};
+    function Beta() {}
+    Beta.prototype = Object.create(superAlpha);
+    Beta.prototype.constructor = Beta;
+    Beta.prototype.alpha = function alpha() {};
+    Beta.prototype.superAlpha = function superAlpha() {};
+    Beta.prototype.superDuperAlpha = function superDuperAlpha() {};
+    Beta.prototype.beta = function beta() {};
+    let beta = new Beta();
+    beta.alpha = function alpha() {};
+    beta.superAlpha = function superAlpha() {};
+    beta.superDuperAlpha = function superDuperAlpha() {};
+    beta.beta = function beta() {};
+    beta.instanceProperty = null;
+    let superBeta = Object.create(beta);
+    superBeta.alpha = function alpha() {};
+    superBeta.superAlpha = function superAlpha() {};
+    superBeta.superDuperAlpha = function superDuperAlpha() {};
+    superBeta.beta = function beta() {};
+    superBeta.instanceProperty = null;
+    superBeta.superProperty = '';
+
+    Promise.all([
+      getCatalog({Object, Function}, {key: 'window'}, ApiExtractor.create()),
+      getCatalog({Object, Function, lib: {superBeta}}, {key: 'window'},
+                 ApiExtractor.create()),
+    ]).then(catalogs => {
+      const baseCatalog = catalogs[0];
+      const catalog = catalogs[1];
+      expect(baseCatalog.Object.sort()).toEqual(catalog.Object.sort());
+      expect(baseCatalog.Function.sort()).toEqual(catalog.Function.sort());
+      expect(catalog.lib).toEqual(['superBeta'].sort());
+      expect(catalog.Alpha.sort()).toEqual(['alpha'].sort());
+      expect(catalog.Beta.sort())
+          .toEqual([
+            'superProperty',
+            'instanceProperty',
+            'beta',
+            'superDuperAlpha',
+            'superAlpha',
+          ].sort());
+      expect(Object.keys(catalog).length).toBe(5);
+    }).then(done, done.fail);
+  });
+
+  it('should combine non-built-in prototypes on libraries', done => {
+    function method1() {};
+    let libProto = {method1};
+    function method2() {};
+    let lib = Object.create(libProto, {method2: {value: method2}});
+    Promise.all([
+      getCatalog({Object, Function}, {key: 'window'}, ApiExtractor.create()),
+      getCatalog({Object, Function, lib}, {key: 'window'},
+                 ApiExtractor.create()),
+    ]).then(catalogs => {
+      const baseCatalog = catalogs[0];
+      const catalog = catalogs[1];
+      expect(baseCatalog.Object.sort()).toEqual(catalog.Object.sort());
+      expect(baseCatalog.Function.sort()).toEqual(catalog.Function.sort());
+      expect(catalog.lib.sort()).toEqual(['method1', 'method2'].sort());
+      expect(Object.keys(catalog).length).toBe(3);
+    }).then(done, done.fail);
+  });
 });
