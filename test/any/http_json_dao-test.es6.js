@@ -3,10 +3,8 @@
 // found in the LICENSE file.
 'use strict';
 
-describe('HttpJsonDAO', function() {
+describe('HttpJsonDAO', () => {
   let pkg;
-  let ctx;
-  const EXPECTED_URL = 'https://storage.googleapis.com/web-api-confluence-data-cache/test';
   beforeAll(() => {
     pkg = org.chromium.apis.web;
   });
@@ -17,8 +15,6 @@ describe('HttpJsonDAO', function() {
       name,
 
       requires: ['foam.net.HTTPResponse'],
-
-      constants: {EXPECTED_URL},
 
       properties: [
         {
@@ -33,9 +29,6 @@ describe('HttpJsonDAO', function() {
 
       methods: [
         function send() {
-          if (this.url !== this.EXPECTED_URL)
-            throw new Error(`Unexpected HTTP request to URL: ${this.url}`);
-
           return Promise.resolve(this.HTTPResponse.create({
             status: 200,
             payload: Promise.resolve(replayStr),
@@ -45,16 +38,20 @@ describe('HttpJsonDAO', function() {
     });
   }
 
-  function createHttpJsonDAO(classWhitelist, url, ctx) {
-    return pkg.HttpJsonDAO.create({
-      url,
+  function createHttpJsonDAO(classWhitelist, ctx, opt_args) {
+    const daoArgs = Object.assign({
+      url: 'https://safe.com/some/resource',
+      safeProtocols: ['https:'],
+      safeHostnames: ['safe.com'],
+      safePathPrefixes: ['/'],
       parser: foam.json.Parser.create({
         strict: true,
         creationContext: foam.box.ClassWhitelistContext.create({
           whitelist: classWhitelist,
         }, ctx).__subContext__,
       }, ctx),
-    }, ctx);
+    }, opt_args || {});
+    return pkg.HttpJsonDAO.create(daoArgs, ctx);
   }
 
   it('should load empty array from HTTPRequest', done => {
@@ -62,7 +59,7 @@ describe('HttpJsonDAO', function() {
     declareReplayClass('EmptyArrayHTTPRequest', JSON.stringify([]));
     ctx.register(test.EmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
 
-    createHttpJsonDAO([], EXPECTED_URL, ctx).select().then(arraySink => {
+    createHttpJsonDAO([], ctx).select().then(arraySink => {
       expect(arraySink.array.length).toBe(0);
     }).then(done, done.fail);
   });
@@ -85,7 +82,7 @@ describe('HttpJsonDAO', function() {
                        foam.json.Strict.stringify(array));
     ctx.register(test.NonEmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
 
-    createHttpJsonDAO(['test.Item'], EXPECTED_URL, ctx).select()
+    createHttpJsonDAO(['test.Item'], ctx).select()
         .then(arraySink => {
           expect(foam.util.equals(array, arraySink.array)).toBe(true);
         }).then(done, done.fail);
@@ -105,6 +102,101 @@ describe('HttpJsonDAO', function() {
                        foam.json.Strict.stringify(array));
     ctx.register(test.NonEmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
 
-    createHttpJsonDAO([], EXPECTED_URL, ctx).select().then(done.fail, done);
+    createHttpJsonDAO([], ctx).select().then(done.fail, done);
+  });
+
+  it('should succeed when URL is safe, using custom safety params', done => {
+    let ctx = foam.__context__.createSubContext();
+    declareReplayClass('EmptyArrayHTTPRequest', JSON.stringify([]));
+    ctx.register(test.EmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
+
+    createHttpJsonDAO([], ctx, {
+      url: 'http://json.safe.com/data/0',
+      safeProtocols: ['http:'],
+      safeHostnames: ['json.safe.com'],
+      safePathPrefixes: ['/data'],
+    }).select().then(done, done.fail);
+  });
+
+  it('should fail when URL is unsafe', done => {
+    let ctx = foam.__context__.createSubContext();
+    declareReplayClass('EmptyArrayHTTPRequest', JSON.stringify([]));
+    ctx.register(test.EmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
+
+    createHttpJsonDAO([], ctx, {
+      url: 'https://evil.com/something/maniacal',
+    }).select().then(done.fail, done);
+  });
+
+  it('should not issue requests or instantiate delegate, in Serializable flavour', done => {
+    let ctx = foam.__context__.createSubContext();
+    foam.CLASS({
+      package: 'test',
+      name: 'ErrorHTTPRequest',
+
+      methods: [
+        function send() {
+          return Promise.reject(
+              new Error('Expected no HTTPRequest.send() calls'));
+        },
+      ],
+    });
+    ctx.register(test.ErrorHTTPRequest, 'foam.net.HTTPRequest');
+
+    foam.CLASS({
+      package: 'test',
+      name: 'Item',
+
+      properties: [{class: 'Int', name: 'id'}],
+    });
+    foam.CLASS({
+      package: 'test',
+      name: 'NoDelegateHttpJsonDAO',
+      extends: 'org.chromium.apis.web.SerializableHttpJsonDAO',
+
+      properties: [
+        {
+          name: 'delegate',
+          preSet: function() {
+            throw new Error('Expected no instantiation of delegate');
+          },
+          factory: function() { return foam.dao.NullDAO.create(); },
+        },
+      ],
+    });
+
+    // Check that safeguards actually work.
+    pkg.HttpJsonDAO.create({
+      url: 'http://localhost:8080/',
+      safeProtocols: ['http:'],
+      safeHostnames: ['localhost'],
+      safePathPrefixes: ['/'],
+    }, ctx).promise.then(done.fail, error => {
+      expect(error.message).toBe('Expected no HTTPRequest.send() calls');
+      try {
+        test.NoDelegateHttpJsonDAO.create({
+          url: 'http://localhost:8080/',
+          safeProtocols: ['http:'],
+          safeHostnames: ['localhost'],
+          safePathPrefixes: ['/'],
+        }, ctx).delegate;
+        done.fail('Expected throw on instantiation of delegate');
+      } catch (error) {
+        expect(error.message).toBe('Expected no instantiation of delegate');
+
+        // Perform the test:
+        try {
+          // Stringifying serializable flavour of DAO should not trigger errors
+          // baked into test classes.
+          foam.json.Network.stringify(test.NoDelegateHttpJsonDAO.create({
+            of: test.Item,
+            url: 'https://example.com/some/resource',
+          }, ctx));
+          done();
+        } catch (error) {
+          done.fail(error);
+        }
+      }
+    });
   });
 });
