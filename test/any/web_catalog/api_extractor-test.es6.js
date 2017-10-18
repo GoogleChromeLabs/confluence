@@ -13,11 +13,12 @@ describe('API extractor', () => {
   let ObjectGraph;
   let ApiExtractor;
 
-  const getCatalog = (root, ogConfig, extractor) => {
+  const getCatalog = (root, ogConfig, extractorConfig) => {
     return new Promise((resolve, reject) => {
       const og = new ObjectGraph({
         onDone: () => {
-          resolve(extractor.extractWebCatalog(og));
+          extractorConfig.objectGraph = og;
+          resolve(ApiExtractor.create(extractorConfig).extractWebCatalog(og));
         },
       });
       og.capture(root, ogConfig);
@@ -38,7 +39,7 @@ describe('API extractor', () => {
   });
 
   it('should expose Object interface', done => {
-    getCatalog({Object}, {key: 'window'}, ApiExtractor.create())
+    getCatalog({Object}, {key: 'window'}, {})
         .then(catalog => {
           for (const key in Object) {
             if (!Object.hasOwnProperty(key)) continue;
@@ -52,7 +53,7 @@ describe('API extractor', () => {
   });
 
   it('should expose Function interface', done => {
-    getCatalog({Function}, {key: 'window'}, ApiExtractor.create())
+    getCatalog({Function}, {key: 'window'}, {})
         .then(catalog => {
           for (const key in Function) {
             if (!Function.hasOwnProperty(key)) continue;
@@ -69,9 +70,8 @@ describe('API extractor', () => {
     function Alpha() {}
     Alpha.prototype.beta = function beta() {};
     Promise.all([
-      getCatalog({Object, Function}, {key: 'window'}, ApiExtractor.create()),
-      getCatalog({Object, Function, Alpha}, {key: 'window'},
-                 ApiExtractor.create()),
+      getCatalog({Object, Function}, {key: 'window'}, {}),
+      getCatalog({Object, Function, Alpha}, {key: 'window'}, {}),
     ]).then(baseAndAlpha => {
       const baseCatalog = baseAndAlpha[0];
       const alphaCatalog = baseAndAlpha[1];
@@ -86,9 +86,8 @@ describe('API extractor', () => {
     function Alpha() {}
     Alpha.prototype.beta = null;
     Promise.all([
-      getCatalog({Object, Function}, {key: 'window'}, ApiExtractor.create()),
-      getCatalog({Object, Function, Alpha}, {key: 'window'},
-                 ApiExtractor.create()),
+      getCatalog({Object, Function}, {key: 'window'}, {}),
+      getCatalog({Object, Function, Alpha}, {key: 'window'}, {}),
     ]).then(baseAndAlpha => {
       const baseCatalog = baseAndAlpha[0];
       const alphaCatalog = baseAndAlpha[1];
@@ -104,9 +103,8 @@ describe('API extractor', () => {
     Alpha.prototype.beta = function beta() {};
     Alpha.prototype.charlie = null;
     Promise.all([
-      getCatalog({Object, Function}, {key: 'window'}, ApiExtractor.create()),
-      getCatalog({Object, Function, Alpha}, {key: 'window'},
-                 ApiExtractor.create()),
+      getCatalog({Object, Function}, {key: 'window'}, {}),
+      getCatalog({Object, Function, Alpha}, {key: 'window'}, {}),
     ]).then(baseAndAlpha => {
       const baseCatalog = baseAndAlpha[0];
       const alphaCatalog = baseAndAlpha[1];
@@ -126,9 +124,8 @@ describe('API extractor', () => {
     superAlpha.delta = {};
     const alphaLib = {alpha, superAlpha};
     Promise.all([
-      getCatalog({Object, Function}, {key: 'window'}, ApiExtractor.create()),
-      getCatalog({Object, Function, Alpha, alphaLib}, {key: 'window'},
-                 ApiExtractor.create()),
+      getCatalog({Object, Function}, {key: 'window'}, {}),
+      getCatalog({Object, Function, Alpha, alphaLib}, {key: 'window'}, {}),
     ]).then(baseAndAlpha => {
       const baseCatalog = baseAndAlpha[0];
       const alphaCatalog = baseAndAlpha[1];
@@ -151,9 +148,8 @@ describe('API extractor', () => {
     Beta.prototype = Object.create(hiddenPrototype);
     Beta.prototype.beta = function beta() {};
     Promise.all([
-      getCatalog({Object, Function}, {key: 'window'}, ApiExtractor.create()),
-      getCatalog({Object, Function, Alpha, Beta}, {key: 'window'},
-                 ApiExtractor.create()),
+      getCatalog({Object, Function}, {key: 'window'}, {}),
+      getCatalog({Object, Function, Alpha, Beta}, {key: 'window'}, {}),
     ]).then(baseAndAlphaBeta => {
       const baseCatalog = baseAndAlphaBeta[0];
       const alphaBetaCatalog = baseAndAlphaBeta[1];
@@ -176,11 +172,10 @@ describe('API extractor', () => {
     Alpha.alpha = null;
     const lib = {property: {Alpha}};
     Promise.all([
-      getCatalog({Object, Function}, {key: 'window'}, ApiExtractor.create()),
+      getCatalog({Object, Function}, {key: 'window'}, {}),
+      getCatalog({Object, Function, lib}, {key: 'window'}, {}),
       getCatalog({Object, Function, lib}, {key: 'window'},
-                 ApiExtractor.create()),
-      getCatalog({Object, Function, lib}, {key: 'window'},
-                 ApiExtractor.create({functionNamesFromGraphPaths: false})),
+                 {functionNamesFromGraphPaths: false}),
     ]).then(catalogs => {
       const baseCatalog = catalogs[0];
       const libCatalog = catalogs[1];
@@ -207,11 +202,10 @@ describe('API extractor', () => {
     Alpha.prototype.STRING_CONSTANT = '';
     Alpha.prototype.BOOLEAN_CONSTANT = false;
     Promise.all([
-      getCatalog({Object, Function}, {key: 'window'}, ApiExtractor.create()),
+      getCatalog({Object, Function}, {key: 'window'}, {}),
+      getCatalog({Object, Function, Alpha}, {key: 'window'}, {}),
       getCatalog({Object, Function, Alpha}, {key: 'window'},
-                 ApiExtractor.create()),
-      getCatalog({Object, Function, Alpha}, {key: 'window'},
-                 ApiExtractor.create({retainConstantMembers: true})),
+                 {constantTypes: []}),
     ]).then(catalogs => {
       const baseCatalog = catalogs[0];
       const alphaCatalog = catalogs[1];
@@ -267,9 +261,8 @@ describe('API extractor', () => {
     superBeta.superProperty = '';
 
     Promise.all([
-      getCatalog({Object, Function}, {key: 'window'}, ApiExtractor.create()),
-      getCatalog({Object, Function, lib: {superBeta}}, {key: 'window'},
-                 ApiExtractor.create()),
+      getCatalog({Object, Function}, {key: 'window'}, {}),
+      getCatalog({Object, Function, lib: {superBeta}}, {key: 'window'}, {}),
     ]).then(catalogs => {
       const baseCatalog = catalogs[0];
       const catalog = catalogs[1];
@@ -295,9 +288,8 @@ describe('API extractor', () => {
     function method2() {};
     let lib = Object.create(libProto, {method2: {value: method2}});
     Promise.all([
-      getCatalog({Object, Function}, {key: 'window'}, ApiExtractor.create()),
-      getCatalog({Object, Function, lib}, {key: 'window'},
-                 ApiExtractor.create()),
+      getCatalog({Object, Function}, {key: 'window'}, {}),
+      getCatalog({Object, Function, lib}, {key: 'window'}, {}),
     ]).then(catalogs => {
       const baseCatalog = catalogs[0];
       const catalog = catalogs[1];

@@ -363,7 +363,7 @@ describe('API extractor', function() {
   // Instantiate data related to FOAM classes each time (in each test context).
   beforeEach(function() {
     ApiExtractor = org.chromium.apis.web.ApiExtractor;
-    apiCatalog = ApiExtractor.create().extractWebCatalog(og);
+    apiCatalog = ApiExtractor.create({objectGraph: og}).extractWebCatalog();
   });
 
   describe('First level interface', function() {
