@@ -28,7 +28,7 @@ function requireBrowserCode() {
 
 function requireNodeCode() {
   // Code invoking Node JS APIs.
-  require('../../lib/datastore/datastore_container.es6.js');
+  require('../../lib/local_json_dao.es6.js');
   require('../../lib/web_catalog/object_graph_importer.es6.js');
 }
 
@@ -48,12 +48,8 @@ beforeAll(function() {
   require('../../lib/confluence/metric_computer.es6.js');
   require('../../lib/confluence/set_ops.es6.js');
   require('../../lib/dao_container.es6.js');
-  require('../../lib/datastore/rate_limited_DAO.es6.js');
-  require('../../lib/datastore/rate_limiter.es6.js');
-  require('../../lib/datastore/updater.es6.js');
-  require('../../lib/http_jdao.es6.js');
   require('../../lib/http_json_dao.es6.js');
-  require('../../lib/http_json_dao_container.es6.js');
+  require('../../lib/json_dao_container.es6.js');
   require('../../lib/web_apis/api_importer.es6.js');
   require('../../lib/web_apis/release.es6.js');
   require('../../lib/web_apis/release_interface_relationship.es6.js');

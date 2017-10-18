@@ -26,17 +26,15 @@ describeLocal('data quality', function() {
 
     require('../../lib/confluence/api_velocity_data.es6.js');
     require('../../lib/confluence/browser_metric_data.es6.js');
-    require('../../lib/datastore/datastore_container.es6.js');
+    require('../../lib/json_dao_container.es6.js');
     require('../../lib/web_apis/release.es6.js');
     require('../../lib/web_apis/release_interface_relationship.es6.js');
     require('../../lib/web_apis/web_interface.es6.js');
+    const pkg = org.chromium.apis.web;
 
-    var credentials = JSON.parse(fs.readFileSync(
-        path.resolve(__dirname, '../../.local/credentials.json')));
-    ctx = foam.lookup('org.chromium.apis.web.DatastoreContainer').create({
-      gcloudAuthEmail: credentials.client_email,
-      gcloudAuthPrivateKey: credentials.private_key,
-      gcloudProjectId: credentials.project_id,
+    ctx = pkg.JsonDAOContainer.create({
+      mode: pkg.JsonDAOContainerMode.HTTP,
+      basename: 'https://storage.googleapis.com/web-api-confluence-data-cache/latest/json',
     }).ctx;
 
     Promise.all([
