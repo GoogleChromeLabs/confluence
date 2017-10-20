@@ -22,6 +22,12 @@ require('../lib/json_dao_container.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
+require('../lib/web_catalog/api_extractor_service.es6.js');
+const pkg = org.chromium.apis.web;
 
 const logger = foam.log.ConsoleLogger.create();
-foam.box.node.ForkBox.CONNECT_TO_PARENT(logger);
+const container = pkg.JsonDAOContainer.create(null, logger);
+foam.box.node.ForkBox.CONNECT_TO_PARENT(foam.box.Context.create({
+  unsafe: false,
+  classWhitelist: require('../data/class_whitelist.json'),
+}, container));

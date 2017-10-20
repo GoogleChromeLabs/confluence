@@ -50,6 +50,7 @@
   "foam.mlang.sink.NullSink",
   "foam.mlang.sink.Sum",
   "foam.mlang.sink.Unique",
+  "org.chromium.apis.web.ApiExtractorService",
   "org.chromium.apis.web.ApiVelocityData",
   "org.chromium.apis.web.BrowserMetricData",
   "org.chromium.apis.web.BrowserMetricDataType",
