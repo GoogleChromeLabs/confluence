@@ -66,12 +66,12 @@ importer.import().then(() => {
     });
   }
   return Promise.all([
-    container.releaseDAO.select().orderBy(pkg.Release.RELEASE_DATE)
+    container.releaseDAO.orderBy(pkg.Release.RELEASE_DATE).select()
         .then(store.bind(this, pkg.Release.id)),
-    container.webInterfaceDAO.select().orderby(pkg.WebInterface.ID)
+    container.webInterfaceDAO.orderby(pkg.WebInterface.ID).select()
         .then(store.bind(this, pkg.WebInterface.id)),
-    container.releaseWebInterfaceJunctionDAO.select()
-        .orderBy(pkg.ReleaseWebInterfaceJunction.ID)
+    container.releaseWebInterfaceJunctionDAO
+        .orderBy(pkg.ReleaseWebInterfaceJunction.ID).select()
         .then(store.bind(this, pkg.ReleaseWebInterfaceJunction.id)),
   ]);
 }).then((counts, iCount, jCount) => {
