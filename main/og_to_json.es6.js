@@ -24,10 +24,10 @@ const logger = foam.log.ConsoleLogger.create();
 const container = pkg.DAOContainer.create(null, logger);
 container.releaseDAO = foam.dao.MDAO.create({of: pkg.Release}, container);
 container.webInterfaceDAO = foam.dao.MDAO.create({
-  of: pkg.WebInterface
+  of: pkg.WebInterface,
 }, container);
 container.releaseWebInterfaceJunctionDAO = foam.dao.MDAO.create({
-  of: pkg.ReleaseWebInterfaceJunction
+  of: pkg.ReleaseWebInterfaceJunction,
 }, container);
 
 const importer = pkg.ObjectGraphImporter.create({
@@ -68,13 +68,17 @@ importer.import().then(() => {
   return Promise.all([
     container.releaseDAO.orderBy(pkg.Release.RELEASE_DATE).select()
         .then(store.bind(this, pkg.Release.id)),
-    container.webInterfaceDAO.orderby(pkg.WebInterface.ID).select()
+    container.webInterfaceDAO.orderBy(pkg.WebInterface.ID).select()
         .then(store.bind(this, pkg.WebInterface.id)),
     container.releaseWebInterfaceJunctionDAO
         .orderBy(pkg.ReleaseWebInterfaceJunction.ID).select()
         .then(store.bind(this, pkg.ReleaseWebInterfaceJunction.id)),
   ]);
-}).then((counts, iCount, jCount) => {
+}).then(() => {
   logger.info(`ObjectGraph => JSON complete`);
   require('process').exit(0);
+}).catch(error => {
+  logger.error(`Error: ${error}
+                     EXITING`);
+  require('process').exit(1);
 });
