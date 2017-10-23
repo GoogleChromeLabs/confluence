@@ -3,6 +3,23 @@
 // found in the LICENSE file.
 'use strict';
 
+//
+// Run web service.
+//
+// CLI usage:
+//
+//     node {Node JS config flags} main/serve.js {Data source mode}
+//
+// Data source mode is one of:
+//
+//     LOCAL
+//         Load data from local filesystem at data/json/{class id}.json
+//
+//     HTTP
+//         Load data via HTTP from https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/{class id}.json
+//
+// See JsonDaoContainerMode class for more details.
+
 const fs = require('fs');
 const path = require('path');
 const process = require('process');
