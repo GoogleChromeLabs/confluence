@@ -48,7 +48,8 @@ Data collected via [BrowserStack](https://www.browserstack.com).
 The dashboard contains an API catalog that lists attributes/properties and
 operations/methods exposed on constructor functions and their prototypes. The
 catalog constitutes the raw data from which aggregate *API confluence metrics*
-are computed.
+are computed. See [CatalogDataCollection.md](/CatalogDataCollection.md) for
+details on how the catalog is created.
 
 ## The Metrics
 

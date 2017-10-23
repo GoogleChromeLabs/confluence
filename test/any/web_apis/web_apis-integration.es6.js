@@ -11,26 +11,31 @@
 
 describe('WebAPI and api extractor', function() {
   let webCatalog;
-  beforeEach(function(done) {
+  beforeAll(function(done) {
     let chrome56 = global.DATA.chrome56;
     let edge14 = global.DATA.edge14;
     let safari10 = global.DATA.safari10;
     let og = global.ObjectGraph;
 
     let container = global.createDAOContainer();
-    let apiExtractor = foam.lookup('org.chromium.apis.web.ApiExtractor')
-        .create(null, container);
+    let ApiExtractor = foam.lookup('org.chromium.apis.web.ApiExtractor');
     let apiImporter = foam.lookup('org.chromium.apis.web.ApiImporter')
-        .create(null, apiExtractor);
+        .create(null, container);
     let apiMatrix = foam.lookup('org.chromium.apis.web.ApiMatrix')
-        .create(null, apiImporter);
+        .create(null, container);
 
     apiImporter.import('Chrome', '56', 'Windows', '10',
-        apiExtractor.extractWebCatalog(og.fromJSON(chrome56)));
+                       ApiExtractor.create({
+                         objectGraph: og.fromJSON(chrome56),
+                       }, container).extractWebCatalog());
     apiImporter.import('Edge', '14.14393', 'Windows', '10',
-        apiExtractor.extractWebCatalog(og.fromJSON(edge14)));
+                       ApiExtractor.create({
+                         objectGraph: og.fromJSON(edge14),
+                       }, container).extractWebCatalog());
     apiImporter.import('Safari', '10.1.2', 'OSX', '10',
-        apiExtractor.extractWebCatalog(og.fromJSON(safari10)));
+                       ApiExtractor.create({
+                         objectGraph: og.fromJSON(safari10),
+                       }, container).extractWebCatalog());
     apiMatrix.toMatrix([
       'Chrome_56_Windows_10',
       'Edge_14.14393_Windows_10',
