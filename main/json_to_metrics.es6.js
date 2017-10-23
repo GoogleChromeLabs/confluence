@@ -106,4 +106,8 @@ Promise.all([
 }).then(() => {
   logger.info(`API JSON => Metrics JSON complete`);
   require('process').exit(0);
+}).catch(error => {
+  logger.error(`Error: ${error}
+                     EXITING`);
+  require('process').exit(1);
 });
