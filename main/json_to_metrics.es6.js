@@ -91,7 +91,7 @@ Promise.all([
     });
   }
 
-  const E = foam.lang.ExpressionsSingleton.create();
+  const E = foam.mlang.ExpressionsSingleton.create();
   return Promise.all([
     container.browserMetricsDAO
         .orderBy(E.THEN_BY(pkg.BrowserMetricData.TYPE,
