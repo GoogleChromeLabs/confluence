@@ -10,6 +10,7 @@
   "foam.box.RPCReturnMessage",
   "foam.box.RawSocketBox",
   "foam.box.RegisterSelfMessage",
+  "foam.box.ReplyBox",
   "foam.box.SkeletonBox",
   "foam.box.SocketBox",
   "foam.box.SubBox",
