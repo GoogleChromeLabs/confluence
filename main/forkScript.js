@@ -18,6 +18,7 @@ require('../lib/confluence/aggressive_removal.es6.js');
 require('../lib/confluence/api_velocity.es6.js');
 require('../lib/confluence/browser_specific.es6.js');
 require('../lib/confluence/failure_to_ship.es6.js');
+require('../lib/confluence/metric_computer_service.es6.js');
 require('../lib/json_dao_container.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
