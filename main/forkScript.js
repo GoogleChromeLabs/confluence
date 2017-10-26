@@ -21,7 +21,6 @@ require('../lib/confluence/failure_to_ship.es6.js');
 require('../lib/confluence/metric_computer_service.es6.js');
 require('../lib/dao_container.es6.js');
 require('../lib/http_json_dao.es6.js');
-require('../lib/json_dao_container.es6.js');
 require('../lib/local_json_dao.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
