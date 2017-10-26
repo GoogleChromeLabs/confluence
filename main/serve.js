@@ -18,7 +18,7 @@
 //     HTTP
 //         Load data via HTTP from https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/{class id}.json
 //
-// See JsonDaoContainerMode class for more details.
+// See JsonDAOContainerMode class for more details.
 
 const fs = require('fs');
 const path = require('path');
@@ -50,25 +50,35 @@ foam.CLASS({
   ],
 });
 
-let server = pkg.Server.create({
-  port: 8080,
-});
-
 const logger = foam.log.ConsoleLogger.create();
 const modeString = process.argv[2];
 const mode = pkg.JsonDAOContainerMode.VALUES.filter(function(value) {
   return value.name === modeString;
-})[0] || pkg.JsonDAOContainerMode.LOCAL;
+})[0];
+if (!mode) {
+  const modeNames = pkg.JsonDAOContainerMode.VALUES.map(function(value) {
+    return value.name;
+  });
+  const modeStringString = foam.String.isInstance(modeString) ?
+        `"${modeString}"` : modeString;
+  logger.error(`Expected script argument to be one of:
+                    "${modeNames.join('", "')}"
+                    Argument value: ${modeStringString}`);
+  process.exit(1);
+}
+
 const basename = mode === pkg.JsonDAOContainerMode.LOCAL ?
-      `${__basename}/../data/json` :
+      `${__dirname}/../data/json` :
       'https://storage.googleapis.com/web-api-confluence-data-cache/latest/json';
 const daoContainer = pkg.JsonDAOContainer.create({
-  config: pkg.JsonDAOContainerConfig.create({
-    mode: mode,
-    basename: basename,
-  }),
+  mode: mode,
+  basename: basename,
 });
 const ctx = daoContainer.ctx;
+
+let server = pkg.Server.create({
+  port: 8080,
+}, ctx);
 
 function registerDAO(name, dao) {
   foam.assert(dao, 'Broken use of helper: registerDAO()');
