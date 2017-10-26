@@ -28,7 +28,7 @@ require('../lib/web_catalog/api_extractor_service.es6.js');
 const pkg = org.chromium.apis.web;
 
 const logger = foam.log.ConsoleLogger.create();
-const container = pkg.JsonDAOContainer.create(null, logger);
+const container = pkg.DAOContainer.create(null, logger);
 foam.box.node.ForkBox.CONNECT_TO_PARENT(foam.box.Context.create({
   unsafe: false,
   classWhitelist: require('../data/class_whitelist.json'),
