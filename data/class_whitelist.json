@@ -58,6 +58,8 @@
   "org.chromium.apis.web.NewMatrixEvent",
   "org.chromium.apis.web.Release",
   "org.chromium.apis.web.ReleaseWebInterfaceJunction",
+  "org.chromium.apis.web.SerializableHttpJsonDAO",
+  "org.chromium.apis.web.SerializableLocalJsonDAO",
   "org.chromium.apis.web.VersionedApiVelocityData",
   "org.chromium.apis.web.VersionedBrowserMetricData",
   "org.chromium.apis.web.VersionedRelease",

@@ -3,8 +3,26 @@
 // found in the LICENSE file.
 'use strict';
 
+//
+// Run web service.
+//
+// CLI usage:
+//
+//     node {Node JS config flags} main/serve.js {Data source mode}
+//
+// Data source mode is one of:
+//
+//     LOCAL
+//         Load data from local filesystem at data/json/{class id}.json
+//
+//     HTTP
+//         Load data via HTTP from https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/{class id}.json
+//
+// See JsonDAOContainerMode class for more details.
+
 const fs = require('fs');
 const path = require('path');
+const process = require('process');
 
 global.FOAM_FLAGS = {gcloud: true};
 require('foam2');
@@ -13,7 +31,7 @@ require('../lib/confluence/aggressive_removal.es6.js');
 require('../lib/confluence/api_velocity.es6.js');
 require('../lib/confluence/browser_specific.es6.js');
 require('../lib/confluence/failure_to_ship.es6.js');
-require('../lib/datastore/datastore_container.es6.js');
+require('../lib/json_dao_container.es6.js');
 require('../lib/server/server.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
@@ -32,28 +50,35 @@ foam.CLASS({
   ],
 });
 
+const logger = foam.log.ConsoleLogger.create();
+const modeString = process.argv[2];
+const mode = pkg.JsonDAOContainerMode.VALUES.filter(function(value) {
+  return value.name === modeString;
+})[0];
+if (!mode) {
+  const modeNames = pkg.JsonDAOContainerMode.VALUES.map(function(value) {
+    return value.name;
+  });
+  const modeStringString = foam.String.isInstance(modeString) ?
+        `"${modeString}"` : modeString;
+  logger.error(`Expected script argument to be one of:
+                    "${modeNames.join('", "')}"
+                    Argument value: ${modeStringString}`);
+  process.exit(1);
+}
+
+const basename = mode === pkg.JsonDAOContainerMode.LOCAL ?
+      `${__dirname}/../data/json` :
+      'https://storage.googleapis.com/web-api-confluence-data-cache/latest/json';
+const daoContainer = pkg.JsonDAOContainer.create({
+  mode: mode,
+  basename: basename,
+});
+const ctx = daoContainer.ctx;
+
 let server = pkg.Server.create({
   port: 8080,
-});
-
-const logger = foam.log.ConsoleLogger.create();
-let credentials = null;
-try {
-  credentials = require('../.local/credentials.json');
-} catch (e) {
-  logger.warn(`No Cloud Datastore credentails found. Using read-only copy of
-                   local data snapshot`);
-}
-const daoContainer = credentials ? pkg.DatastoreContainer.create({
-  mode: pkg.DatastoreContainerMode.WEB_SERVICE,
-  gcloudAuthEmail: credentials.client_email,
-  gcloudAuthPrivateKey: credentials.private_key,
-  gcloudProjectId: credentials.project_id,
-  logger: logger,
-}) : pkg.DAOContainer.create({
-  logger: logger,
-});
-const ctx = daoContainer.ctx || daoContainer;
+}, ctx);
 
 function registerDAO(name, dao) {
   foam.assert(dao, 'Broken use of helper: registerDAO()');

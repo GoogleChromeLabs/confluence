@@ -10,7 +10,7 @@
     "coverageNode": "JASMINE_CONFIG_PATH=./config/jasmine.json istanbul cover --config config/istanbul.yml --dir .node_coverage -- jasmine",
     "coverageWeb": "karma start ./config/karma.coverage.conf.js",
     "deploy": "zsh scripts/deploy.sh",
-    "start": "node main/serve.js",
+    "start": "node main/serve.js HTTP",
     "serve": "zsh scripts/serve.sh",
     "test": "npm run testNode && npm run testWeb",
     "testNode": "JASMINE_CONFIG_PATH=./config/jasmine.json jasmine",
