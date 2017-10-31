@@ -1,4 +1,5 @@
 [
+  "String",
   "__Property__",
   "com.google.cloud.datastore.DatastoreMutation",
   "foam.box.Box",
