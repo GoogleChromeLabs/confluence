@@ -3,6 +3,17 @@
 // found in the LICENSE file.
 'use strict';
 
+//
+// Convert object graph JSON files to Release, WebInterface,
+// ReleaseWebInterfaceJunction JSON files.
+//
+// Input:  ../data/object-graph/window_{browser}_{version}_{os}_{version}.json
+//         files. (See ObjectGraphImporter.objectGraphPath documentation, and
+//         ObjectGraphImporter.import() implementation for input details).
+//
+// Output: ../data/json/org.chromium.apis.web.{Release|WebInterface|ReleaseWebInterfaceJunction}.json
+//
+
 const path = require('path');
 
 global.FOAM_FLAGS = {gcloud: true};
