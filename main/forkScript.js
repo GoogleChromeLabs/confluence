@@ -24,6 +24,7 @@ require('../lib/local_json_dao.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
+require('../lib/web_catalog/api_extractor_service.es6.js');
 const pkg = org.chromium.apis.web;
 
 const logger = foam.log.ConsoleLogger.create();
