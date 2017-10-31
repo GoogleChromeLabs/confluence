@@ -9,7 +9,6 @@ global.FOAM_FLAGS = {gcloud: true};
 require('foam2');
 
 require('../lib/confluence/api_velocity_data.es6.js');
-require('../lib/confluence/api_velocity_runner.es6.js');
 require('../lib/confluence/browser_metric_data.es6.js');
 require('../lib/confluence/metric_computer_runner.es6.js');
 require('../lib/dao_container.es6.js');
