@@ -18,10 +18,10 @@ describe('FailureToShip', function() {
   let BrowserMetricDataType;
   let BrowserMetricData;
   let container;
+  let runner;
   let releases;
   let ifaces;
   let junctions;
-  let failureToShip;
   const date1 = '2015-01-01T00:00:00.000Z';
   const date2 = '2016-02-01T00:00:00.000Z';
   const date2_1 = '2016-03-01T00:00:00.000Z';
@@ -60,6 +60,11 @@ describe('FailureToShip', function() {
     BrowserMetricData =
       foam.lookup('org.chromium.apis.web.BrowserMetricData');
     container = global.createDAOContainer();
+    runner = global.createLocalRunner({
+      metricComputerTypes: [
+        foam.lookup('org.chromium.apis.web.MetricComputerType').FAILURE_TO_SHIP,
+      ],
+    }, container);
     releases = container.releaseDAO;
     ifaces = container.webInterfaceDAO;
     junctions = container.releaseWebInterfaceJunctionDAO;
@@ -120,11 +125,9 @@ describe('FailureToShip', function() {
         junctions.put(mkJunction(charlie, bcOnly)),
       ]);
     }).then(function() {
-      // Setup and run failure to ship metric calculation.
-      failureToShip = FailureToShip.create(null, container);
-      return failureToShip.run();
+      return runner.run();
     }).then(function() {
-      return failureToShip.failureToShipDAO.select();
+      return container.browserMetricsDAO.select();
     }).then(function(sink) {
       expect(sortedEquals(sink.array, [
         // Alpha fails to ship BC.
@@ -185,11 +188,9 @@ describe('FailureToShip', function() {
         junctions.put(mkJunction(beta1, iface)),
       ]);
     }).then(function() {
-      // Setup and run failure to ship metric calculation.
-      failureToShip = FailureToShip.create(null, container);
-      return failureToShip.run();
+      return runner.run();
     }).then(function() {
-      return failureToShip.failureToShipDAO.select();
+      return container.browserMetricsDAO.select();
     }).then(function(sink) {
       expect(sortedEquals(sink.array, [
         mkData(0, date1, alpha1, [], [beta1]),
@@ -263,11 +264,9 @@ describe('FailureToShip', function() {
         junctions.put(mkJunction(charlie2_1, iface)),
       ]);
     }).then(function() {
-      // Setup and run failure to ship metric calculation.
-      failureToShip = FailureToShip.create(null, container);
-      return failureToShip.run();
+      return runner.run();
     }).then(function() {
-      return failureToShip.failureToShipDAO.select();
+      return container.browserMetricsDAO.select();
     }).then(function(sink) {
       // Expected data:
       //
