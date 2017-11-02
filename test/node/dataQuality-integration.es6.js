@@ -4,7 +4,7 @@
 'use strict';
 
 if (global.isLocal) {
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
 }
 
 describeLocal('data quality', function() {
