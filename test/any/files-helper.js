@@ -29,6 +29,7 @@ function requireBrowserCode() {
 function requireNodeCode() {
   // Code invoking Node JS APIs.
   require('../../lib/local_json_dao.es6.js');
+  require('../../lib/server/server.es6.js');
   require('../../lib/web_catalog/api_extractor_service.es6.js');
   require('../../lib/web_catalog/object_graph_importer.es6.js');
 }
