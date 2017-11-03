@@ -47,6 +47,8 @@ beforeAll(function() {
   require('../../lib/confluence/browser_specific.es6.js');
   require('../../lib/confluence/failure_to_ship.es6.js');
   require('../../lib/confluence/metric_computer.es6.js');
+  require('../../lib/confluence/metric_computer_runner.es6.js');
+  require('../../lib/confluence/metric_computer_service.es6.js');
   require('../../lib/confluence/set_ops.es6.js');
   require('../../lib/dao_container.es6.js');
   require('../../lib/http_json_dao.es6.js');

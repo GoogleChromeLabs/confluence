@@ -18,10 +18,10 @@ describe('BrowserSpecific', function() {
   let BrowserMetricDataType;
   let BrowserMetricData;
   let container;
+  let runner;
   let releases;
   let ifaces;
   let junctions;
-  let browserSpecific;
   const date1 = '2015-01-01T00:00:00.000Z';
   const date2 = '2016-02-01T00:00:00.000Z';
   const date2_1 = '2016-03-01T00:00:00.000Z';
@@ -60,6 +60,11 @@ describe('BrowserSpecific', function() {
     BrowserMetricData =
       foam.lookup('org.chromium.apis.web.BrowserMetricData');
     container = global.createDAOContainer();
+    runner = global.createLocalRunner({
+      metricComputerTypes: [
+        foam.lookup('org.chromium.apis.web.MetricComputerType').BROWSER_SPECIFIC,
+      ],
+    }, container);
     releases = container.releaseDAO;
     ifaces = container.webInterfaceDAO;
     junctions = container.releaseWebInterfaceJunctionDAO;
@@ -120,11 +125,9 @@ describe('BrowserSpecific', function() {
         junctions.put(mkJunction(charlie, bcOnly)),
       ]);
     }).then(function() {
-      // Setup and run browser-specific metric calculation.
-      browserSpecific = BrowserSpecific.create(null, container);
-      return browserSpecific.run();
+      return runner.run();
     }).then(function() {
-      return browserSpecific.browserSpecificDAO.select();
+      return container.browserMetricsDAO.select();
     }).then(function(sink) {
       expect(sortedEquals(
         sink.array,
@@ -184,11 +187,9 @@ describe('BrowserSpecific', function() {
         junctions.put(mkJunction(beta1, iface)),
       ]);
     }).then(function() {
-      // Setup and run browser-specific metric calculation.
-      browserSpecific = BrowserSpecific.create(null, container);
-      return browserSpecific.run();
+      return runner.run();
     }).then(function() {
-      return browserSpecific.browserSpecificDAO.select();
+      return container.browserMetricsDAO.select();
     }).then(function(sink) {
       expect(sortedEquals(
         sink.array,
@@ -263,11 +264,9 @@ describe('BrowserSpecific', function() {
         junctions.put(mkJunction(alpha3, iface)),
       ]);
     }).then(function() {
-      // Setup and run browser-specific metric calculation.
-      browserSpecific = BrowserSpecific.create(null, container);
-      return browserSpecific.run();
+      return runner.run();
     }).then(function() {
-      return browserSpecific.browserSpecificDAO.select();
+      return container.browserMetricsDAO.select();
     }).then(function(sink) {
       // Expected data:
       //
@@ -345,11 +344,9 @@ describe('BrowserSpecific', function() {
         junctions.put(mkJunction(charlie2, iface)),
       ]);
     }).then(function() {
-      // Setup and run browser-specific metric calculation.
-      browserSpecific = BrowserSpecific.create(null, container);
-      return browserSpecific.run();
+      return runner.run();
     }).then(function() {
-      return browserSpecific.browserSpecificDAO.select();
+      return container.browserMetricsDAO.select();
     }).then(function(sink) {
       // Expected data:
       //
@@ -360,7 +357,7 @@ describe('BrowserSpecific', function() {
       //
       // Note: No version 2 data because metric only computed when a release
       // of each browser can be found. See inner callback logic in
-      // MetricComputer.run().
+      // MetricComputerRunner.run().
       //
       // The important bit: Adding interface to alpha3 didn't count as
       // browser-specific because charlie2 shipped it (even though neither

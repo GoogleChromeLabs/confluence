@@ -3,9 +3,8 @@
 // found in the LICENSE file.
 'use strict';
 
-describe('MetricComputer', function() {
-  let metricComputer;
-  let computeSpy;
+describe('MetricComputerRunner', function() {
+  let runner;
   let release = function(browserName, browserVersion,
       osName, osVersion, releaseDate) {
         return org.chromium.apis.web.Release.create({
@@ -32,23 +31,42 @@ describe('MetricComputer', function() {
 
   beforeEach(function() {
     let container = global.createDAOContainer();
-
-    computeSpy = jasmine.createSpy('computeSpy');
+    const E = foam.mlang.ExpressionsSingleton.create();
 
     foam.CLASS({
       package: 'org.chromium.apis.web',
-      name: 'MetricComputerTester',
-      extends: 'org.chromium.apis.web.MetricComputer',
+      name: 'FakeMetricComputerService',
+      extends: 'org.chromium.apis.web.MetricComputerService',
 
-      documentation: `A Test class for MetricComputer, with a spy
-          in compute method`,
+      properties: [
+        {
+          // Required.
+          name: 'releasePredicate',
+          factory: function() { return E.TRUE(); },
+        },
+      ],
 
       methods: [
+        function compute() { return Promise.resolve(); },
+      ],
+    });
+
+    foam.CLASS({
+      package: 'org.chromium.apis.web',
+      name: 'MetricComputerRunnerTester',
+      extends: 'org.chromium.apis.web.MetricComputerRunner',
+
+      documentation: `A Test class for MetricComputerRunner, with a fake
+          service.`,
+
+      requires: ['org.chromium.apis.web.FakeMetricComputerService'],
+
+      properties: [
         {
-          name: 'compute',
-          documentation: `Compute aggressive removal value for each release in
-              releases at the given date.`,
-          code: computeSpy,
+          name: 'metricComputerService',
+          factory: function() {
+            return this.FakeMetricComputerService.create();
+          },
         },
       ],
     });
@@ -84,12 +102,12 @@ describe('MetricComputer', function() {
     webInterfaceDAO.put(webInterface('Audio', 'stop'));
     webInterfaceDAO.put(webInterface('ApplePay', 'about'));
 
-    metricComputer = foam.lookup('org.chromium.apis.web.MetricComputerTester')
+    runner = foam.lookup('org.chromium.apis.web.MetricComputerRunnerTester')
         .create(null, container);
   });
   describe('getOrderedListOfReleaseDates()', function() {
     it('gets correct dates from releaseWebInterfaceJunctionDAO', function() {
-      metricComputer.getOrderedListOfReleaseDates().then((dateArr) => {
+      runner.getOrderedListOfReleaseDates().then((dateArr) => {
         expect(dateArr).toEqual([
           new Date('2014-02-01'),
           new Date('2015-01-10'),
@@ -100,7 +118,7 @@ describe('MetricComputer', function() {
   });
   describe('getLatestReleaseFromEachBrowserAtDate()', function() {
     it('gets correct releases before a given date.', function(done) {
-      metricComputer.getLatestReleaseFromEachBrowserAtDate(
+      runner.getLatestReleaseFromEachBrowserAtDate(
           new Date('2014-02-01')).then((releases) => {
             expect(releases.length).toBe(1);
             expect(releases[0].browserName).toBe('Edge');
@@ -110,7 +128,7 @@ describe('MetricComputer', function() {
     });
     it('gets correct releases before a given date even if the' +
         ' releases list are empty.', function(done) {
-          metricComputer.getLatestReleaseFromEachBrowserAtDate(
+          runner.getLatestReleaseFromEachBrowserAtDate(
               new Date('2014-01-01')).then((releases) => {
                 expect(releases.length).toBe(0);
                 done();
@@ -118,7 +136,7 @@ describe('MetricComputer', function() {
     });
     it("gets all browsers a date when all browsers has a release.",
         function(done) {
-          metricComputer.getLatestReleaseFromEachBrowserAtDate(
+          runner.getLatestReleaseFromEachBrowserAtDate(
               new Date('2015-05-01')).then((releases) => {
                 expect(releases.length).toBe(3);
                 expect(releases[0].browserName).toBe('Safari');

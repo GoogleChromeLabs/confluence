@@ -5,7 +5,12 @@
 
 beforeAll(function() {
   global.createDAOContainer = function(opt_ctx) {
-    var ctx = opt_ctx || foam.__context__;
+    var E = foam.mlang.ExpressionsSingleton.create();
+    var ctx = (opt_ctx || foam.__context__).createSubContext({
+      releasePredicate: E.EQ(
+          foam.lookup('org.chromium.apis.web.Release').IS_MOBILE,
+          false),
+    });
     var EasyDAO = ctx.lookup('foam.dao.EasyDAO');
     var DAOContainer =
         ctx.lookup('org.chromium.apis.web.DAOContainer');
@@ -44,6 +49,6 @@ beforeAll(function() {
         of: ApiVelocityData,
         daoType: 'MDAO',
       }),
-    });
+    }, ctx);
   };
 });

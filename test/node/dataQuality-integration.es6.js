@@ -3,6 +3,10 @@
 // found in the LICENSE file.
 'use strict';
 
+if (global.isLocal) {
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+}
+
 describeLocal('data quality', function() {
   var E;
   var RWIJunction;
@@ -42,7 +46,7 @@ describeLocal('data quality', function() {
           .then(function(release) { chrome = release; }),
       ctx.releaseDAO.find('Firefox_52.0_Windows_10.0')
           .then(function(release) { firefox = release; }),
-      ctx.releaseDAO.find('Safari_603.2.4_OSX_10.12.5')
+      ctx.releaseDAO.find('Safari_11.0_OSX_10.12.6')
           .then(function(release) { safari = release; }),
       ctx.releaseDAO.find('Edge_14.14393_Windows_10.0')
           .then(function(release) { edge = release; }),
@@ -140,7 +144,11 @@ describeLocal('data quality', function() {
   it(`should list members from prototype with the same name as uninteresting
       members from the constructor. E.g.,
       Window.prototype.name.`, function(done) {
-    expectAPILookupAll(true, mkAPI('Window', 'name'))
+    expectAPILookup(true, firefox, mkAPI('Window', 'name'))
         .then(done, done.fail);
+
+    // NOTE: Not expectAPILookupAll() because some implementations (including
+    //       Chrome 56) implement `window.name` as a constant on `window`, and
+    //       constants are filtered out of the API catalog.
   });
 });
