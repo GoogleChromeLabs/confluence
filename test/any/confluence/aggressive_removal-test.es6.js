@@ -15,20 +15,24 @@ describe('AggressiveRemoval', function() {
   let WebInterface;
   let Junction;
   let container;
+  let runner;
   beforeEach(function() {
     Release = foam.lookup('org.chromium.apis.web.Release');
     WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
     Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
     container = global.createDAOContainer();
+    runner = global.createLocalRunner({
+      metricComputerTypes: [
+        foam.lookup('org.chromium.apis.web.MetricComputerType').AGGRESSIVE_REMOVAL,
+      ],
+    }, container);
   });
 
   it('should handle simple case', function(done) {
     const Release = foam.lookup('org.chromium.apis.web.Release');
     const WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
-    const AggressiveRemoval =
-        foam.lookup('org.chromium.apis.web.AggressiveRemoval');
     const releases = container.releaseDAO;
-    let alpha1, alpha2, alpha3, beta, charlie, aggressiveRemoval;
+    let alpha1, alpha2, alpha3, beta, charlie;
     // Instantiate release releases:
     // Alpha 1, 2, 3: ~1 year apart.
     // Beta, Charlie: same year as Alpha 3.
@@ -105,11 +109,9 @@ describe('AggressiveRemoval', function() {
         })),
       ]);
     }).then(function() {
-      // Setup and run aggressive removal metric calculation.
-      aggressiveRemoval = AggressiveRemoval.create(null, container);
-      return aggressiveRemoval.run();
+      return runner.run();
     }).then(function() {
-      return aggressiveRemoval.aggressiveRemovalDAO.select();
+      return container.browserMetricsDAO.select();
     }).then(function(sink) {
       var array = sink.array;
       // One data point satisfies computation constraints:
@@ -132,10 +134,8 @@ describe('AggressiveRemoval', function() {
   it('should not capture removal less than a year old', function(done) {
     const Release = foam.lookup('org.chromium.apis.web.Release');
     const WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
-    const AggressiveRemoval =
-        foam.lookup('org.chromium.apis.web.AggressiveRemoval');
     const releases = container.releaseDAO;
-    let alpha0, alpha1, alpha2, alpha3, beta, charlie, aggressiveRemoval;
+    let alpha0, alpha1, alpha2, alpha3, beta, charlie;
     // Instantiate browser releases:
     // Alpha 0, 1, 2, 3: ~1 year apart.
     // Beta, Charlie: same year as Alpha 3.
@@ -228,11 +228,9 @@ describe('AggressiveRemoval', function() {
         })),
       ]);
     }).then(function() {
-      // Setup and run aggressive removal metric calculation.
-      aggressiveRemoval = AggressiveRemoval.create(null, container);
-      return aggressiveRemoval.run();
+      return runner.run();
     }).then(function() {
-      return aggressiveRemoval.aggressiveRemovalDAO.select();
+      return container.browserMetricsDAO.select();
     }).then(function(sink) {
       var array = sink.array;
       // One data point satisfies computation constraints:
@@ -256,10 +254,8 @@ describe('AggressiveRemoval', function() {
   it('should capture old removals', function(done) {
     const Release = foam.lookup('org.chromium.apis.web.Release');
     const WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
-    const AggressiveRemoval =
-        foam.lookup('org.chromium.apis.web.AggressiveRemoval');
     const releases = container.releaseDAO;
-    let alpha0, alpha1, alpha2, alpha3, beta, charlie, aggressiveRemoval;
+    let alpha0, alpha1, alpha2, alpha3, beta, charlie;
     // Instantiate release releases:
     // Alpha 0, 1, 2, 3: ~1 year apart.
     // Beta, Charlie: same year as Alpha 3.
@@ -375,10 +371,9 @@ describe('AggressiveRemoval', function() {
       ]);
     }).then(function() {
       // Setup and run aggressive removal metric calculation.
-      aggressiveRemoval = AggressiveRemoval.create(null, container);
-      return aggressiveRemoval.run();
+      return runner.run();
     }).then(function() {
-      return aggressiveRemoval.aggressiveRemovalDAO.select();
+      return container.browserMetricsDAO.select();
     }).then(function(sink) {
       var array = sink.array;
       // One data point satisfies computation constraints:
@@ -402,10 +397,8 @@ describe('AggressiveRemoval', function() {
   it('should capture accumulate old removals', function(done) {
     const Release = foam.lookup('org.chromium.apis.web.Release');
     const WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
-    const AggressiveRemoval =
-        foam.lookup('org.chromium.apis.web.AggressiveRemoval');
     const releases = container.releaseDAO;
-    let alpha0, alpha1, alpha2, alpha3, beta, charlie, aggressiveRemoval;
+    let alpha0, alpha1, alpha2, alpha3, beta, charlie;
     // Instantiate release releases:
     // Alpha 0, 1, 2, 3: ~1 year apart.
     // Beta, Charlie: same year as Alpha 2.
@@ -521,11 +514,9 @@ describe('AggressiveRemoval', function() {
         })),
       ]);
     }).then(function() {
-      // Setup and run aggressive removal metric calculation.
-      aggressiveRemoval = AggressiveRemoval.create(null, container);
-      return aggressiveRemoval.run();
+      return runner.run();
     }).then(function() {
-      return aggressiveRemoval.aggressiveRemovalDAO.select();
+      return container.browserMetricsDAO.select();
     }).then(function(sink) {
       var array = sink.array;
       // Two data points satisfies computation constraints:
@@ -564,10 +555,8 @@ describe('AggressiveRemoval', function() {
   it('should not count APIs that are reintroduced', function(done) {
     const Release = foam.lookup('org.chromium.apis.web.Release');
     const WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
-    const AggressiveRemoval =
-        foam.lookup('org.chromium.apis.web.AggressiveRemoval');
     const releases = container.releaseDAO;
-    let alpha1, alpha2, alpha3, beta, charlie, aggressiveRemoval;
+    let alpha1, alpha2, alpha3, beta, charlie;
     // Instantiate release releases:
     // Alpha 1, 2, 3: ~1 year apart.
     // Beta, Charlie: same year as Alpha 3.
@@ -650,11 +639,9 @@ describe('AggressiveRemoval', function() {
         })),
       ]);
     }).then(function() {
-      // Setup and run aggressive removal metric calculation.
-      aggressiveRemoval = AggressiveRemoval.create(null, container);
-      return aggressiveRemoval.run();
+      return runner.run();
     }).then(function() {
-      return aggressiveRemoval.aggressiveRemovalDAO.select();
+      return container.browserMetricsDAO.select();
     }).then(function(sink) {
       var array = sink.array;
       // One data point satisfies computation constraints:

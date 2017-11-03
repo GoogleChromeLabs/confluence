@@ -19,8 +19,8 @@ describe('ApiVelocity', () => {
   let Junction;
   let WebInterface;
   let container;
+  let runner;
   let releases;
-  let apiVelocity;
   let ifaces;
   let junctions;
   beforeEach(() => {
@@ -32,8 +32,12 @@ describe('ApiVelocity', () => {
     Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
 
     container = global.createDAOContainer();
+    runner = global.createLocalRunner({
+      metricComputerTypes: [
+        foam.lookup('org.chromium.apis.web.MetricComputerType').API_VELOCITY,
+      ],
+    }, container);
     releases = container.releaseDAO;
-    apiVelocity = ApiVelocity.create(null, container);
     ifaces = container.webInterfaceDAO;
     junctions = container.releaseWebInterfaceJunctionDAO;
   });
@@ -58,8 +62,8 @@ describe('ApiVelocity', () => {
         sourceId: release.id,
         targetId: iface.id,
       })),
-    ]).then(() => apiVelocity.run())
-        .then(() => apiVelocity.apiVelocityDAO.select())
+    ]).then(() => runner.run())
+        .then(() => container.apiVelocityDAO.select())
         .then(sink => {
           expect(sortedEquals(sink.array, [
             ApiVelocityData.create({
@@ -129,8 +133,8 @@ describe('ApiVelocity', () => {
         sourceId: release2.id,
         targetId: iface3.id,
       })),
-    ]).then(() => apiVelocity.run())
-        .then(() => apiVelocity.apiVelocityDAO.select())
+    ]).then(() => runner.run())
+        .then(() => container.apiVelocityDAO.select())
         .then(sink => {
           expect(sortedEquals(sink.array, [
             ApiVelocityData.create({
@@ -209,8 +213,8 @@ describe('ApiVelocity', () => {
         sourceId: beta.id,
         targetId: iface3.id,
       })),
-    ]).then(() => apiVelocity.run())
-        .then(() => apiVelocity.apiVelocityDAO.select())
+    ]).then(() => runner.run())
+        .then(() => container.apiVelocityDAO.select())
         .then(sink => {
           expect(sortedEquals(sink.array, [
             ApiVelocityData.create({
