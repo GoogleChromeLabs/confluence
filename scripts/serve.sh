@@ -34,13 +34,15 @@ function stop() {
 
 trap stop INT
 
+mkdir -p "${WD}/../.local"
+
 warn "STARTING WEBPACK"
 webpack --watch --progress --config "${WD}/../config/webpack.dev.js" &
 Webpack_PID=$!
 win "WEBPACK STARTED (PID=${Webpack_PID})"
 
 warn "STARTING WEB SERVER"
-node --max_old_space_size=4000 "${WD}/../main/serve.js" "LOCAL" &
+node --max_old_space_size=4000 "${WD}/../main/serve.js" "LOCAL" "DEV" &
 WebServer_PID=$!
 win "WEB SERVER STARTED (PID=${WebServer_PID})"
 

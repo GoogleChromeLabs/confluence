@@ -10,7 +10,7 @@
     "coverageNode": "JASMINE_CONFIG_PATH=./config/jasmine.json istanbul cover --config config/istanbul.yml --dir .node_coverage -- jasmine",
     "coverageWeb": "karma start ./config/karma.coverage.conf.js",
     "deploy": "zsh scripts/deploy.sh",
-    "start": "node main/serve.js HTTP",
+    "start": "node main/serve.js HTTP PROD",
     "serve": "zsh scripts/serve.sh",
     "test": "npm run testNode && npm run testWeb",
     "testNode": "JASMINE_CONFIG_PATH=./config/jasmine.json jasmine",
@@ -87,7 +87,7 @@
     "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^2.2.1",
     "webpack-merge": "^4.1.0",
-    "worker-loader": "^0.8.1"
+    "worker-loader": "^1.1.0"
   },
   "eslintConfig": {
     "extends": "google"
