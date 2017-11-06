@@ -62,5 +62,5 @@ fi
 win "Deploying"
 
 gcloud config set project web-confluence
-gcloud app deploy --version="confluence-${CONFLUENCE_VERSION:0:7}--foam2-${FOAM2_VERSION:0:7}"
+gcloud app deploy --no-promote --version="confluence-${CONFLUENCE_VERSION:0:7}--foam2-${FOAM2_VERSION:0:7}"
 win "App deployed! Exiting."
