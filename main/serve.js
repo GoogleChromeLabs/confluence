@@ -79,7 +79,7 @@ const logger = foam.log.ConsoleLogger.create();
 
 const basename = containerMode === pkg.JsonDAOContainerMode.LOCAL ?
       `${__dirname}/../data/json` :
-      'https://storage.googleapis.com/web-api-confluence-data-cache/latest/json';
+      require('../data/http_json_dao_base_url.json');
 const daoContainer = pkg.JsonDAOContainer.create({
   mode: containerMode,
   basename: basename,
