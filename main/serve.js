@@ -6,19 +6,8 @@
 //
 // Run web service.
 //
-// CLI usage:
+// See USAGE string for usage details.
 //
-//     node {Node JS config flags} main/serve.js {Data source mode}
-//
-// Data source mode is one of:
-//
-//     LOCAL
-//         Load data from local filesystem at data/json/{class id}.json
-//
-//     HTTP
-//         Load data via HTTP from https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/{class id}.json
-//
-// See JsonDAOContainerMode class for more details.
 
 const fs = require('fs');
 const path = require('path');
@@ -38,6 +27,21 @@ require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 const pkg = org.chromium.apis.web;
 
+const USAGE = `USAGE:
+
+    node /path/to/serve.js JsonDAOContainerMode ServerMode
+
+        JsonDAOContainerMode = [ ${pkg.JsonDAOContainerMode.VALUES.map(
+                                       value => value.name).join(' | ')} ]
+
+        ServerMode = [ ${pkg.ServerMode.VALUES.map(
+                             value => value.name).join(' | ')} ]`;
+
+if (process.argv.length !== 4) {
+  console.error(USAGE);
+  process.exit(1);
+}
+
 foam.CLASS({
   refines: 'foam.net.node.Handler',
 
@@ -50,66 +54,40 @@ foam.CLASS({
   ],
 });
 
-const logger = foam.log.ConsoleLogger.create();
-const modeString = process.argv[2];
-const mode = pkg.JsonDAOContainerMode.VALUES.filter(function(value) {
-  return value.name === modeString;
-})[0];
-if (!mode) {
-  const modeNames = pkg.JsonDAOContainerMode.VALUES.map(function(value) {
+function getModeString(Enum, str) {
+  const mode = Enum.VALUES.filter(function(value) {
+    return value.name === str;
+  })[0];
+
+  if (mode) return mode;
+
+  const modeNames = Enum.VALUES.map(function(value) {
     return value.name;
   });
-  const modeStringString = foam.String.isInstance(modeString) ?
-        `"${modeString}"` : modeString;
-  logger.error(`Expected script argument to be one of:
-                    "${modeNames.join('", "')}"
-                    Argument value: ${modeStringString}`);
+  console.error(`Invalid ${Enum.name}`);
+  console.error(USAGE);
+
   process.exit(1);
+  return null;
 }
 
-const basename = mode === pkg.JsonDAOContainerMode.LOCAL ?
+const containerMode = getModeString(pkg.JsonDAOContainerMode, process.argv[2]);
+const serverMode = getModeString(pkg.ServerMode, process.argv[3]);
+
+
+const logger = foam.log.ConsoleLogger.create();
+
+const basename = containerMode === pkg.JsonDAOContainerMode.LOCAL ?
       `${__dirname}/../data/json` :
-      'https://storage.googleapis.com/web-api-confluence-data-cache/latest/json';
+      require('../data/http_json_dao_base_url.json');
 const daoContainer = pkg.JsonDAOContainer.create({
-  mode: mode,
+  mode: containerMode,
   basename: basename,
 });
 const ctx = daoContainer.ctx;
 
 let server = pkg.Server.create({
+  mode: serverMode,
   port: 8080,
 }, ctx);
-
-function registerDAO(name, dao) {
-  foam.assert(dao, 'Broken use of helper: registerDAO()');
-  const url = `/${name}`;
-  logger.info(`Exporting REST DAO endpoint: ${url}`);
-  server.exportDAO(dao, url);
-}
-
-registerDAO(daoContainer.RELEASE_NAME, ctx.releaseDAO);
-registerDAO(daoContainer.WEB_INTERFACE_NAME, ctx.webInterfaceDAO);
-registerDAO(daoContainer.RELEASE_WEB_INTERFACE_JUNCTION_NAME,
-            ctx.releaseWebInterfaceJunctionDAO);
-registerDAO(daoContainer.API_VELOCITY_NAME, ctx.apiVelocityDAO);
-
-const E = foam.mlang.ExpressionsSingleton.create();
-const EQ = E.EQ.bind(E);
-const Type = pkg.BrowserMetricDataType;
-const TYPE = pkg.BrowserMetricData.TYPE;
-
-registerDAO(
-    daoContainer.FAILURE_TO_SHIP_NAME,
-    ctx.browserMetricsDAO.where(EQ(TYPE, Type.FAILURE_TO_SHIP)));
-registerDAO(
-    daoContainer.BROWSER_SPECIFIC_NAME,
-    ctx.browserMetricsDAO.where(EQ(TYPE, Type.BROWSER_SPECIFIC)));
-registerDAO(
-    daoContainer.AGGRESSIVE_REMOVAL_NAME,
-    ctx.browserMetricsDAO.where(EQ(TYPE, Type.AGGRESSIVE_REMOVAL)));
-
-server.exportFile('/', path.resolve(__dirname, '../static/index.html'));
-server.exportDirectory('/images', path.resolve(__dirname, '../static/images'));
-server.exportDirectory('/', path.resolve(__dirname, '../static/bundle'));
-
 server.start();

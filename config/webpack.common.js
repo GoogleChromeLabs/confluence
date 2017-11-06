@@ -27,7 +27,10 @@ module.exports = {
         use: [
           {
             loader: 'worker-loader',
-            options: {name: '[name].bundle.js'},
+            options: {
+              name: '[name].bundle.js',
+              publicPath: '/bundle/',
+            },
           }
         ],
       },
@@ -41,7 +44,15 @@ module.exports = {
       },
       {
         test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
-        use: [{loader: 'file-loader?name=fonts/[name].[ext]'}],
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'fonts/[name].[ext]',
+              publicPath: '/bundle/',
+            },
+          },
+        ],
       },
     ],
   },
