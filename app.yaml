@@ -14,9 +14,9 @@ liveness_check:
   failure_threshold: 2
   success_threshold: 2
 readiness_check:
-  path: '/releaseWebInterfaceJunctionDAO/%22%22'
+  path: '/releaseWebInterfaceJunctionDAO/""'
   check_interval_sec: 5
   timeout_sec: 4
   failure_threshold: 2
   success_threshold: 2
-  app_start_timeout_sec: 3000
+  app_start_timeout_sec: 300
