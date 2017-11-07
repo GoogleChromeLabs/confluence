@@ -61,6 +61,10 @@ if ! webpack --config "${WD}/../config/webpack.prod.js"; then
 fi
 win "Deploying"
 
-gcloud config set project web-confluence
-gcloud app deploy --no-promote --version="confluence-${CONFLUENCE_VERSION:0:7}--foam2-${FOAM2_VERSION:0:7}"
-win "App deployed! Exiting."
+if gcloud config set project web-confluence && \
+    gcloud app deploy --no-promote --version="confluence-${CONFLUENCE_VERSION:0:7}--foam2-${FOAM2_VERSION:0:7}"; then
+  win "App deployed! Exiting."
+else
+  error "App deployment failed"
+  exit 1
+fi
