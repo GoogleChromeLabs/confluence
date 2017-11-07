@@ -146,19 +146,12 @@ Please use GitHub’s issue tracker and pull request features.
 
 ### Running locally
 
-1. Before cloning this repository you
-   should [install git lfs](https://git-lfs.github.com/). We use Git LFS to
-   check in database snapshots. This improves the local debugging experience (no
-   need to hit remote APIs to access data locally) and improves production
-   deployment (snapshots bootstrap local caches).
+1. Clone this repository.
 
-2. Clone this repository.
+2. Install: `npm install`
 
-3. Use `npm run serve` to launch a local instance of the service. This will look
-   for `.local/credentials.json`, and when it doesn’t find it, use the local
-   snapshot of data, rather than attempting to connect to a data backend. The
-   last data source to come up in the release-to-API associations (usually takes
-   about a minute).
+3. Use `npm run serve` to launch a local instance of the service. This will load
+   data from Cloud Storage; data can take up to a minute to be loaded and ready.
 
 4. Hack away! `npm run serve` uses `webpack --watch` to observe local
    changes. Making changes to server code will require a service restart, but
@@ -166,31 +159,33 @@ Please use GitHub’s issue tracker and pull request features.
 
 ### Collecting data
 
-**NOTE**: The current data collection process requires
-a [BrowserStack](https://www.browserstack.com/)
-account, [Cloud Datastore](https://cloud.google.com/datastore/) credentials, two
-separate `git clone`s, and a whole lot of RAM. We hope to streamline and
-simplify this process soon. If you have all the prerequisites, read on…
+**NOTE**: The current data collection process requires a
+[BrowserStack](https://www.browserstack.com/) account, two separate `git
+clone`s, and a whole lot of RAM. We hope to streamline and simplify this process
+soon. If you have all the prerequisites, read on…
 
 1. Clone [mdittmer/web-apis](https://github.com/mdittmer/web-apis) and follow
    the
    [data collection instructions](https://github.com/mdittmer/web-apis#setup-browserstack) for
    *historical data collection using BrowserStack*.
 
-2. Copy `/path/to/mdittmer/web-apis/data/og/*.json` to
-   `/path/to/GoogleChrome/confluence/data/og`.
+2. Create `/path/to/GoogleChrome/confluence/data/object-graph` and copy
+   `/path/to/mdittmer/web-apis/data/og/*.json` into it.
 
-3. In `/path/to/GoogleChrome/confluence`, install your Cloud Datastore
-   credentials at `.local/credentials.json`.
+3. Create `/path/to/GoogleChrome/confluence/data/json` and run `node
+   --max_old_space_size=4096 main/og_to_json.es6.js` compute API data from
+   object graphs. This will take a while. When it's finished, you should see
+   three files in `ls /path/to/GoogleChrome/confluence/data/json/*.json`.
 
-4. Run `node --max_old_space_size=16384 ./main/datastore_update.es6.js`. This
-   will take a long time, but it will push new data to your Cloud Datastore
-   database (default partition).
+4. Run `node --max_old_space_size=4096 main/json_to_metrics.es6.js` to compute
+   API confluence metrics from API data. This will take longer than the previous
+   step. When it's finished, you should see five files in `ls
+   /path/to/GoogleChrome/confluence/data/json/*.json`.
 
-5. Optional: run `node --max_old_space_size=16384 ./main/journal_update.es6.js`
-   to update your local data snapshot. This is not strictly necessary, but Cloud
-   Datastore-backed service instances will take longer to initialize their cache
-   if they have a stale local snapshot.
+5. To run the service locally based on your generated data invoke `node
+   main/serve.js "LOCAL" "DEV"`. If you want live reloading of client code,
+   change the parameters passed to `main/serve.js` in `scripts/serve.sh` and
+   start `webpack` alongside the service with `npm run serve.
 
 **Caveat**: In order to serve the data you collect, you must ensure that a `{
 <browser name}: { <browser version prefix>: <release date> } }` for every
