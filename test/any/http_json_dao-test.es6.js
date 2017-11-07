@@ -36,10 +36,17 @@ describe('HttpJsonDAO', () => {
         },
       ],
     });
+    foam.CLASS({
+      package: 'test',
+      name: 'NullItem',
+
+      properties: ['id'],
+    });
   }
 
   function createHttpJsonDAO(classWhitelist, ctx, opt_args) {
     const daoArgs = Object.assign({
+      of: test.NullItem,
       url: 'https://safe.com/some/resource',
       safeProtocols: ['https:'],
       safeHostnames: ['safe.com'],
