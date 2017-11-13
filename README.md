@@ -97,9 +97,9 @@ wild variation is bad.
 
 #### Definition
 
-The Failure to Ship metric indicates the number of APIs that The Browser
-provides for the duration of the Grace Period, but all other browsers do
-provide throughout the Grace Period.
+The Failure to Ship metric indicates the number of APIs that The Browser does
+not provide provide for the duration of the Grace Period, but all other
+browsers do provide throughout the Grace Period.
 
 #### Rationale
 
