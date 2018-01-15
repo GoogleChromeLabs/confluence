@@ -176,8 +176,7 @@ or
    2. [Collect the data yourself](#collecting-data).
 
 Finally, use `npm run serve` to launch a local instance of the service. This
-will load data from Cloud Storage; data can take up to a minute to be loaded and
-ready.
+will load local data, which can take up to a minute to be ready to serve.
 
 4. Hack away! `npm run serve` uses `webpack --watch` to observe local
    changes. Making changes to server code will require a service restart, but
