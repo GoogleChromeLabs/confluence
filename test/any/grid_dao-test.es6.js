@@ -126,4 +126,57 @@ describe('GridDAO', () => {
       done();
     });
   });
+
+  it('should warn and ignore invalid projection columns', done => {
+    const warn = foam.__context__.warn;
+    let warnCount = 0;
+    const ctx = foam.createSubContext({
+      warn: function() {
+        warnCount++;
+        return warn.apply(this, arguments);
+      },
+    });
+    foam.CLASS({
+      package: 'org.chromium.apis.web.test',
+      name: 'Col',
+
+      properties: [
+        {
+          class: 'String',
+          name: 'id',
+        },
+      ],
+    }, ctx);
+    const Col = org.chromium.apis.web.test.Col;
+    const dao = org.chromium.apis.web.GridDAO.create({
+      cols: [
+        Col.create({id: 'A'}),
+      ],
+    }, ctx);
+    const E = foam.mlang.ExpressionsSingleton.create(null, ctx);
+    const GridRow = org.chromium.apis.web.GridRow;
+    Promise.all([
+      dao.put(GridRow.create({id: 0, data: [0]}, ctx)),
+      dao.put(GridRow.create({id: 1, data: [1]}, ctx)),
+      dao.put(GridRow.create({id: 2, data: [2]}, ctx)),
+      dao.put(GridRow.create({id: 3, data: [3]}, ctx)),
+    ]).then(() => {
+      warnCount = 0;
+      const sink = E.MAP(dao.projectCols(
+          Col.create({id: 'B'}, ctx), dao.cols[0], null, undefined, -1));
+      expect(warnCount).toBe(4);
+      return dao.orderBy(GridRow.ID).select(sink);
+    }).then(mapSink => {
+      const array = mapSink.delegate.array;
+      expect(array[0].id).toBe(0);
+      expect(array[1].id).toBe(1);
+      expect(array[2].id).toBe(2);
+      expect(array[3].id).toBe(3);
+      expect(array[0].data).toEqual([0]);
+      expect(array[1].data).toEqual([1]);
+      expect(array[2].data).toEqual([2]);
+      expect(array[3].data).toEqual([3]);
+      done();
+    });
+  });
 });
