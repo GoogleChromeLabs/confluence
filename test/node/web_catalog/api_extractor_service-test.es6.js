@@ -4,20 +4,25 @@
 'use strict';
 
 
-describe('ObjectGraphImporter', () => {
+describe('ApiExtractorService', () => {
+  let fs;
   let path;
   let objectGraphPath;
-  let ObjectGraphImporter;
+  let ApiExtractorService;
 
   beforeAll(() => {
+    fs = require('fs');
     path = require('path');
     objectGraphPath = path.resolve(`${__dirname}/../data`);
-    ObjectGraphImporter = org.chromium.apis.web.ObjectGraphImporter;
+    ApiExtractorService = org.chromium.apis.web.ApiExtractorService;
   });
 
   it('should use data from filename when "environment" data is missing', () => {
-    const ogi = ObjectGraphImporter.create({objectGraphPath});
-    const releaseInfo = ogi.getReleaseInfo('window_Firefox_53.0_OSX_10.11.json');
+    const aes = ApiExtractorService.create();
+    const jsonFilePath = path.join(objectGraphPath,
+                                   'window_Firefox_53.0_OSX_10.11.json');
+    const json = JSON.parse(fs.readFileSync(jsonFilePath));
+    const releaseInfo = aes.getReleaseInfo(jsonFilePath, json);
     expect(releaseInfo.browser).toBeDefined();
     expect(releaseInfo.platform).toBeDefined();
     expect(releaseInfo.browser.name).toBe('Firefox');
@@ -27,11 +32,14 @@ describe('ObjectGraphImporter', () => {
   });
 
   it('should use data from "environment" when it is available', () => {
-    const ogi = ObjectGraphImporter.create({objectGraphPath});
+    const aes = ApiExtractorService.create();
+    const jsonFilePath = path.join(objectGraphPath,
+                                   'window_IgnoreThisNameEntirely.json');
+    const json = JSON.parse(fs.readFileSync(jsonFilePath));
+    const releaseInfo = aes.getReleaseInfo(jsonFilePath, json);
 
     // Test file contains Chrome63/Linux64 data with browser and platform names
     // overridden as "Test".
-    const releaseInfo = ogi.getReleaseInfo('window_IgnoreThisNameEntirely.json');
     expect(releaseInfo.browser).toBeDefined();
     expect(releaseInfo.platform).toBeDefined();
     expect(releaseInfo.browser.name).toBe('Test');
@@ -41,7 +49,10 @@ describe('ObjectGraphImporter', () => {
   });
 
   it('should throw when "environment" data is missing and filename is malformed', () => {
-    const ogi = ObjectGraphImporter.create({objectGraphPath});
-    expect(() => ogi.getReleaseInfo('window_Name_is_Malformed.json')).toThrow();
+    const aes = ApiExtractorService.create();
+    const jsonFilePath = path.join(objectGraphPath,
+                                   'window_Name_is_Malformed.json');
+    const json = JSON.parse(fs.readFileSync(jsonFilePath));
+    expect(() => aes.getReleaseInfo(jsonFilePath, json)).toThrow();
   });
 });
