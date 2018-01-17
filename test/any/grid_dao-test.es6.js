@@ -82,7 +82,7 @@ describe('GridDAO', () => {
     }))).toBe(2);
   });
 
-  it('should project appropriately on proper use of projectCols()', done => {
+  fit('should project appropriately on proper use of projectCols()', done => {
     foam.CLASS({
       package: 'org.chromium.apis.web.test',
       name: 'Col',
@@ -124,7 +124,7 @@ describe('GridDAO', () => {
       expect(array[2].data).toEqual([0, 1, 0, 0]);
       expect(array[3].data).toEqual([1, 0, 0, 0]);
       done();
-    });
+    }).catch(done.fail);
   });
 
   it('should project appropriately over a subset of cols using projectCols()', done => {
@@ -169,7 +169,7 @@ describe('GridDAO', () => {
       expect(array[2].data).toEqual([0, 0]);
       expect(array[3].data).toEqual([1, 0]);
       done();
-    });
+    }).catch(done.fail);
   });
 
   it('should warn and ignore invalid projection columns', done => {
@@ -222,6 +222,6 @@ describe('GridDAO', () => {
       expect(array[2].data).toEqual([2]);
       expect(array[3].data).toEqual([3]);
       done();
-    });
+    }).catch(done.fail);
   });
 });
