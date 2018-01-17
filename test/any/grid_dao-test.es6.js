@@ -5,7 +5,7 @@
 
 
 describe('GridDAO', () => {
-  fit('should use FOAM object equality for colIndexOf', () => {
+  it('should use FOAM object equality for colIndexOf', () => {
     foam.CLASS({
       package: 'org.chromium.apis.web.test',
       name: 'RGBA',
