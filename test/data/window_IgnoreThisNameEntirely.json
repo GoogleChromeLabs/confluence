@@ -1,0 +1,32 @@
+{
+  "blacklistedKeys": [
+    "+UID",
+    "+UID__",
+    "__proto__",
+    "$UID",
+    "$UID__"
+  ],
+  "data": {
+    "10000": {}
+	},
+  "environment": {
+    "browser": {
+      "name": "Test",
+      "version": "63.0.3239.132"
+    },
+    "platform": {
+      "name": "Test",
+      "version": "x86.64"
+    }
+  },
+  "functions": {},
+  "key": "window",
+  "metadata": {},
+  "protos": {},
+  "root": 10000,
+  "timestamp": 1516041038324,
+  "toStrings": {
+    "10000": "[object Window]"
+	},
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
+}
