@@ -161,7 +161,6 @@ Then, either:
    1. Copy the latest data:
 
 ```zsh
-mkdir -p data/json
 cd data/json
 curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.ApiVelocityData.json > org.chromium.apis.web.ApiVelocityData.json
 curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.ReleaseWebInterfaceJunction.json > org.chromium.apis.web.ReleaseWebInterfaceJunction.json
