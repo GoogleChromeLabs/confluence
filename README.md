@@ -150,8 +150,32 @@ Please use GitHub’s issue tracker and pull request features.
 
 2. Install: `npm install`
 
-3. Use `npm run serve` to launch a local instance of the service. This will load
-   data from Cloud Storage; data can take up to a minute to be loaded and ready.
+3. Launch the local server:
+
+```zsh
+mkdir -p data/json
+```
+
+Then, either:
+
+   1. Copy the latest data:
+
+```zsh
+cd data/json
+curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.ApiVelocityData.json > org.chromium.apis.web.ApiVelocityData.json
+curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.ReleaseWebInterfaceJunction.json > org.chromium.apis.web.ReleaseWebInterfaceJunction.json
+curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.BrowserMetricData.json > org.chromium.apis.web.BrowserMetricData.json
+curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.WebInterface.json > org.chromium.apis.web.WebInterface.json
+curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.Release.json > org.chromium.apis.web.Release.json
+cd ../..
+```
+
+or
+
+   2. [Collect the data yourself](#collecting-data).
+
+Finally, use `npm run serve` to launch a local instance of the service. This
+will load local data, which can take up to a minute to be ready to serve.
 
 4. Hack away! `npm run serve` uses `webpack --watch` to observe local
    changes. Making changes to server code will require a service restart, but
