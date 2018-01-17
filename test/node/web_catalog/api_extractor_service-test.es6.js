@@ -9,16 +9,18 @@ describe('ApiExtractorService', () => {
   let path;
   let objectGraphPath;
   let ApiExtractorService;
+  let DAOContainer;
 
   beforeAll(() => {
     fs = require('fs');
     path = require('path');
-    objectGraphPath = path.resolve(`${__dirname}/../data`);
+    objectGraphPath = path.resolve(`${__dirname}/../../data`);
     ApiExtractorService = org.chromium.apis.web.ApiExtractorService;
+    DAOContainer = org.chromium.apis.web.DAOContainer;
   });
 
   it('should use data from filename when "environment" data is missing', () => {
-    const aes = ApiExtractorService.create();
+    const aes = ApiExtractorService.create(null, DAOContainer.create());
     const jsonFilePath = path.join(objectGraphPath,
                                    'window_Firefox_53.0_OSX_10.11.json');
     const json = JSON.parse(fs.readFileSync(jsonFilePath));
@@ -32,7 +34,7 @@ describe('ApiExtractorService', () => {
   });
 
   it('should use data from "environment" when it is available', () => {
-    const aes = ApiExtractorService.create();
+    const aes = ApiExtractorService.create(null, DAOContainer.create());
     const jsonFilePath = path.join(objectGraphPath,
                                    'window_IgnoreThisNameEntirely.json');
     const json = JSON.parse(fs.readFileSync(jsonFilePath));
@@ -49,7 +51,7 @@ describe('ApiExtractorService', () => {
   });
 
   it('should throw when "environment" data is missing and filename is malformed', () => {
-    const aes = ApiExtractorService.create();
+    const aes = ApiExtractorService.create(null, DAOContainer.create());
     const jsonFilePath = path.join(objectGraphPath,
                                    'window_Name_is_Malformed.json');
     const json = JSON.parse(fs.readFileSync(jsonFilePath));
