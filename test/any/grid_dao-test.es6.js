@@ -82,7 +82,7 @@ describe('GridDAO', () => {
     }))).toBe(2);
   });
 
-  fit('should project appropriately on proper use of projectCols()', done => {
+  it('should project appropriately on proper use of projectCols()', done => {
     foam.CLASS({
       package: 'org.chromium.apis.web.test',
       name: 'Col',
