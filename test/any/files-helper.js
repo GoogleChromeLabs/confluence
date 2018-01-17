@@ -53,6 +53,7 @@ beforeAll(function() {
   require('../../lib/confluence/metric_computer_service.es6.js');
   require('../../lib/confluence/set_ops.es6.js');
   require('../../lib/dao_container.es6.js');
+  require('../../lib/grid_dao.es6.js');
   require('../../lib/http_json_dao.es6.js');
   require('../../lib/indexed_dao.es6.js');
   require('../../lib/json_dao_container.es6.js');
