@@ -127,7 +127,7 @@ describe('GridDAO', () => {
     });
   });
 
-  fit('should project appropriately over a subset of cols using projectCols()', done => {
+  it('should project appropriately over a subset of cols using projectCols()', done => {
     foam.CLASS({
       package: 'org.chromium.apis.web.test',
       name: 'Col',
