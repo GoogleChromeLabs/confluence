@@ -41,6 +41,7 @@ beforeAll(function() {
   // Client-side, but used in server integration tests.
   require('../../lib/client/api_matrix.es6.js');
 
+  require('../../lib/client/query_parser.es6.js');
   require('../../lib/client/stats_controller.es6.js');
   require('../../lib/confluence/aggressive_removal.es6.js');
   require('../../lib/confluence/api_velocity.es6.js');
