@@ -55,7 +55,14 @@ describe('QueryParser', () => {
     selectedCols = [
       cols[0], cols[1], cols[cols.length -1],
     ];
-    gridDAO = org.chromium.apis.web.GridDAO.create({cols});
+    gridDAO = org.chromium.apis.web.GridDAO.create({
+      cols,
+      // TODO(markdittmer): Overridding this should be unnecessary. Remove this
+      // once https://github.com/foam-framework/foam2/issues/980 is fixed.
+      delegate: foam.dao.ArrayDAO.create({
+        of: org.chromium.apis.web.GridRow,
+      }),
+    });
 
     T = true;
     F = false;
@@ -111,7 +118,7 @@ describe('QueryParser', () => {
     }).then(done).catch(done.fail);
   });
 
-  fit('should conjunct keyword and count queries', done => {
+  it('should conjunct keyword and count queries', done => {
     const q = parser.parseString('count:2 amma');
     gridDAO.where(q).select().then(arraySink => {
       expect(foam.util.equals(
