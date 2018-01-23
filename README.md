@@ -193,18 +193,18 @@ soon. If you have all the prerequisites, read on…
    [data collection instructions](https://github.com/mdittmer/web-apis#setup-browserstack) for
    *historical data collection using BrowserStack*.
 
-2. Create `/path/to/GoogleChrome/confluence/data/object-graph` and copy
-   `/path/to/mdittmer/web-apis/data/og/*.json` into it.
+2. Create `/path/to/confluence/data/object-graph` and copy
+   `/path/to/web-apis/data/og/*.json` into it.
 
-3. Create `/path/to/GoogleChrome/confluence/data/json` and run `node
+3. Create `/path/to/confluence/data/json` and run `node
    --max_old_space_size=4096 main/og_to_json.es6.js` compute API data from
    object graphs. This will take a while. When it's finished, you should see
-   three files in `ls /path/to/GoogleChrome/confluence/data/json/*.json`.
+   three files in `ls /path/to/confluence/data/json/*.json`.
 
 4. Run `node --max_old_space_size=4096 main/json_to_metrics.es6.js` to compute
    API confluence metrics from API data. This will take longer than the previous
    step. When it's finished, you should see five files in `ls
-   /path/to/GoogleChrome/confluence/data/json/*.json`.
+   /path/to/confluence/data/json/*.json`.
 
 5. To run the service locally based on your generated data invoke `node
    main/serve.js "LOCAL" "DEV"`. If you want live reloading of client code,
