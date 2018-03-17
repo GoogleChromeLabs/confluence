@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 const process = require('process');
 const url = require('url');
@@ -22,7 +23,7 @@ const logger = foam.log.ConsoleLogger.create();
 
 const USAGE = `USAGE:
 
-    node /path/to/import.es6.js BaseConfluenceDataURL
+    node /path/to/relationship_to_grid.es6.js BaseConfluenceDataURL
 
         BaseConfluenceDataURL = absolute https: or file: URL to directory
                                 where Confluence data are stored with NO
@@ -45,6 +46,33 @@ let container = pkg.JsonDAOContainer.create({
 
 logger.info('Gathering Confluence data from JSON');
 
+const outputter = foam.json.Outputter.create({
+  pretty: false,
+  formatDatesAsNumbers: true,
+  outputDefaultValues: false,
+  useShortNames: false,
+  strict: true,
+});
+function store(arraySink) {
+  const cls = arraySink.of || arraySink.array[0] ? arraySink.array[0].cls_ :
+      foam.core.FObject;
+  logger.info(`Storing ${cls.id}`);
+  return new Promise((resolve, reject) => {
+    fs.writeFile(
+        `${__dirname}/../data/json/${cls.id}.json`,
+        outputter.stringify(arraySink.array, cls),
+        error => {
+          if (error) {
+            logger.error(`Error storing ${cls.id}`, error);
+            reject(error);
+          } else {
+            logger.info(`Stored ${cls.id}`);
+            resolve();
+          }
+        });
+    });
+}
+
 Promise.all([
   container.releaseDAO.orderBy(pkg.Release.RELEASE_DATE).select(),
   container.webInterfaceDAO.orderBy(pkg.WebInterface.ID).select(),
@@ -55,33 +83,6 @@ Promise.all([
   const releases = arraySinks[0].array;
   const apis = arraySinks[1].array;
   const joins = arraySinks[2].array;
-
-  const outputter = foam.json.Outputter.create({
-    pretty: false,
-    formatDatesAsNumbers: true,
-    outputDefaultValues: false,
-    useShortNames: false,
-    strict: true,
-  });
-  function store(arraySink) {
-    const cls = arraySink.of || arraySink.array[0] ? arraySink.array[0].cls_ :
-        foam.core.FObject;
-    logger.info(`Storing ${cls.id}`);
-    return new Promise((resolve, reject) => {
-      require('fs').writeFile(
-          `${__dirname}/../data/json/${cls.id}.json`,
-          outputter.stringify(arraySink.array, cls),
-          error => {
-            if (error) {
-              logger.error(`Error storing ${cls.id}`, error);
-              reject(error);
-            } else {
-              logger.info(`Stored ${cls.id}`, error);
-              resolve();
-            }
-          });
-    });
-  }
 
   logger.info('Indexing data');
   let releaseIdxs = {};
