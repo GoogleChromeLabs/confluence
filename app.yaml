@@ -8,13 +8,13 @@ resources:
   cpu: 4
   memory_gb: 4
 liveness_check:
-  path: '/blank.html'
+  path: "/blank.html"
   check_interval_sec: 30
   timeout_sec: 4
   failure_threshold: 2
   success_threshold: 2
 readiness_check:
-  path: '/releaseWebInterfaceJunctionDAO/""'
+  path: "/releaseWebInterfaceJunctionDAO/\"\""
   check_interval_sec: 5
   timeout_sec: 4
   failure_threshold: 2
