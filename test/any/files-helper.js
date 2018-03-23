@@ -35,6 +35,9 @@ function requireNodeCode() {
 }
 
 beforeAll(function() {
+  // Load refinements before anything else.
+  require('../../lib/property.es6.js');
+
   if (foam.isServer) requireNodeCode();
   else requireBrowserCode();
 
