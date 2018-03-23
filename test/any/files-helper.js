@@ -35,6 +35,9 @@ function requireNodeCode() {
 }
 
 beforeAll(function() {
+  // Load refinements before anything else.
+  require('../../lib/property.es6.js');
+
   if (foam.isServer) requireNodeCode();
   else requireBrowserCode();
 
@@ -57,6 +60,7 @@ beforeAll(function() {
   require('../../lib/http_json_dao.es6.js');
   require('../../lib/indexed_dao.es6.js');
   require('../../lib/json_dao_container.es6.js');
+  require('../../lib/web_apis/api_compat_data.es6.js');
   require('../../lib/web_apis/api_importer.es6.js');
   require('../../lib/web_apis/release.es6.js');
   require('../../lib/web_apis/release_interface_relationship.es6.js');
