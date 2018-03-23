@@ -21,7 +21,11 @@ const pkg = org.chromium.apis.web;
 
 const logger = foam.log.ConsoleLogger.create();
 
-const USAGE = `USAGE:
+const USAGE = `Transforms (Release, API) pair relations to instances of
+org.chromium.apis.web.GridRow. Input and output files are
+[class package path].json in [repository root]/data.
+
+USAGE:
 
     node /path/to/relationship_to_grid.es6.js BaseConfluenceDataURL
 
