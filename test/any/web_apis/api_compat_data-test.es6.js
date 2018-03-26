@@ -57,7 +57,7 @@ describe('AbstractApiCompatData', () => {
       }));
 });
 
-fdescribe('CompatClassGenerator', () => {
+describe('CompatClassGenerator', () => {
   let CompatProperty;
   let Release;
   let generator;
