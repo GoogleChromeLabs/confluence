@@ -103,6 +103,8 @@ describe('CompatClassGenerator', () => {
     expect(props.length).toBe(2);
     expect(foam.util.equals(props[0].release, release0)).toBe(true);
     expect(foam.util.equals(props[1].release, release1)).toBe(true);
+    expect(props[0].name).toBe('alpha1_2_3zulu9_8_7');
+    expect(props[1].name).toBe('beta3_2_1yankee7_8_9');
   });
 
   it('should error out validating with duplicate relases', () => {
