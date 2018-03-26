@@ -56,3 +56,78 @@ describe('AbstractApiCompatData', () => {
         apiName: 'a',
       }));
 });
+
+describe('CompatClassGenerator', () => {
+  let CompatProperty;
+  let Release;
+  let generator;
+  beforeEach(() => {
+    CompatProperty = org.chromium.apis.web.CompatProperty;
+    Release = org.chromium.apis.web.Release;
+    generator = org.chromium.apis.web.CompatClassGenerator.create();
+  });
+
+  it('should register a class', () => {
+    generator.generateClass(
+        generator.generateSpec('org.chromium.apis.web', 'CompatClass', []));
+    expect(foam.lookup('org.chromium.apis.web.CompatClass')).toBeDefined();
+  });
+
+  it('should accept a model', () => {
+    const model = foam.json.parse(
+      generator.generateSpec('org.chromium.apis.web', 'CompatClass', []));
+    expect(foam.core.Model.isInstance(model)).toBe(true);
+    generator.generateClass(model);
+    expect(foam.lookup('org.chromium.apis.web.CompatClass')).toBeDefined();
+  });
+
+  it('should create a property for each release',  () => {
+    const release0 = Release.create({
+      browserName: 'Alpha',
+      browserVersion:'1.2.3',
+      osName: 'Zulu',
+      osVersion: '9.8.7',
+    });
+    const release1 = Release.create({
+      browserName: 'Beta',
+      browserVersion:'3.2.1',
+      osName: 'Yankee',
+      osVersion: '7.8.9',
+    });
+    const Cls = generator.generateClass(
+        generator.generateSpec('org.chromium.apis.web', 'CompatClass', [
+          release0,
+          release1,
+        ]));
+    const props = Cls.getAxiomsByClass(CompatProperty);
+    expect(props.length).toBe(2);
+    expect(foam.util.equals(props[0].release, release0)).toBe(true);
+    expect(foam.util.equals(props[1].release, release1)).toBe(true);
+    expect(props[0].name).toBe('alpha1_2_3zulu9_8_7');
+    expect(props[1].name).toBe('beta3_2_1yankee7_8_9');
+  });
+
+  it('should disambiguate similar versions', () => {
+    const release0 = Release.create({
+      browserName: 'Alpha',
+      browserVersion:'1.2.3',
+      osName: 'Zulu',
+      osVersion: '9.8.7',
+    });
+    const release1 = Release.create({
+      browserName: 'Alpha',
+      browserVersion:'1.23',
+      osName: 'Zulu',
+      osVersion: '9.8.7',
+    });
+    const Cls = generator.generateClass(
+        generator.generateSpec('org.chromium.apis.web', 'CompatClass', [
+          release0,
+          release1,
+        ]));
+    const props = Cls.getAxiomsByClass(CompatProperty);
+    expect(props.length).toBe(2);
+    expect(foam.util.equals(props[0].release, release0)).toBe(true);
+    expect(foam.util.equals(props[1].release, release1)).toBe(true);
+  });
+});
