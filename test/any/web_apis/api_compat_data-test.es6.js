@@ -107,24 +107,6 @@ describe('CompatClassGenerator', () => {
     expect(props[1].name).toBe('beta3_2_1yankee7_8_9');
   });
 
-  it('should error out validating with duplicate relases', () => {
-    expect(() => generator.generateClass(
-        generator.generateSpec('org.chromium.apis.web', 'CompatClass', [
-          Release.create({
-            browserName: 'Alpha',
-            browserVersion:'1.2.3',
-            osName: 'Zulu',
-            osVersion: '9.8.7',
-          }),
-          Release.create({
-            browserName: 'Alpha',
-            browserVersion:'1.2.3',
-            osName: 'Zulu',
-            osVersion: '9.8.7',
-          }),
-        ]))).toThrow();
-  });
-
   it('should disambiguate similar versions', () => {
     const release0 = Release.create({
       browserName: 'Alpha',
