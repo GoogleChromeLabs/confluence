@@ -117,18 +117,18 @@ describe('ReleaseApiQueryInterpreter', () => {
   });
 
   it('should match specific release', () => {
-    const result = interpreter.interpretKeyValue('a1y1', 't', fakeParser);
+    const result = interpreter.interpretKeyValue('a1y1', 'true', fakeParser);
     expect(foam.util.equals(result, E.EQ(Cls.ALPHA1YANKEE1, true))).toBe(true);
   });
 
   it('should match case insensitively', () => {
-    const result = interpreter.interpretKeyValue('A1y1', 't', fakeParser);
+    const result = interpreter.interpretKeyValue('A1y1', 'true', fakeParser);
     expect(foam.util.equals(result, E.EQ(Cls.ALPHA1YANKEE1, true))).toBe(true);
   });
 
   it('should reinterpret unknown keys as keywords', () => {
-    const result = interpreter.interpretKeyValue('unknown', 't', fakeParser);
-    expect(foam.util.equals(result, E.KEYWORD('unknown:t'))).toBe(true);
+    const result = interpreter.interpretKeyValue('unknown', 'true', fakeParser);
+    expect(foam.util.equals(result, E.KEYWORD('unknown:true'))).toBe(true);
   });
 
   it('should interpret counts in terms of selected browsers', () => {
@@ -147,31 +147,29 @@ describe('ReleaseApiQueryInterpreter', () => {
 
   it('should interpret partial matches', () => {
     let result;
-    result = interpreter.interpretKeyValue('alpha', 't', fakeParser);
+    result = interpreter.interpretKeyValue('alpha', 'true', fakeParser);
     expect(foam.util.equals(
         result, E.AND(
             E.EQ(Cls.ALPHA1YANKEE1, true),
             E.EQ(Cls.ALPHA2YANKEE1, true),
             E.EQ(Cls.ALPHA2YANKEE2, true),
             E.EQ(Cls.ALPHA2ZULU1, true)))).toBe(true);
-    result = interpreter.interpretKeyValue('a2', 't', fakeParser);
+    result = interpreter.interpretKeyValue('a2', 'true', fakeParser);
     expect(foam.util.equals(
         result, E.AND(
             E.EQ(Cls.ALPHA2YANKEE1, true),
             E.EQ(Cls.ALPHA2YANKEE2, true),
             E.EQ(Cls.ALPHA2ZULU1, true)))).toBe(true);
-    result = interpreter.interpretKeyValue('beta', 't', fakeParser);
+    result = interpreter.interpretKeyValue('beta', 'true', fakeParser);
     expect(foam.util.equals(result, E.EQ(Cls.BETA1YANKEE1, true))).toBe(true);
   });
 
   it('should support various truthinesses', () => {
     [
-      't',
       'true',
-      'T',
-      'TrUtHy',
-      '1',
-      '9k',
+      'True',
+      'TRUE',
+      'TrUe',
     ].forEach(value => {
       const result = interpreter.interpretKeyValue('a1y1', value, fakeParser);
       expect(foam.util.equals(result, E.EQ(Cls.ALPHA1YANKEE1, true)))
@@ -181,11 +179,10 @@ describe('ReleaseApiQueryInterpreter', () => {
 
   it('should support various falsinesses', () => {
     [
-      'f',
       'false',
-      'F',
-      'fAlSeY',
-      '0',
+      'False',
+      'FALSE',
+      'FaLsE',
     ].forEach(value => {
       const result = interpreter.interpretKeyValue('a1y1', value, fakeParser);
       expect(foam.util.equals(result, E.EQ(Cls.ALPHA1YANKEE1, false)))
