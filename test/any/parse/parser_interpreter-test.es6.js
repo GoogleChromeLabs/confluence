@@ -243,20 +243,44 @@ describe('QueryParser', () => {
     expect(foam.util.equals(result, KEY_VALUE('foo', 'bar'))).toBe(true);
   });
 
-  xit('combine over spaces', () => {
-    const str = 'foo:bar baz: quz';
+  fit('combine over spaces after partial parse', () => {
+    // Parse succeeds up to AND(KEY_VALUE(foo, bar), KEYWORD(baz)), then halts.
+    // ": \t quz  " should be interpreted as whitespace-separated keywords.
+    const str = 'foo:bar baz: \t quz  ';
     const result = parser.parseString(str);
     expect(foam.util.equals(
         result,
-        E.AND(KEY_VALUE('foo', 'bar'), E.KEYWORD('baz:'), E.KEYWORD('quz'))))
+        E.AND(KEY_VALUE('foo', 'bar'), E.KEYWORD('baz'), E.KEYWORD(':'),
+              E.KEYWORD('quz'))))
         .toBe(true);
-  }).pend('TODO(markdittmer): This is currently yielding an incomplete parse');
+  });
 
   it('should recognize and/or', () => {
     let str;
     let result;
 
     str = 'a and b or c';
+    result = parser.parseString(str);
+    expect(foam.util.equals(
+        result,
+        E.OR(E.AND(E.KEYWORD('a'), E.KEYWORD('b')), E.KEYWORD('c'))))
+        .toBe(true);
+
+    str = 'a & b or c';
+    result = parser.parseString(str);
+    expect(foam.util.equals(
+        result,
+        E.OR(E.AND(E.KEYWORD('a'), E.KEYWORD('b')), E.KEYWORD('c'))))
+        .toBe(true);
+
+    str = 'a and b | c';
+    result = parser.parseString(str);
+    expect(foam.util.equals(
+        result,
+        E.OR(E.AND(E.KEYWORD('a'), E.KEYWORD('b')), E.KEYWORD('c'))))
+        .toBe(true);
+
+    str = 'a & b | c';
     result = parser.parseString(str);
     expect(foam.util.equals(
         result,
