@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+      body {
+        font-family: 'Roboto', sans-serif;
+        color: rgba(0, 0, 0, 0.8);
+        width: 100vw;
+        height: 100vh;
+        display: grid;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        grid-template-rows: min-content 1fr;
+      }
+    </style>
+    <script type="text/javascript" src="../../static/bundle/vendors.bundle.js"></script>
+    <script type="text/javascript" src="../../static/bundle/foam.bundle.js"></script>
+    <script type="text/javascript" src="../../static/bundle/ui_test.bundle.js"></script>
+  </head>
+  <body>
+    <div style="padding: 16px">
+      Expectations:
+      <ul>
+        <li>
+          Scrollable Checkerboard grid of API names + 4 fake browser
+          releases
+        </li><li>
+          Remove column "X" button rendered but not wired to anything
+        </li><li>
+          No "X" for API name
+        </li><li>
+          Readable rendering of long API names (try hovering over long name)
+        </li>
+      </ul>
+    </div>
+    <script type="text/javascript">
+      global.uiTestEnvPromise
+	  .then(env => env.scrollDAOTableTestView.write(document));
+    </script>
+  </body>
+</html>
