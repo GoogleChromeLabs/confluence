@@ -132,12 +132,17 @@ describe('ReleaseApiQueryInterpreter', () => {
   });
 
   it('should interpret counts in terms of selected browsers', () => {
-    const result = interpreter.interpretKeyValue('count', '1');
+    const result = interpreter.interpretKeyValue('count', '1', fakeParser);
     expect(foam.util.equals(
         result,
         E.EQ(E.ARRAY_COUNT(E.SEQ(Cls.ALPHA2ZULU1, Cls.BETA1YANKEE1),
                            E.TRUTHY()), 1)))
         .toBe(true);
+  });
+
+  it('should interpret non-numeric counts as keywords', () => {
+    const result = interpreter.interpretKeyValue('count', 'NaN', fakeParser);
+    expect(foam.util.equals(result,E.KEYWORD('count:NaN'))).toBe(true);
   });
 
   it('should interpret partial matches', () => {
@@ -243,7 +248,7 @@ describe('QueryParser', () => {
     expect(foam.util.equals(result, KEY_VALUE('foo', 'bar'))).toBe(true);
   });
 
-  fit('combine over spaces after partial parse', () => {
+  it('combine over spaces after partial parse', () => {
     // Parse succeeds up to AND(KEY_VALUE(foo, bar), KEYWORD(baz)), then halts.
     // ": \t quz  " should be interpreted as whitespace-separated keywords.
     const str = 'foo:bar baz: \t quz  ';
