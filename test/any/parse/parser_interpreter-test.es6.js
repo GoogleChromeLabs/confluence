@@ -4,47 +4,12 @@
 // found in the LICENSE file.
 'use strict';
 
-describe('DefaultQueryInterpreter', () => {
-  let Cls;
-  let fakeParser;
-  let interpreter;
-  let E;
-  beforeEach(() => {
-    foam.CLASS({
-      name: 'TestItem',
-      package: 'org.chromium.parse.test',
-
-      properties: ['testProp'],
-    });
-    Cls = foam.lookup('org.chromium.parse.test.TestItem');
-    fakeParser = {of: Cls};
-    interpreter = org.chromium.parse.DefaultQueryInterpreter.create();
-    E = foam.mlang.ExpressionsSingleton.create();
-  });
-
-  it('should interpret keywords', () => {
-    const result = interpreter.interpretKeyword('Hello, World!', fakeParser);
-    expect(foam.util.equals(result, E.KEYWORD('Hello, World!'))).toBe(true);
-  });
-
-  it('should interpret matching property names', () => {
-    const result = interpreter.interpretKeyValue('testProp', 42, fakeParser);
-    expect(foam.util.equals(result, E.EQ(Cls.TEST_PROP, 42))).toBe(true);
-  });
-
-  it('should reinterpret unmatched key/values as keywords', () => {
-    const result = interpreter.interpretKeyValue('abc', 'xyz', fakeParser);
-    expect(foam.util.equals(result, E.KEYWORD('abc:xyz'))).toBe(true);
-  });
-});
-
-describe('ReleaseApiQueryInterpreter', () => {
+describe('QueryParser', () => {
   let releases;
+  let Cls;
   let selectable;
   let selected;
-  let Cls;
-  let fakeParser;
-  let interpreter;
+  let parser;
   let E;
   beforeEach(() => {
     const pkg = org.chromium.apis.web;
@@ -105,194 +70,151 @@ describe('ReleaseApiQueryInterpreter', () => {
     selectable = Cls.getAxiomsByClass(pkg.CompatProperty);
     selected = selectable.slice(-2);
     const ctx = foam.createSubContext({selectable, selected});
-    fakeParser = {of: Cls};
-    interpreter = org.chromium.parse.ReleaseApiQueryInterpreter
-        .create(null, ctx);
-    E = foam.mlang.ExpressionsSingleton.create(null, ctx);
+    parser = org.chromium.parse.QueryParser.create(null, ctx);
+    E = foam.mlang.ExpressionsSingleton.create();
   });
 
-  it('should interpret keywords', () => {
-    const result = interpreter.interpretKeyword('Hello, World!', fakeParser);
-    expect(foam.util.equals(result, E.KEYWORD('Hello, World!'))).toBe(true);
+  it('should parse keywords', () => {
+    const parse = parser.parseString('frobinator');
+    expect(parse.rest).toBe('');
+    expect(foam.util.equals(parse.result, E.KEYWORD('frobinator'))).toBe(true);
   });
 
   it('should match specific release', () => {
-    const result = interpreter.interpretKeyValue('a1y1', 'true', fakeParser);
-    expect(foam.util.equals(result, E.EQ(Cls.ALPHA1YANKEE1, true))).toBe(true);
+    const parse = parser.parseString('in:a1y1');
+    expect(parse.rest).toBe('');
+    expect(foam.util.equals(parse.result, E.EQ(Cls.ALPHA1YANKEE1, true)))
+        .toBe(true);
   });
 
   it('should match case insensitively', () => {
-    const result = interpreter.interpretKeyValue('A1y1', 'true', fakeParser);
-    expect(foam.util.equals(result, E.EQ(Cls.ALPHA1YANKEE1, true))).toBe(true);
+    const parse = parser.parseString('iN:A1y1');
+    expect(parse.rest).toBe('');
+    expect(foam.util.equals(parse.result, E.EQ(Cls.ALPHA1YANKEE1, true)))
+        .toBe(true);
   });
 
-  it('should reinterpret unknown keys as keywords', () => {
-    const result = interpreter.interpretKeyValue('unknown', 'true', fakeParser);
-    expect(foam.util.equals(result, E.KEYWORD('unknown:true'))).toBe(true);
+  it('should emit partial parse at point of unexpected input', () => {
+    const parse = parser.parseString('alpha beta ~gamma');
+    expect(parse.rest).toBe('~gamma');
+    expect(foam.util.equals(parse.result,
+                            E.AND(E.KEYWORD('alpha'), E.KEYWORD('beta'))));
   });
 
   it('should interpret counts in terms of selected browsers', () => {
-    const result = interpreter.interpretKeyValue('count', '1', fakeParser);
+    const parse = parser.parseString('count:1');
+    expect(parse.rest).toBe('');
     expect(foam.util.equals(
-        result,
+        parse.result,
         E.EQ(E.ARRAY_COUNT(E.SEQ(Cls.ALPHA2ZULU1, Cls.BETA1YANKEE1),
                            E.TRUTHY()), 1)))
         .toBe(true);
   });
 
-  it('should interpret non-numeric counts as keywords', () => {
-    const result = interpreter.interpretKeyValue('count', 'NaN', fakeParser);
-    expect(foam.util.equals(result,E.KEYWORD('count:NaN'))).toBe(true);
+  it('should not produce EQ(ARRAY_COUNT(...)...) with "count:NaN"', () => {
+    const result = parser.parseString('count:NaN').result;
+    expect(foam.mlang.predicate.Eq.isInstance(result) &&
+           org.chromium.mlang.ArrayCount.isInstance(result.arg1))
+        .toBe(false);
   });
 
-  it('should interpret partial matches', () => {
-    let result;
-    result = interpreter.interpretKeyValue('alpha', 'true', fakeParser);
+  it('should produce partial matches on releases', () => {
+    let parse;
+
+    parse = parser.parseString('in:alpha');
+    expect(parse.rest).toBe('');
     expect(foam.util.equals(
-        result, E.AND(
+        parse.result, E.AND(
             E.EQ(Cls.ALPHA1YANKEE1, true),
             E.EQ(Cls.ALPHA2YANKEE1, true),
             E.EQ(Cls.ALPHA2YANKEE2, true),
             E.EQ(Cls.ALPHA2ZULU1, true)))).toBe(true);
-    result = interpreter.interpretKeyValue('a2', 'true', fakeParser);
+    parse = parser.parseString('in:a2');
+    expect(parse.rest).toBe('');
     expect(foam.util.equals(
-        result, E.AND(
+        parse.result, E.AND(
             E.EQ(Cls.ALPHA2YANKEE1, true),
             E.EQ(Cls.ALPHA2YANKEE2, true),
             E.EQ(Cls.ALPHA2ZULU1, true)))).toBe(true);
-    result = interpreter.interpretKeyValue('beta', 'true', fakeParser);
-    expect(foam.util.equals(result, E.EQ(Cls.BETA1YANKEE1, true))).toBe(true);
-  });
+    parse = parser.parseString('in:beta');
+    expect(parse.rest).toBe('');
+    expect(foam.util.equals(parse.result, E.EQ(Cls.BETA1YANKEE1, true)))
+        .toBe(true);
 
-  it('should support various truthinesses', () => {
-    [
-      'true',
-      'True',
-      'TRUE',
-      'TrUe',
-    ].forEach(value => {
-      const result = interpreter.interpretKeyValue('a1y1', value, fakeParser);
-      expect(foam.util.equals(result, E.EQ(Cls.ALPHA1YANKEE1, true)))
-          .toBe(true);
-    });
-  });
-
-  it('should support various falsinesses', () => {
-    [
-      'false',
-      'False',
-      'FALSE',
-      'FaLsE',
-    ].forEach(value => {
-      const result = interpreter.interpretKeyValue('a1y1', value, fakeParser);
-      expect(foam.util.equals(result, E.EQ(Cls.ALPHA1YANKEE1, false)))
-          .toBe(true);
-    });
-  });
-});
-
-describe('QueryParser', () => {
-  let parser;
-  let E;
-  let KEY_VALUE;
-  beforeEach(() => {
-    foam.CLASS({
-      name: 'KeyValue',
-      package: 'org.chromium.parse.test',
-
-      properties: [
-        {class: 'String', name: 'key'},
-        {class: 'String', name: 'value'},
-      ],
-    });
-    foam.CLASS({
-      name: 'FakeQueryInterpreter',
-      package: 'org.chromium.parse.test',
-      implements: [
-        'foam.mlang.Expressions',
-        'org.chromium.parse.QueryInterpreter',
-      ],
-
-      requires: ['org.chromium.parse.test.KeyValue'],
-
-      methods: [
-        function interpretKeyValue(key, value) {
-          return this.KeyValue.create({key, value});
-        },
-        function interpretKeyword(keyword) {
-          return this.KEYWORD(keyword);
-        },
-      ],
-    });
-    parser = org.chromium.parse.QueryParser.create({
-      interpreter: org.chromium.parse.test.FakeQueryInterpreter.create(),
-    });
-    E = foam.mlang.ExpressionsSingleton.create();
-    KEY_VALUE =
-        (key, value) => org.chromium.parse.test.KeyValue.create({key, value});
+    parse = parser.parseString('notin:alpha');
+    expect(parse.rest).toBe('');
+    expect(foam.util.equals(
+        parse.result, E.AND(
+            E.EQ(Cls.ALPHA1YANKEE1, false),
+            E.EQ(Cls.ALPHA2YANKEE1, false),
+            E.EQ(Cls.ALPHA2YANKEE2, false),
+            E.EQ(Cls.ALPHA2ZULU1, false)))).toBe(true);
+    parse = parser.parseString('notin:a2');
+    expect(parse.rest).toBe('');
+    expect(foam.util.equals(
+        parse.result, E.AND(
+            E.EQ(Cls.ALPHA2YANKEE1, false),
+            E.EQ(Cls.ALPHA2YANKEE2, false),
+            E.EQ(Cls.ALPHA2ZULU1, false)))).toBe(true);
+    parse = parser.parseString('notin:beta');
+    expect(parse.rest).toBe('');
+    expect(foam.util.equals(parse.result, E.EQ(Cls.BETA1YANKEE1, false)))
+        .toBe(true);
   });
 
   it('should strip whitspace', () => {
     const str = '  foo\tbar\n  ';
-    const result = parser.parseString(str);
-    expect(foam.util.equals(result, E.AND(E.KEYWORD('foo'),
-                                          E.KEYWORD('bar')))).toBe(true);
+    const parse = parser.parseString(str);
+    expect(parse.rest).toBe('');
+    expect(foam.util.equals(parse.result, E.AND(E.KEYWORD('foo'),
+                                                E.KEYWORD('bar')))).toBe(true);
   });
 
-  it('should recognize key/values with no spaces', () => {
-    const str = 'foo:bar';
-    const result = parser.parseString(str);
-    expect(foam.util.equals(result, KEY_VALUE('foo', 'bar'))).toBe(true);
-  });
-
-  it('combine over spaces after partial parse', () => {
-    // Parse succeeds up to AND(KEY_VALUE(foo, bar), KEYWORD(baz)), then halts.
-    // ": \t quz  " should be interpreted as whitespace-separated keywords.
-    const str = 'foo:bar baz: \t quz  ';
-    const result = parser.parseString(str);
-    expect(foam.util.equals(
-        result,
-        E.AND(KEY_VALUE('foo', 'bar'), E.KEYWORD('baz'), E.KEYWORD(':'),
-              E.KEYWORD('quz'))))
-        .toBe(true);
+  it('should throw on semantics interpretation error', () => {
+    expect(() => parser.parseString('in:notabrowser')).toThrow();
   });
 
   it('should recognize and/or', () => {
     let str;
-    let result;
+    let parse;
 
     str = 'a and b or c';
-    result = parser.parseString(str);
+    parse = parser.parseString(str);
+    expect(parse.rest).toBe('');
     expect(foam.util.equals(
-        result,
+        parse.result,
         E.OR(E.AND(E.KEYWORD('a'), E.KEYWORD('b')), E.KEYWORD('c'))))
         .toBe(true);
 
     str = 'a & b or c';
-    result = parser.parseString(str);
+    parse = parser.parseString(str);
+    expect(parse.rest).toBe('');
     expect(foam.util.equals(
-        result,
+        parse.result,
         E.OR(E.AND(E.KEYWORD('a'), E.KEYWORD('b')), E.KEYWORD('c'))))
         .toBe(true);
 
     str = 'a and b | c';
-    result = parser.parseString(str);
+    parse = parser.parseString(str);
+    expect(parse.rest).toBe('');
     expect(foam.util.equals(
-        result,
+        parse.result,
         E.OR(E.AND(E.KEYWORD('a'), E.KEYWORD('b')), E.KEYWORD('c'))))
         .toBe(true);
 
     str = 'a & b | c';
-    result = parser.parseString(str);
+    parse = parser.parseString(str);
+    expect(parse.rest).toBe('');
     expect(foam.util.equals(
-        result,
+        parse.result,
         E.OR(E.AND(E.KEYWORD('a'), E.KEYWORD('b')), E.KEYWORD('c'))))
         .toBe(true);
 
     str = 'a and ( b or c)';
-    result = parser.parseString(str);
+    parse = parser.parseString(str);
+    expect(parse.rest).toBe('');
     expect(foam.util.equals(
-        result,
+        parse.result,
         E.AND(E.KEYWORD('a'), E.OR(E.KEYWORD('b'), E.KEYWORD('c')))))
         .toBe(true);
   });
