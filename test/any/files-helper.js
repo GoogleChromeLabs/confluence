@@ -60,6 +60,8 @@ beforeAll(function() {
   require('../../lib/http_json_dao.es6.js');
   require('../../lib/indexed_dao.es6.js');
   require('../../lib/json_dao_container.es6.js');
+  require('../../lib/parse/expressions.es6.js');
+  require('../../lib/parse/parser_interpreter.es6.js');
   require('../../lib/web_apis/api_compat_data.es6.js');
   require('../../lib/web_apis/api_importer.es6.js');
   require('../../lib/web_apis/relational_to_compat.es6.js');
