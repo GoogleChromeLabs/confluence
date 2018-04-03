@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+      body {
+        font-family: 'Roboto', sans-serif;
+        color: rgba(0, 0, 0, 0.8);
+        width: 100vw;
+        height: 100vh;
+        display: grid;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        grid-template-rows: min-content 1fr;
+      }
+    </style>
+    <script type="text/javascript" src="../../static/bundle/vendors.bundle.js"></script>
+    <script type="text/javascript" src="../../static/bundle/foam.bundle.js"></script>
+    <script type="text/javascript" src="../../static/bundle/ui_test.bundle.js"></script>
+  </head>
+  <body>
+    <div style="padding: 16px">
+      Expectations:
+      <ul>
+        <li>
+          Search box with search icon on left
+        </li><li>
+          Interactive "X" button appears when query non-empty; clicking
+          clears query
+        </li><li>
+          Pressing Escape when input is focused clears query
+        </li><li>
+          Default predicate is True
+        </li><li>
+          Predicate parsed until part is not understood (e.g., "a b ~c"
+          parses to keywords "a" and "b")
+        </li><li>
+          Supports structured query "in:a" "notin:a" (in/not in browser
+          starting with a); "count:2" (in exactly 2 of selected browsers)
+        </li><li>
+          Predicate remains unchanged when parse totally fails (e.g., paste
+          in string: "in:notarealbrowser")
+        </li>
+      </ul>
+    </div>
+    <script type="text/javascript">
+      global.uiTestEnvPromise
+	    .then(env => env.searchViewTestView.write(document));
+    </script>
+  </body>
+</html>
