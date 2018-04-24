@@ -11,12 +11,16 @@
 // Refinements before models.
 require('../lib/property.es6.js');
 
+require('../lib/u2/ActionView.es6.js');
+require('../lib/u2/DAOController.es6.js');
+require('../lib/u2/DAOControllerView.es6.js');
 require('../lib/u2/ScrollDAOTable.es6.js');
 require('../lib/u2/SearchView.es6.js');
+require('../lib/u2/ToggleListElementsView.es6.js');
 require('../lib/web_apis/api_compat_data.es6.js');
 require('../lib/web_apis/relational_to_compat.es6.js');
-require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
+require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 const pkg = org.chromium.apis.web;
 
@@ -145,12 +149,10 @@ global.uiTestEnvPromise = (async function() {
         }.bind(this);
         this.importedSelectable$
           .mapTo(this.selectable$, function(array) {
-            debugger;
             return array.map(prop => prop.release.id);
           });
         this.importedSelected$
           .mapTo(this.selected$, function(array) {
-            debugger;
             return array.map(prop => prop.release.id);
           });
       },
@@ -196,9 +198,13 @@ global.uiTestEnvPromise = (async function() {
     removeColumn,
   });
 
+  const daoController = pkg.DAOController.create({data}, ctx);
+
   return {
     context: ctx,
     scrollDAOTableTestView: pkg.ScrollDAOTable.create({data}, ctx),
     searchViewTestView: org.chromium.test.SearchViewWrapper.create(null, ctx),
+    daoControllerViewTestView: pkg.DAOControllerView
+        .create(null, daoController),
   };
 })();

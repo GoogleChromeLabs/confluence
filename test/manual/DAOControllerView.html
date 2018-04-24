@@ -26,20 +26,21 @@
       Expectations:
       <ul>
         <li>
-          Scrollable Checkerboard grid of API names + 4 fake browser
-          releases
+          <a href="ScrollDAOTable.html">ScrollDAOTable</a> behaviour with
+          filtering bound to <a href="SearchView.html">SearchView</a> predicate
+          behaviour
         </li><li>
-          Remove column "X" button rendered but not wired to anything
+          Ellipsis button toggles list view of A, B, C, D fake browsers;
+          toggling adds/removes browsers from table columns
         </li><li>
-          No "X" for API name
-        </li><li>
-          Readable rendering of long API names (try hovering over long name)
+          Removing browser columns with "X" button results in up-to-date list
+          when opening list via ellipsis view after removal
         </li>
       </ul>
     </div>
     <script type="text/javascript">
       global.uiTestEnvPromise
-          .then(env => env.scrollDAOTableTestView.write(document));
+          .then(env => env.daoControllerViewTestView.write(document));
     </script>
   </body>
 </html>
