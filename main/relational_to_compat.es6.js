@@ -93,7 +93,6 @@ const modelOutputter = foam.json.Outputter.create({
 function storeClassModel(model) {
   logger.info(`Storing class model for ${model.id}`);
   return new Promise((resolve, reject) => {
-    debugger;
     fs.writeFile(
         `${__dirname}/../data/json/class:${model.id}.json`,
         modelOutputter.stringify(model, foam.core.Model),
