@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Web API Confluence Dashboard",
   "engines": {
-    "node": "7.2.0"
+    "node": "8.11.1"
   },
   "scripts": {
     "coverage": "npm run coverageNode && npm run coverageWeb && istanbul-combine -d .coverage -p summary -r lcov -r html -r json -b . .node_coverage/coverage.json .web_coverage/*/coverage*.json && istanbul check-coverage --config config/istanbul.yml \".coverage/**/coverage*.json\"",
