@@ -11,7 +11,7 @@ require('../lib/client/api_matrix.es6.js');
 require('../lib/client/events.es6.js');
 require('../lib/confluence/api_velocity_data.es6.js');
 require('../lib/confluence/browser_metric_data.es6.js');
-require('../lib/dao_container.es6.js');
+require('../lib/dao/dao_container.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');

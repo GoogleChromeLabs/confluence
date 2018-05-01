@@ -7,7 +7,7 @@ if (global.isLocal) {
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
 }
 
-describeLocal('data quality', function() {
+xdescribe('data quality', function() {
   var E;
   var RWIJunction;
   var WebInterface;
@@ -30,7 +30,7 @@ describeLocal('data quality', function() {
 
     require('../../lib/confluence/api_velocity_data.es6.js');
     require('../../lib/confluence/browser_metric_data.es6.js');
-    require('../../lib/json_dao_container.es6.js');
+    require('../../lib/dao/json_dao_container.es6.js');
     require('../../lib/web_apis/release.es6.js');
     require('../../lib/web_apis/release_interface_relationship.es6.js');
     require('../../lib/web_apis/web_interface.es6.js');
