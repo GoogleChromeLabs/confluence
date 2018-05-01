@@ -19,7 +19,7 @@ function requireBrowserCode() {
   require('../../lib/chart/time_series_chart.es6.js');
   require('../../lib/client/api_confluence.es6.js');
   require('../../lib/client/api_service.es6.js');
-  require('../../lib/client/dao/release_interface_dao.es6.js');
+  require('../../lib/client/release_interface_dao.es6.js');
   require('../../lib/component/catalog_table.es6.js');
   require('../../lib/controller/api_catalog.es6.js');
   require('../../lib/controller/api_confluence.es6.js');
