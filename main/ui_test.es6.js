@@ -12,9 +12,9 @@
 require('../lib/property.es6.js');
 
 require('../lib/u2/ActionView.es6.js');
-require('../lib/u2/DAOController.es6.js');
-require('../lib/u2/DAOControllerView.es6.js');
-require('../lib/u2/ScrollDAOTable.es6.js');
+require('../lib/u2/dao/DAOController.es6.js');
+require('../lib/u2/dao/DAOControllerView.es6.js');
+require('../lib/u2/dao/ScrollDAOTable.es6.js');
 require('../lib/u2/SearchView.es6.js');
 require('../lib/u2/ToggleListElementsView.es6.js');
 require('../lib/web_apis/api_compat_data.es6.js');

@@ -28,7 +28,7 @@ function requireBrowserCode() {
 
 function requireNodeCode() {
   // Code invoking Node JS APIs.
-  require('../../lib/local_json_dao.es6.js');
+  require('../../lib/dao/local_json_dao.es6.js');
   require('../../lib/server/server.es6.js');
   require('../../lib/web_catalog/api_extractor_service.es6.js');
   require('../../lib/web_catalog/object_graph_importer.es6.js');
@@ -56,11 +56,11 @@ beforeAll(function() {
   require('../../lib/confluence/metric_computer_runner.es6.js');
   require('../../lib/confluence/metric_computer_service.es6.js');
   require('../../lib/confluence/set_ops.es6.js');
-  require('../../lib/dao_container.es6.js');
-  require('../../lib/grid_dao.es6.js');
-  require('../../lib/http_json_dao.es6.js');
-  require('../../lib/indexed_dao.es6.js');
-  require('../../lib/json_dao_container.es6.js');
+  require('../../lib/dao/dao_container.es6.js');
+  require('../../lib/dao/grid_dao.es6.js');
+  require('../../lib/dao/http_json_dao.es6.js');
+  require('../../lib/dao/indexed_dao.es6.js');
+  require('../../lib/dao/json_dao_container.es6.js');
   require('../../lib/parse/expressions.es6.js');
   require('../../lib/parse/parser_interpreter.es6.js');
   require('../../lib/web_apis/api_compat_data.es6.js');

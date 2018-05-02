@@ -12,10 +12,10 @@ require('foam2');
 
 require('../lib/property.es6.js');
 
-require('../lib/grid_dao.es6.js');
-require('../lib/http_json_dao.es6.js');
-require('../lib/json_dao_container.es6.js');
-require('../lib/local_json_dao.es6.js');
+require('../lib/dao/grid_dao.es6.js');
+require('../lib/dao/http_json_dao.es6.js');
+require('../lib/dao/json_dao_container.es6.js');
+require('../lib/dao/local_json_dao.es6.js');
 require('../lib/web_apis/api_compat_data.es6.js');
 require('../lib/web_apis/relational_to_compat.es6.js');
 require('../lib/web_apis/release.es6.js');

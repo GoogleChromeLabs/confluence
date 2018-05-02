@@ -10,10 +10,10 @@ const url = require('url');
 
 require('foam2');
 
-require('../lib/grid_dao.es6.js');
-require('../lib/http_json_dao.es6.js');
-require('../lib/json_dao_container.es6.js');
-require('../lib/local_json_dao.es6.js');
+require('../lib/dao/grid_dao.es6.js');
+require('../lib/dao/http_json_dao.es6.js');
+require('../lib/dao/json_dao_container.es6.js');
+require('../lib/dao/local_json_dao.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
