@@ -45,6 +45,7 @@ beforeAll(function() {
   require('../../lib/client/api_matrix.es6.js');
 
   require('../../lib/client/stats_controller.es6.js');
+  require('../../lib/compat.es6.js');
   require('../../lib/confluence/aggressive_removal.es6.js');
   require('../../lib/confluence/api_velocity.es6.js');
   require('../../lib/confluence/api_velocity_data.es6.js');

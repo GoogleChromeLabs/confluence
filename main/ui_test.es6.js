@@ -24,7 +24,7 @@ require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 const pkg = org.chromium.apis.web;
 
-global.uiTestEnvPromise = (async function() {
+global.uiTestEnvPromise = (function() {
   const releases = [
     pkg.Release.create({
       browserName: 'A',
@@ -81,130 +81,129 @@ global.uiTestEnvPromise = (async function() {
   const data = foam.dao.MDAO.create({
     of: Cls,
   });
-  await Promise.all(array.map(item => data.put(item)));
+  return Promise.all(array.map(item => data.put(item))).then(() => {
+    foam.CLASS({
+      name: 'SearchViewWrapper',
+      package: 'org.chromium.test',
+      extends: 'foam.u2.View',
 
-  foam.CLASS({
-    name: 'SearchViewWrapper',
-    package: 'org.chromium.test',
-    extends: 'foam.u2.View',
+      imports: [
+        'selectable as importedSelectable',
+        'selected as importedSelected',
+      ],
+      exports: [
+        'error',
+        'predicate',
+      ],
 
-    imports: [
-      'selectable as importedSelectable',
-      'selected as importedSelected',
-    ],
-    exports: [
-      'error',
-      'predicate',
-    ],
-
-    properties: [
-      {
-        class: 'String',
-        name: 'data',
-      },
-      {
-        name: 'predicate',
-        value: null,
-        postSet: function(old, nu) {
-          // Clear error message on new successful parse.
-          if (nu && old !== nu) this.errorMessage = '';
+      properties: [
+        {
+          class: 'String',
+          name: 'data',
         },
-      },
-      {
-        class: 'foam.u2.ViewSpec',
-        name: 'searchViewSpec',
-        value: {class: 'org.chromium.apis.web.SearchView'},
-      },
-      {
-        name: 'searchView',
-      },
-      {
-        class: 'Function',
-        name: 'error',
-      },
-      {
-        class: 'String',
-        name: 'errorMessage',
-      },
-      {
-        class: 'Array',
-        of: 'String',
-        name: 'selectable',
-      },
-      {
-        class: 'Array',
-        of: 'String',
-        name: 'selected',
-      },
-    ],
+        {
+          name: 'predicate',
+          value: null,
+          postSet: function(old, nu) {
+            // Clear error message on new successful parse.
+            if (nu && old !== nu) this.errorMessage = '';
+          },
+        },
+        {
+          class: 'foam.u2.ViewSpec',
+          name: 'searchViewSpec',
+          value: {class: 'org.chromium.apis.web.SearchView'},
+        },
+        {
+          name: 'searchView',
+        },
+        {
+          class: 'Function',
+          name: 'error',
+        },
+        {
+          class: 'String',
+          name: 'errorMessage',
+        },
+        {
+          class: 'Array',
+          of: 'String',
+          name: 'selectable',
+        },
+        {
+          class: 'Array',
+          of: 'String',
+          name: 'selected',
+        },
+      ],
 
-    methods: [
-      function init() {
-        this.SUPER();
-        this.error = function() {
-          const args = Array.from(arguments);
-          const msg = args.map(arg => arg.message || arg).join(' ');
-          if (!msg) return;
-          this.errorMessage = msg;
-        }.bind(this);
-        this.importedSelectable$
-          .mapTo(this.selectable$, function(array) {
-            return array.map(prop => prop.release.id);
-          });
-        this.importedSelected$
-          .mapTo(this.selected$, function(array) {
-            return array.map(prop => prop.release.id);
-          });
-      },
-      function initE() {
-        this.addClass(this.myClass())
-          .start('div')
-          .add('Selectable (browserName_browserVersion_osName_osVersion): ')
-          .add(this.selectable$.map(selectable => selectable.join(', ')))
-          .end()
-          .start('div')
-          .add('Selected (browserName_browserVersion_osName_osVersion): ')
-          .add(this.selected$.map(selected => selected.join(', ')))
-          .end().start('br').end()
-          .start('div').style({border: '1px solid black'})
-          .tag(this.searchViewSpec, {data$: this.data$}, this.searchView$)
-          .end().start('br').end()
-          .start('div')
-          .add('Predicate:').start('br').end()
-          .start('pre')
-          .add(this.predicate$
-               .map(predicate => predicate ? predicate.toString() : ''))
-          .end()
-          .end().start('div')
-          .add('Error:').start('br').end()
-          .start('pre')
-          .add(this.errorMessage$)
-          .end()
-          .end();
-        this.SUPER();
-      },
-    ],
+      methods: [
+        function init() {
+          this.SUPER();
+          this.error = function() {
+            const args = Array.from(arguments);
+            const msg = args.map(arg => arg.message || arg).join(' ');
+            if (!msg) return;
+            this.errorMessage = msg;
+          }.bind(this);
+          this.importedSelectable$
+            .mapTo(this.selectable$, function(array) {
+              return array.map(prop => prop.release.id);
+            });
+          this.importedSelected$
+            .mapTo(this.selected$, function(array) {
+              return array.map(prop => prop.release.id);
+            });
+        },
+        function initE() {
+          this.addClass(this.myClass())
+            .start('div')
+                .add('Selectable (browserName_browserVersion_osName_osVersion): ')
+                .add(this.selectable$.map(selectable => selectable.join(', ')))
+            .end().start('div')
+                .add('Selected (browserName_browserVersion_osName_osVersion): ')
+                .add(this.selected$.map(selected => selected.join(', ')))
+            .end().start('br').end()
+            .start('div').style({border: '1px solid black'})
+                .tag(this.searchViewSpec, {data$: this.data$}, this.searchView$)
+            .end().start('br').end()
+            .start('div')
+                .add('Predicate:').start('br').end()
+                .start('pre')
+                    .add(this.predicate$
+                        .map(predicate => predicate ? predicate.toString() : ''))
+                .end()
+            .end().start('div')
+                .add('Error:').start('br').end()
+                .start('pre')
+                    .add(this.errorMessage$)
+                .end()
+            .end();
+          this.SUPER();
+        },
+      ],
+    });
+
+    const compatProperties = Cls.getAxiomsByClass(pkg.CompatProperty);
+    const columns = [Cls.ID].concat(compatProperties);
+    const removeColumn  = () => true;
+    const selectable = compatProperties;
+    const selected = compatProperties.slice(-2);
+    const ctx = foam.createSubContext({
+      selectable,
+      selected,
+      columns,
+      removeColumn,
+    });
+
+    const daoController = pkg.DAOController.create({data}, ctx);
+
+    return {
+      context: ctx,
+      scrollDAOTableTestView: pkg.ScrollDAOTable.create({data}, ctx),
+      searchViewTestView: org.chromium.test.SearchViewWrapper.create(null, ctx),
+      daoControllerViewTestView: pkg.DAOControllerView
+          .create(null, daoController),
+    };
   });
-
-  const compatProperties = Cls.getAxiomsByClass(pkg.CompatProperty);
-  const columns = [Cls.ID].concat(compatProperties);
-  const removeColumn  = () => true;
-  const selectable = compatProperties;
-  const selected = compatProperties.slice(-2);
-  const ctx = foam.createSubContext({
-    selectable,
-    selected,
-    columns,
-    removeColumn,
-  });
-
-  const daoController = pkg.DAOController.create({data}, ctx);
-
-  return {
-    context: ctx,
-    scrollDAOTableTestView: pkg.ScrollDAOTable.create({data}, ctx),
-    searchViewTestView: org.chromium.test.SearchViewWrapper.create(null, ctx),
-    daoControllerViewTestView: pkg.DAOControllerView
-        .create(null, daoController),
-  };
 })();
