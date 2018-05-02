@@ -26,6 +26,6 @@ script:
     echo "⚙️ 😄 ⚙️"
   else
     echo "🏚 😢 🏚"
-    echo "️🏚 😢 🏚️ COMING SOON: This build does not qualify for stagingand  commenting"
+    echo "️🏚 😢 🏚️ COMING SOON: This build does not qualify for staging and commenting"
     echo "🏚 😢 🏚"
   fi
