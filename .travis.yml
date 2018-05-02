@@ -22,10 +22,10 @@ script:
       && [ "${GITHUB_TOKEN}" != "" ];
   then
     echo "⚙️ 😄 ⚙️"
-    echo "⚙️ 😄 ⚙️ COMING SOON: This PR qualifies for staging and commenting"
+    echo "⚙️ 😄 ⚙️ COMING SOON: This build qualifies for staging and commenting"
     echo "⚙️ 😄 ⚙️"
   else
     echo "🏚 😢 🏚"
-    echo "️🏚 😢 🏚️ COMING SOON: This PR does not qualify for staging commenting"
+    echo "️🏚 😢 🏚️ COMING SOON: This build does not qualify for staging commenting"
     echo "🏚 😢 🏚"
   fi
