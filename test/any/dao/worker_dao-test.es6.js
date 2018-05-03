@@ -88,17 +88,12 @@ describe('WorkerDAO', () => {
     });
   });
 
-  it('should require container context', () => {
-    expect(() => foam.json.stringify(pkg.WorkerDAO.create({
-      of: pkg.test.Thing,
-      baseURL: 'https://example.com/restDAO',
-    }))).toThrow();
-  });
-
   it('should require baseURL', () => {
-    expect(() => foam.json.stringify(pkg.WorkerDAO.create({
+    expect(() => pkg.WorkerDAO.create({
       of: pkg.test.Thing,
-    }, ctx))).toThrow();
+    }, ctx)
+        // Access delegate to trigger lazy factory responsible for validate().
+        .delegate).toThrow();
   });
 
   it('should be serializable', () => {
