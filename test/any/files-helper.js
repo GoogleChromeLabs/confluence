@@ -57,10 +57,12 @@ beforeAll(function() {
   require('../../lib/confluence/metric_computer_service.es6.js');
   require('../../lib/confluence/set_ops.es6.js');
   require('../../lib/dao/dao_container.es6.js');
+  require('../../lib/dao/dao_factory.es6.js');
   require('../../lib/dao/grid_dao.es6.js');
   require('../../lib/dao/http_json_dao.es6.js');
   require('../../lib/dao/indexed_dao.es6.js');
   require('../../lib/dao/json_dao_container.es6.js');
+  require('../../lib/dao/worker_dao.es6.js');
   require('../../lib/parse/expressions.es6.js');
   require('../../lib/parse/parser_interpreter.es6.js');
   require('../../lib/web_apis/api_compat_data.es6.js');
