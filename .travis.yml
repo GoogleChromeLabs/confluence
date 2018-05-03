@@ -1,12 +1,31 @@
 language: node_js
 node_js:
-  - "8.11.1"
+- 8.11.1
 addons:
   firefox: latest
+env:
+  global:
+    secure: lpI6ET89oF/EMcnw9mHY0T2TMiyBsU6OIeXcmnhCx+3mIN6fNUTf4gcyGDc0OqCSYkb1z1BDJtlQHshfqpPGzmMhPO7eNNy8R8kZyhxHAR8E6ckvirDmGS73lciV6tid8dm4omru6qqcA69TNYFy2xWXr8aaRDHiQuayQAecBWspi5lYUvEtKoKoN2eiGPrbcBwK9wB35lf1NRFjdwlNsDKON6fGJ9nv9n7uk/rr44hYlIIJZ0TthZxARUwXrTvLGbL9OjGqZR6p27vSly5O5GkXbWlDH1F0O4lGgIOVQb1A/XTlbbsO0p3J2dy5tSAzQoxvK9D9aWPzSPQXFWHb9AGmy3u6zo3UFKELRvytqbJVrlL+yTl9caAufrPGR/xE/WjzUQBjCBDCPUvH6PSMrXExvpCv7yx5GHurrGaNaiwHFp9e/KkJaNr0z7StxjcAG6Y91P0+6PT4B1f4MqKMHalEs4MYQe6nxP9zOYvWiYM+r7W3FCUL+1cexoHmqPB/j86jznDM1ReKdYDp9dTr0sDzJTD7SoF6WdcXcMfrCf9DToD+vc4e22SIORkpoSwXGCbv/gjQqDRo3prafmGwhltM5TI5YRy3ZaCesg3NSVUDe/Qbu8qZfr+WKg2z5Pm9FDmA5HaWBEBeHu9tEtTBvW+pGUxI81QognpvhbcufEM=
+before_install:
+- openssl aes-256-cbc -K $encrypted_4f3419651c2f_key -iv $encrypted_4f3419651c2f_iv
+  -in client-secret.json.enc -out client-secret.json -d
 before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3 # give xvfb some time to start
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+- sleep 3 # give xvfb some time to start
 script:
-  - npm run coverage
-  - codecov
+- npm run coverage
+- codecov
+- | # Report whether or not this is a PR that qualifies for staging.
+  if [ "${TRAVIS_SECURE_ENV_VARS}" != "false" ] \
+      && [ "${TRAVIS_PULL_REQUEST_BRANCH}" != "" ] \
+      && [ "${GITHUB_TOKEN}" != "" ];
+  then
+    echo "⚙️ 😄 ⚙️"
+    echo "⚙️ 😄 ⚙️ COMING SOON: This build qualifies for staging and commenting"
+    echo "⚙️ 😄 ⚙️"
+  else
+    echo "🏚 😢 🏚"
+    echo "️🏚 😢 🏚️ COMING SOON: This build does not qualify for staging and commenting"
+    echo "🏚 😢 🏚"
+  fi
