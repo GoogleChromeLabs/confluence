@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 'use strict';
 
-describe('WorkerDAO', () => {
+fdescribe('WorkerDAO', () => {
   let pkg;
   let ctx;
+  let latestDelayedCountDAO;
   beforeEach(() => {
     pkg = org.chromium.apis.web;
 
@@ -15,24 +16,6 @@ describe('WorkerDAO', () => {
 
       properties: ['id'],
     });
-
-    const containerCtx = foam.createSubContext({
-      isContainerCtx: true,
-    });
-    foam.CLASS({
-      name: 'FakeContainer',
-      package: 'org.chromium.apis.web.test',
-
-      exports: ['as container'],
-
-      properties: [
-        {
-          name: 'ctx',
-          value: containerCtx,
-        },
-      ],
-    });
-    ctx = pkg.test.FakeContainer.create();
 
     foam.CLASS({
       name: 'DelayedCountDAO',
@@ -51,6 +34,10 @@ describe('WorkerDAO', () => {
       ],
 
       methods: [
+        function init() {
+          this.SUPER();
+          latestDelayedCountDAO = this;
+        },
         function select() {
           return this.SUPER.apply(this, arguments).then(ret => {
             ++this.batchReads;
@@ -66,26 +53,25 @@ describe('WorkerDAO', () => {
       ],
     });
 
-    foam.CLASS({
-      name: 'DelayedCountDAOFactory',
-      package: 'org.chromium.apis.web.test',
-      implements: ['org.chromium.apis.web.DAOFactory'],
+    // Replace RestDAO with mock DelayedCountDAO in WorkerDAO's localCtx.
+    const localCtx = foam.createSubContext({});
+    localCtx.register(pkg.test.DelayedCountDAO, 'foam.dao.RestDAO');
 
-      requires: ['org.chromium.apis.web.test.DelayedCountDAO'],
+    foam.CLASS({
+      name: 'FakeContainer',
+      package: 'org.chromium.apis.web.test',
+
+      exports: ['as container'],
 
       properties: [
+        // WorkerDAO's default localCtx is its container ctx property.
         {
-          name: 'latestDAO',
-          value: null,
-        },
-      ],
-
-      methods: [
-        function create(opts, ctx) {
-          return this.latestDAO = this.DelayedCountDAO.create(opts, ctx);;
+          name: 'ctx',
+          value: localCtx,
         },
       ],
     });
+    ctx = pkg.test.FakeContainer.create({});
   });
 
   it('should require baseURL', () => {
@@ -99,24 +85,21 @@ describe('WorkerDAO', () => {
   it('should be serializable', () => {
     expect(() => foam.json.stringify(pkg.WorkerDAO.create({
       of: pkg.test.Thing,
-      baseURL: 'https://example.com/restDAO',
     }, ctx))).not.toThrow();
   });
 
   it('select/listen against cache once during setup', done => {
-    const factory = pkg.test.DelayedCountDAOFactory.create(null, ctx);
     const dao = pkg.WorkerDAO.create({
       of: pkg.test.Thing,
       baseURL: 'https://example.com/restDAO',
-      remoteDAOFactory: factory,
     }, ctx);
 
     let setupSelects;
     let setupListens;
     dao.select().then(() => {
       // CachingDAO may select(), listen(), or both on remote.
-      setupSelects = factory.latestDAO.selects;
-      setupListens = factory.latestDAO.listens;
+      setupSelects = latestDelayedCountDAO.selects;
+      setupListens = latestDelayedCountDAO.listens;
       expect(setupSelects).toBeLessThan(2);
       expect(setupListens).toBeLessThan(2);
       return Promise.all([
@@ -125,8 +108,8 @@ describe('WorkerDAO', () => {
       ]);
     }).then(() => {
       // No subsequent remote selects or listens to service requests.
-      expect(factory.latestDAO.selects).toBe(setupSelects);
-      expect(factory.latestDAO.listens).toBe(setupListens);
+      expect(latestDelayedCountDAO.selects).toBe(setupSelects);
+      expect(latestDelayedCountDAO.listens).toBe(setupListens);
       done();
     });
   });
