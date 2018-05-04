@@ -61,6 +61,7 @@ beforeAll(function() {
   require('../../lib/dao/http_json_dao.es6.js');
   require('../../lib/dao/indexed_dao.es6.js');
   require('../../lib/dao/json_dao_container.es6.js');
+  require('../../lib/dao/worker_dao.es6.js');
   require('../../lib/parse/expressions.es6.js');
   require('../../lib/parse/parser_interpreter.es6.js');
   require('../../lib/web_apis/api_compat_data.es6.js');
