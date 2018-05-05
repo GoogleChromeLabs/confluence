@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-fdescribe('WorkerDAO', () => {
+describe('WorkerDAO', () => {
   let pkg;
   let ctx;
   let latestDelayedCountDAO;
