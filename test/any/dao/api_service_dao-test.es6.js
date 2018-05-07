@@ -149,6 +149,10 @@ describe('ApiServiceDAO', () => {
       workerRegistry: foam.box.Context.create(null, workerCtx).registry,
     }, ctx);
     const initialDelegate = dao.delegate;
+
+    // Assert that a property change event is fired by dao.delegate$ property
+    // slot. This test will time out (because done() isn't called) if
+    // dao.delegate is not set after this subscription is established.
     dao.delegate$.sub(done);
   });
 });
