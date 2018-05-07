@@ -7,9 +7,9 @@ self.window = self.global = self;
 importScripts('vendors.bundle.js', 'foam.bundle.js');
 
 require('../lib/compat.es6.js');
-require('../lib/dao_container.es6.js');
+require('../lib/dao/dao_container.es6.js');
+require('../lib/dao/worker_dao.es6.js');
 require('../lib/web_apis/api_compat_data.es6.js');
-require('../lib/worker_dao.es6.js');
 const pkg = org.chromium.apis.web;
 
 // Has initial "this is your name" message been received?

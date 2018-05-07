@@ -11,6 +11,7 @@ require('@uirouter/angularjs');
 // Refinements before models.
 require('../lib/property.es6.js');
 
+require('../lib/web_apis/api_compat_data.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
