@@ -56,6 +56,7 @@
   "foam.mlang.sink.NullSink",
   "foam.mlang.sink.Sum",
   "foam.mlang.sink.Unique",
+  "org.chromium.apis.web.generated.CompatData",
   "org.chromium.apis.web.AbstractApiCompatData",
   "org.chromium.apis.web.ApiExtractorService",
   "org.chromium.apis.web.ApiVelocityData",
@@ -76,5 +77,6 @@
   "org.chromium.apis.web.VersionedRelease",
   "org.chromium.apis.web.VersionedReleaseWebInterfaceJunction",
   "org.chromium.apis.web.VersionedWebInterface",
-  "org.chromium.apis.web.WebInterface"
+  "org.chromium.apis.web.WebInterface",
+  "org.chromium.apis.web.WorkerDAO"
 ]

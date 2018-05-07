@@ -16,12 +16,14 @@ const process = require('process');
 global.FOAM_FLAGS = {gcloud: true};
 require('foam2');
 
+require('../lib/compat.es6.js');
 require('../lib/confluence/aggressive_removal.es6.js');
 require('../lib/confluence/api_velocity.es6.js');
 require('../lib/confluence/browser_specific.es6.js');
 require('../lib/confluence/failure_to_ship.es6.js');
 require('../lib/dao/json_dao_container.es6.js');
 require('../lib/server/server.es6.js');
+require('../lib/web_apis/api_compat_data.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
@@ -78,16 +80,24 @@ const serverMode = getModeString(pkg.ServerMode, process.argv[3]);
 const logger = foam.log.ConsoleLogger.create();
 
 const basename = containerMode === pkg.JsonDAOContainerMode.LOCAL ?
-      `${__dirname}/../data/json` :
+      `file://${__dirname}/../data/json` :
       require('../data/http_json_dao_base_url.json');
-const daoContainer = pkg.JsonDAOContainer.create({
-  mode: containerMode,
-  basename: basename,
-});
-const ctx = daoContainer.ctx;
 
-let server = pkg.Server.create({
-  mode: serverMode,
-  port: 8080,
-}, ctx);
-server.start();
+const compatClassFile = 'class:org.chromium.apis.web.generated.CompatData.json';
+const compatClassURL = `${basename}/${compatClassFile}`;
+org.chromium.apis.web.ClassGenerator.create({
+  classURL: compatClassURL,
+}).generateClass().then(() => {
+  const daoContainer = pkg.JsonDAOContainer.create({
+    mode: containerMode,
+    basename: basename,
+  });
+  const ctx = daoContainer.ctx;
+  pkg.Server.create({
+    mode: serverMode,
+    port: 8080,
+  }, ctx).start();
+}, err => {
+  logger.error(err);
+  process.exit(1)
+});
