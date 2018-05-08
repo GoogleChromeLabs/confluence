@@ -4,7 +4,6 @@
 'use strict';
 
 require('materialize-css/dist/js/materialize.js');
-require('materialize-css/dist/css/materialize.css');
 require('angular');
 require('@uirouter/angularjs');
 

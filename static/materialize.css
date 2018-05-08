@@ -3,7 +3,6 @@
  * Copyright 2014-2015 Materialize
  * MIT License (https://raw.githubusercontent.com/Dogfalo/materialize/master/LICENSE)
  */
-
 .materialize-red {
   background-color: #e51c23 !important;
 }
@@ -2140,8 +2139,6 @@
   color: transparent !important;
 }
 
-***/
-
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 /**
  * 1. Set default font family to sans-serif.
@@ -2448,13 +2445,14 @@ input {
  * 1. Address box sizing set to `content-box` in IE 8/9/10.
  * 2. Remove excess padding in IE 8/9/10.
  */
+/*+confluence**
+  * Removed due to conflict with FOAM2 U2 views.
 input[type="checkbox"],
 input[type="radio"] {
   box-sizing: border-box;
-  /* 1 */
   padding: 0;
-  /* 2 */
 }
+*-confluence**/
 
 /**
  * Fix the cursor style for Chrome's increment/decrement buttons. For certain
@@ -5899,10 +5897,13 @@ button:focus {
   background-color: #2ab7a9;
 }
 
+/*+confluence**
+  * Removed due to conflict with FOAM2 U2 views.
 label {
   font-size: 0.8rem;
   color: #9e9e9e;
 }
+*-confluence**/
 
 /* Text Inputs + Textarea
    ========================================================================== */
@@ -5926,8 +5927,8 @@ label {
 }
 
 /* Text inputs */
-/***
-  * markdittmer: Removed due to conflict with FOAM2 U2 views.
+/*+confluence**
+  * Removed due to conflict with FOAM2 U2 views.
 input:not([type]),
 input[type=text],
 input[type=password],
@@ -5955,7 +5956,7 @@ textarea.materialize-textarea {
   box-sizing: content-box;
   transition: all 0.3s;
 }
-***/
+*-confluence**/
 
 input:not([type]):disabled, input:not([type])[readonly="readonly"],
 input[type=text]:disabled,
@@ -6014,7 +6015,8 @@ textarea.materialize-textarea:disabled + label,
 textarea.materialize-textarea[readonly="readonly"] + label {
   color: rgba(0, 0, 0, 0.26);
 }
-
+/*+confluence**
+  * Removed due to conflict with FOAM2 U2 views.
 input:not([type]):focus:not([readonly]),
 input[type=text]:focus:not([readonly]),
 input[type=password]:focus:not([readonly]),
@@ -6031,6 +6033,7 @@ textarea.materialize-textarea:focus:not([readonly]) {
   border-bottom: 1px solid #26a69a;
   box-shadow: 0 1px 0 0 #26a69a;
 }
+*-confluence**/
 
 input:not([type]):focus:not([readonly]) + label,
 input[type=text]:focus:not([readonly]) + label,
@@ -6503,17 +6506,22 @@ form p:last-child {
 }
 
 /* Remove default checkbox */
+/*+confluence**
+  * Removed due to conflict with FOAM2 U2 views.
 [type="checkbox"]:not(:checked),
 [type="checkbox"]:checked {
   position: absolute;
   left: -9999px;
   opacity: 0;
 }
+*-confluence**/
 
 [type="checkbox"] {
   /* checkbox aspect */
 }
 
+/*+confluence**
+  * Removed due to conflict with FOAM2 U2 views.
 [type="checkbox"] + label {
   position: relative;
   padding-left: 35px;
@@ -6523,13 +6531,9 @@ form p:last-child {
   line-height: 25px;
   font-size: 1rem;
   -webkit-user-select: none;
-  /* webkit (safari, chrome) browsers */
   -moz-user-select: none;
-  /* mozilla browsers */
   -khtml-user-select: none;
-  /* webkit (konqueror) browsers */
   -ms-user-select: none;
-  /* IE10+ */
 }
 
 [type="checkbox"] + label:before,
@@ -6546,6 +6550,7 @@ form p:last-child {
   margin-top: 2px;
   transition: .2s;
 }
+*-confluence**/
 
 [type="checkbox"]:not(.filled-in) + label:after {
   border: 0;
@@ -8956,3 +8961,4 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
     margin-bottom: 5em;
   }
 }
+
