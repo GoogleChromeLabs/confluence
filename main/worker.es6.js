@@ -46,7 +46,7 @@ self.onmessage =  e => {
 
     // Replay or wait for message port connection from owner.
     const portHandler = e => {
-      if (!e.data instanceof MessagePort) {
+      if (!(e.data instanceof MessagePort)) {
         throw new Error('Unexpected control message', e.data);
       }
 
@@ -54,7 +54,9 @@ self.onmessage =  e => {
       ctx.messagePortService.addPort(e.data);
     };
     if (events.length > 0) {
+      // First message is message port.
       portHandler(events[0]);
+      // Replay remaining messages over onmessage handler.
       for (let i = 1; i < events.length; i++) {
         self.onmessage(events[i]);
       }
