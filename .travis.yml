@@ -27,11 +27,22 @@ script:
       && [ "${TRAVIS_PULL_REQUEST_BRANCH}" != "" ] \
       && [ "${GITHUB_TOKEN}" != "" ];
   then
-    echo "⚙️ 😄 ⚙️"
-    echo "⚙️ 😄 ⚙️ COMING SOON: This build qualifies for staging and commenting"
-    echo "⚙️ 😄 ⚙️"
+    gcloud config set project web-confluence || exit $?
+    gcloud auth activate-service-account --key-file client-secret.json || exit $?
+    gcloud app deploy --no-promote --version=${TRAVIS_PULL_REQUEST_BRANCH} . || exit $?
+    DEPLOYED_URL=$(gcloud app versions describe ${VERSION} -s default | grep -Po 'versionUrl: \K.*$')
+    echo "Deployed to ${DEPLOYED_URL}"
+    POST_BODY='{"body": "Staging instance deployed by Travis CI!\nRunning at '"${DEPLOYED_URL}"'"}'
+    curl -H "Authorization: token ${GITHUB_TOKEN}" \
+          -X "POST" \
+          -d "${POST_BODY}" \
+          -vv \
+          "https://api.github.com/repos/${TRAVIS_REPO_SLUG}/issues/${TRAVIS_PULL_REQUEST}/comments"
+    CURL_RESULT=$?
+    echo "GitHub comment request status: ${CURL_RESULT}"
+    exit ${CURL_RESULT}
   else
     echo "🏚 😢 🏚"
-    echo "️🏚 😢 🏚️ COMING SOON: This build does not qualify for staging and commenting"
+    echo "️🏚 😢 🏚️ This build does not qualify for staging and commenting"
     echo "🏚 😢 🏚"
   fi
