@@ -1,4 +1,5 @@
 [
+  "FObject",
   "Property",
   "Requires",
   "String",
@@ -20,6 +21,10 @@
   "foam.box.SocketConnectBox",
   "foam.box.SubBox",
   "foam.box.SubBoxMessage",
+  "foam.core.FObject",
+  "foam.core.Property",
+  "foam.core.Requires",
+  "foam.core.String",
   "foam.dao.ArraySink",
   "foam.dao.ClientSink",
   "foam.dao.DAO",
