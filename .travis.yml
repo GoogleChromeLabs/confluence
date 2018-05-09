@@ -35,6 +35,7 @@ script:
       && [ "${TRAVIS_PULL_REQUEST_BRANCH}" != "" ] \
       && [ "${GITHUB_TOKEN}" != "" ];
   then
+    webpack --config config/webpack.prod.js || exit $?
     gcloud config set project web-confluence || exit $?
     gcloud auth activate-service-account --key-file client-secret.json || exit $?
     gcloud app deploy -q --no-promote --version=${TRAVIS_PULL_REQUEST_BRANCH} . || exit $?
