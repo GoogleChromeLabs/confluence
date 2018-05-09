@@ -10,7 +10,8 @@ const FOAM_DIR = path.resolve(__dirname, '../node_modules/foam2');
 const BUNDLE_PROJECT_DIR = 'static/bundle';
 const BUNDLE_DIR = path.resolve(__dirname, `../${BUNDLE_PROJECT_DIR}`);
 const FOAM_FLAGS = 'web,gcloud';
-const FOAM_BIN_TMP_PATH = `${ROOT_DIR}/.local/foam-bin.js`;
+const FOAM_BIN_TMP_DIR = `${ROOT_DIR}/.local`;
+const FOAM_BIN_TMP_PATH = `${FOAM_BIN_TMP_DIR}/foam-bin.js`;
 const FOAM_BIN_REG_EXP = /foam-bin\.js$/;
 const ES6_REG_EXP = /\.es6\.js$/;
 const ES6_LOADER_OPTIONS_PROD = {
@@ -55,6 +56,7 @@ module.exports = {
   BUNDLE_PROJECT_DIR,
   BUNDLE_DIR,
   FOAM_FLAGS,
+  FOAM_BIN_TMP_DIR,
   FOAM_BIN_TMP_PATH,
   FOAM_BIN_REG_EXP,
   ES6_REG_EXP,
