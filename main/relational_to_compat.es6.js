@@ -10,6 +10,7 @@ const url = require('url');
 
 require('foam2');
 
+require('../lib/object.es6.js');
 require('../lib/property.es6.js');
 
 require('../lib/dao/grid_dao.es6.js');

@@ -8,6 +8,7 @@ require('angular');
 require('@uirouter/angularjs');
 
 // Refinements before models.
+require('../lib/object.es6.js');
 require('../lib/property.es6.js');
 
 require('../lib/web_apis/api_compat_data.es6.js');

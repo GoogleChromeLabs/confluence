@@ -9,6 +9,7 @@
 //
 
 // Refinements before models.
+require('../lib/object.es6.js');
 require('../lib/property.es6.js');
 
 require('../lib/u2/ActionView.es6.js');
