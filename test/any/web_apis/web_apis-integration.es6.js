@@ -21,9 +21,7 @@ describe('WebAPI and api extractor', function() {
     let ApiExtractor = foam.lookup('org.chromium.apis.web.ApiExtractor');
     let apiImporter = foam.lookup('org.chromium.apis.web.ApiImporter')
         .create(null, container);
-    let apiMatrix = foam.lookup('org.chromium.apis.web.ApiMatrix')
-        .create(null, container);
-
+    
     apiImporter.import('Chrome', '56', 'Windows', '10',
                        ApiExtractor.create({
                          objectGraph: og.fromJSON(chrome56),
@@ -36,12 +34,19 @@ describe('WebAPI and api extractor', function() {
                        ApiExtractor.create({
                          objectGraph: og.fromJSON(safari10),
                        }, container).extractWebCatalog());
-    apiMatrix.toMatrix([
-      'Chrome_56_Windows_10',
-      'Edge_14.14393_Windows_10',
-      'Safari_10.1.2_OSX_10',
-    ]).then((webCatalogMatrix) => {
-      webCatalog = webCatalogMatrix;
+
+    webCatalog = {};
+    container.releaseWebInterfaceJunctionDAO.select().then(arraySink => {
+      const hap = Object.prototype.hasOwnProperty;
+      const init = (o, k) => hap.call(o, k) ? o[k] : o[k] = {};
+      const array = arraySink.array;
+      for (const junction of array) {
+        const apiParts = junction.targetId.split('#');
+        init(webCatalog, apiParts[0]);
+        init(webCatalog[apiParts[0]], apiParts[1]);
+        webCatalog[apiParts[0]][apiParts[1]][junction.sourceId] = true;
+      }
+
       done();
     });
   });
