@@ -72,7 +72,6 @@
   "org.chromium.apis.web.DataLoadedEvent",
   "org.chromium.apis.web.MetricComputerService",
   "org.chromium.apis.web.MetricComputerType",
-  "org.chromium.apis.web.NewMatrixEvent",
   "org.chromium.apis.web.Release",
   "org.chromium.apis.web.ReleaseWebInterfaceJunction",
   "org.chromium.apis.web.SerializableHttpJsonDAO",
