@@ -219,7 +219,7 @@ describe('QueryParser', () => {
         .toBe(true);
   });
 
-  fit('should generate appropriate terse release IDs', () => {
+  it('should generate appropriate terse release IDs', () => {
     const releaseIDs = [
       'Alpha_1.0_NewOS_3.1.11',
       'Beta_54.1.443252_OldOS_15.0',
