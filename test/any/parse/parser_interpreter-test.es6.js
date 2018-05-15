@@ -218,4 +218,20 @@ describe('QueryParser', () => {
         E.AND(E.KEYWORD('a'), E.OR(E.KEYWORD('b'), E.KEYWORD('c')))))
         .toBe(true);
   });
+
+  fit('should generate appropriate terse release IDs', () => {
+    const releaseIDs = [
+      'Alpha_1.0_NewOS_3.1.11',
+      'Beta_54.1.443252_OldOS_15.0',
+      'Alpha_2.2.1181_OldOS_12.1',
+    ];
+
+    const terseIDs = releaseIDs.map(org.chromium.parse.util.getTerseReleaseId);
+
+    expect(terseIDs).toEqual([
+      'alp1new3.1',
+      'bet54.1old15',
+      'alp2.2old12',
+    ]);
+  });
 });
