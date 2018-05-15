@@ -82,5 +82,8 @@
   "org.chromium.apis.web.VersionedReleaseWebInterfaceJunction",
   "org.chromium.apis.web.VersionedWebInterface",
   "org.chromium.apis.web.WebInterface",
-  "org.chromium.apis.web.WorkerDAO"
+  "org.chromium.apis.web.WorkerDAO",
+  "org.chromium.mlang.ArrayCount",
+  "org.chromium.mlang.Seq",
+  "org.chromium.mlang.Truthy"
 ]
