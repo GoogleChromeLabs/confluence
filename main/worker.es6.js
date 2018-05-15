@@ -9,6 +9,7 @@ importScripts('vendors.bundle.js', 'foam.bundle.js');
 require('../lib/compat.es6.js');
 require('../lib/dao/dao_container.es6.js');
 require('../lib/dao/worker_dao.es6.js');
+require('../lib/parse/expressions.es6.js');
 require('../lib/web_apis/api_compat_data.es6.js');
 const pkg = org.chromium.apis.web;
 
