@@ -22,10 +22,11 @@ require('../lib/confluence/api_velocity.es6.js');
 require('../lib/confluence/browser_specific.es6.js');
 require('../lib/confluence/failure_to_ship.es6.js');
 require('../lib/dao/json_dao_container.es6.js');
+require('../lib/parse/expressions.es6.js');
 require('../lib/server/server.es6.js');
 require('../lib/web_apis/api_compat_data.es6.js');
-require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
+require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 const pkg = org.chromium.apis.web;
 
