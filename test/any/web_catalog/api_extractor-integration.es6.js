@@ -96,6 +96,9 @@ describe('API extractor', function() {
           'property': 3,
           'constObjectProperty': 7,
           'constLikeNumber': 3,
+          '_CONST_LIKE_NUMBER': 3,
+          'CONST__LIKE__NUMBER': 3,
+          'CONST_LIKE_NUMBER_': 3,
           'CONSTANT_NUMBER': 3,
         },
         '10010': {  // nonObjectLibrary
@@ -286,6 +289,15 @@ describe('API extractor', function() {
           'constLikeNumber': {
             'value': 1,
           },
+          '_CONST_LIKE_NUMBER': {
+            'value': 1,
+          },
+          'CONST__LIKE__NUMBER': {
+            'value': 1,
+          },
+          'CONST_LIKE_NUMBER_': {
+            'value': 1,
+          },
           'CONSTANT_NUMBER': {
             'value': 1,
           },
@@ -381,7 +393,8 @@ describe('API extractor', function() {
         ['meaningfulAPI'].sort());
       expect(apiCatalog.ObjectLibrary.sort()).toEqual([
         'functionAPI', 'InterfaceInstance', 'ObjectInstanceA', 'property',
-        'constObjectProperty', 'constLikeNumber',
+        'constObjectProperty', 'constLikeNumber', '_CONST_LIKE_NUMBER',
+        'CONST__LIKE__NUMBER', 'CONST_LIKE_NUMBER_',
       ].sort());
       expect(apiCatalog.AnObjectInterface.sort()).toEqual(
         ['protoProperty', 'meaningfulAPI'].sort());
