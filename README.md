@@ -23,6 +23,8 @@ Data collected via [BrowserStack](https://www.browserstack.com).
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [The Catalog](#the-catalog)
+  - [Querying the catalog](#querying-the-catalog)
+    - [Examples](#examples)
 - [The Metrics](#the-metrics)
   - [API Velocity](#api-velocity)
     - [Definition](#definition)
@@ -50,6 +52,38 @@ operations/methods exposed on constructor functions and their prototypes. The
 catalog constitutes the raw data from which aggregate *API confluence metrics*
 are computed. See [CatalogDataCollection.md](/CatalogDataCollection.md) for
 details on how the catalog is created.
+
+### Querying the catalog
+
+The catalog supports structured queries. Some query atoms apply to *all*
+cataloged browser releases, while others apply to the releases currently
+*in view* (i.e., the releases currently shown as columns in the table of APIs).
+
+Query atoms may be joined by whitespace, conjunction (`and` or `&`), or
+disjunction (`or` or `|`), with parentheses to disambiguate as needed. Atoms are
+one of the following:
+
+- **(Not-)in-releases clause**: A phrase of the form `in:release` or
+  `notin:release` where `release` is identified by case-insensitive
+  `[release-name-prefix][release-version-prefix][os-name-prefix][os-version-prefix]`.
+  Any of these, except `[release-name-prefix]` may be empty. For example,
+  `in:fir59` describes APIs shipped in *all* releases of Firefox 59 (that are
+  included in the catalog). These atoms apply to *all* releases.
+- **Count-of-releases clause**: A phrase of the form `count:n` where `n` is a
+  non-negative integer describes APIs that are shipped in exactly `n` releases
+  currently *in view*.
+- **Keyword**: An atom matching the regular expression `[a-zA-Z0-9_#-]+`
+  describes APIs that contain the atom by case-insensitive substring match.
+
+#### Examples
+
+`window# count:1`: APIs on intefaces with the case-insensitive `window` suffix
+that are shipped in exactly one of the releases in view.
+
+`count:1 or count:2 or count:3 or count:4`: On a view with showing four or fewer
+releases, APIs that are shipped by at least one release in view.
+
+`in:chrome65 and notin:chrome66`: APIs removed in Chrome 66.
 
 ## The Metrics
 
