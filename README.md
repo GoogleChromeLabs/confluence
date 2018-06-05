@@ -66,7 +66,7 @@ Safari once provided (but no longer does) that where the latest release of all
 *other* browsers a year later contains the APIs; in this case Safari is The
 Browser.
 
-**Definition**: *Grace Period*: Most metrics are deliberately calculated with
+**Definition**: <span id="graceperiod">*Grace Period*</span>: Most metrics are deliberately calculated with
 respect to releases of browsers *other than* The Browser sometime in the
 past. This avoids penalizing The Browser for making a change (i.e., shipping
 or removing an API) when other browsers respond in kind. Currently, the Grace
