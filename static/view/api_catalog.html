@@ -9,8 +9,19 @@
     padding-left: 24px;
     padding-right: 24px;
   }
+  .caveat, .warning {
+    padding: 0.5em;
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+  blockquote.warning {
+    border-left: 5px solid #fff176;
+  }
 </style>
 <div class="flex-head">
   <h3 class="heading pad-h">API Catalog</h3>
 </div>
+<blockquote class="yellow lighten-4 warning">
+  Catalog search now supports a simple <a href="https://github.com/GoogleChromeLabs/confluence#querying-the-catalog">structured query syntax</a>.
+</blockquote>
 <div id="api_catalog" class="flex-fill-vertical"></div>
