@@ -20,8 +20,8 @@ beforeAll(function() {
         ctx.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
     var BrowserMetricData =
         ctx.lookup('org.chromium.apis.web.BrowserMetricData');
-    var ApiVelocityData =
-        ctx.lookup('org.chromium.apis.web.ApiVelocityData');
+    var ApiCountData =
+        ctx.lookup('org.chromium.apis.web.ApiCountData');
 
     return DAOContainer.create({
       releaseDAO: EasyDAO.create({
@@ -44,9 +44,9 @@ beforeAll(function() {
         of: BrowserMetricData,
         daoType: 'MDAO',
       }),
-      apiVelocityDAO: EasyDAO.create({
-        name: 'apiVelocityDAO',
-        of: ApiVelocityData,
+      apiCountDAO: EasyDAO.create({
+        name: 'apiCountDAO',
+        of: ApiCountData,
         daoType: 'MDAO',
       }),
     }, ctx);

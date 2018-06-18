@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-describe('AggressiveRemoval', function() {
+describe('LoneRemoval', function() {
   function equals(a, b) {
     return foam.util.equals(a, b);
   }
@@ -23,7 +23,7 @@ describe('AggressiveRemoval', function() {
     container = global.createDAOContainer();
     runner = global.createLocalRunner({
       metricComputerTypes: [
-        foam.lookup('org.chromium.apis.web.MetricComputerType').AGGRESSIVE_REMOVAL,
+        foam.lookup('org.chromium.apis.web.MetricComputerType').LONE_REMOVAL,
       ],
     }, container);
   });
@@ -141,7 +141,7 @@ describe('AggressiveRemoval', function() {
     // Beta, Charlie: same year as Alpha 3.
     // Here, Alpha 2 released less than a year before Alpha 3, Beta, or Charlie.
     // Alpha 0 is introduced to hit case where there are two Alpha versions old
-    // enough to compute Alpha's aggressive removals.
+    // enough to compute Alpha's lone removals.
     Promise.all([
       releases.put(Release.create({
         browserName: 'Alpha',
@@ -370,7 +370,7 @@ describe('AggressiveRemoval', function() {
         })),
       ]);
     }).then(function() {
-      // Setup and run aggressive removal metric calculation.
+      // Setup and run lone removal metric calculation.
       return runner.run();
     }).then(function() {
       return container.browserMetricsDAO.select();

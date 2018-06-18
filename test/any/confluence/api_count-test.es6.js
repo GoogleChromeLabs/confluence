@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-describe('ApiVelocity', () => {
+describe('ApiCount', () => {
   function equals(a, b) {
     return foam.util.equals(a, b);
   }
@@ -14,8 +14,8 @@ describe('ApiVelocity', () => {
   let EasyDAO;
   let DAOContainer;
   let Release;
-  let ApiVelocity;
-  let ApiVelocityData;
+  let ApiCount;
+  let ApiCountData;
   let Junction;
   let WebInterface;
   let container;
@@ -27,14 +27,14 @@ describe('ApiVelocity', () => {
     Release = foam.lookup('org.chromium.apis.web.Release');
     WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
     Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
-    ApiVelocity = foam.lookup('org.chromium.apis.web.ApiVelocity');
-    ApiVelocityData = foam.lookup('org.chromium.apis.web.ApiVelocityData');
+    ApiCount = foam.lookup('org.chromium.apis.web.ApiCount');
+    ApiCountData = foam.lookup('org.chromium.apis.web.ApiCountData');
     Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
 
     container = global.createDAOContainer();
     runner = global.createLocalRunner({
       metricComputerTypes: [
-        foam.lookup('org.chromium.apis.web.MetricComputerType').API_VELOCITY,
+        foam.lookup('org.chromium.apis.web.MetricComputerType').API_COUNT,
       ],
     }, container);
     releases = container.releaseDAO;
@@ -63,10 +63,10 @@ describe('ApiVelocity', () => {
         targetId: iface.id,
       })),
     ]).then(() => runner.run())
-        .then(() => container.apiVelocityDAO.select())
+        .then(() => container.apiCountDAO.select())
         .then(sink => {
           expect(sortedEquals(sink.array, [
-            ApiVelocityData.create({
+            ApiCountData.create({
               releaseDate: release.releaseDate,
               browserName: release.browserName,
               currRelease: release,
@@ -134,16 +134,16 @@ describe('ApiVelocity', () => {
         targetId: iface3.id,
       })),
     ]).then(() => runner.run())
-        .then(() => container.apiVelocityDAO.select())
+        .then(() => container.apiCountDAO.select())
         .then(sink => {
           expect(sortedEquals(sink.array, [
-            ApiVelocityData.create({
+            ApiCountData.create({
               releaseDate: release1.releaseDate,
               browserName: release1.browserName,
               currRelease: release1,
               totalApis: 2,
             }),
-            ApiVelocityData.create({
+            ApiCountData.create({
               releaseDate: release2.releaseDate,
               browserName: release2.browserName,
               currRelease: release2,
@@ -214,16 +214,16 @@ describe('ApiVelocity', () => {
         targetId: iface3.id,
       })),
     ]).then(() => runner.run())
-        .then(() => container.apiVelocityDAO.select())
+        .then(() => container.apiCountDAO.select())
         .then(sink => {
           expect(sortedEquals(sink.array, [
-            ApiVelocityData.create({
+            ApiCountData.create({
               releaseDate: alpha.releaseDate,
               browserName: alpha.browserName,
               currRelease: alpha,
               totalApis: 2,
             }),
-            ApiVelocityData.create({
+            ApiCountData.create({
               releaseDate: beta.releaseDate,
               browserName: beta.browserName,
               currRelease: beta,

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-describe('FailureToShip', function() {
+describe('LoneOmission', function() {
   function equals(a, b) {
     return foam.util.equals(a, b);
   }
@@ -14,7 +14,7 @@ describe('FailureToShip', function() {
   let Release;
   let WebInterface;
   let Junction;
-  let FailureToShip;
+  let LoneOmission;
   let BrowserMetricDataType;
   let BrowserMetricData;
   let container;
@@ -41,7 +41,7 @@ describe('FailureToShip', function() {
   }
   function mkData(value, date, release, prevReleases, comparedReleases) {
     return BrowserMetricData.create({
-      type: BrowserMetricDataType.FAILURE_TO_SHIP,
+      type: BrowserMetricDataType.LONE_OMISSION,
       browserName: release.browserName,
       value,
       date,
@@ -54,7 +54,7 @@ describe('FailureToShip', function() {
     Release = foam.lookup('org.chromium.apis.web.Release');
     WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
     Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
-    FailureToShip = foam.lookup('org.chromium.apis.web.FailureToShip');
+    LoneOmission = foam.lookup('org.chromium.apis.web.LoneOmission');
     BrowserMetricDataType =
       foam.lookup('org.chromium.apis.web.BrowserMetricDataType');
     BrowserMetricData =
@@ -62,7 +62,7 @@ describe('FailureToShip', function() {
     container = global.createDAOContainer();
     runner = global.createLocalRunner({
       metricComputerTypes: [
-        foam.lookup('org.chromium.apis.web.MetricComputerType').FAILURE_TO_SHIP,
+        foam.lookup('org.chromium.apis.web.MetricComputerType').LONE_OMISSION,
       ],
     }, container);
     releases = container.releaseDAO;
@@ -280,10 +280,10 @@ describe('FailureToShip', function() {
       // mkData(0, date2_1, charlie2_1, [charlie2], [alpha2, alpha2_1]),
       //        sort([beta2, beta2_1, beta2, beta2_1])),
       //
-      // The important bit: alpha2_1 does not register a failure to ship, even
+      // The important bit: alpha2_1 does not register a lone omission, even
       // though beta2_1 and charlie2_1 shipped an API that alpha2_1 does not.
       // This is because charlie2, which is within the grace period, did not
-      // ship the API; failure to ship only registers when ALL releases of other
+      // ship the API; lone omission only registers when ALL releases of other
       // browsers within the grace period shipped the API.
       expect(sink.array[1].release.id).toBe('Alpha_2.1_Windows_10');
       expect(sink.array[1].value).toBe(0);
