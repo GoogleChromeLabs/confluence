@@ -28,7 +28,7 @@ xdescribe('data quality', function() {
     var fs = require('fs');
     var path = require('path');
 
-    require('../../lib/confluence/api_velocity_data.es6.js');
+    require('../../lib/confluence/api_count_data.es6.js');
     require('../../lib/confluence/browser_metric_data.es6.js');
     require('../../lib/dao/json_dao_container.es6.js');
     require('../../lib/web_apis/release.es6.js');

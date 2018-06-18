@@ -8,7 +8,7 @@ const path = require('path');
 global.FOAM_FLAGS = {gcloud: true};
 require('foam2');
 
-require('../lib/confluence/api_velocity_data.es6.js');
+require('../lib/confluence/api_count_data.es6.js');
 require('../lib/confluence/browser_metric_data.es6.js');
 require('../lib/confluence/metric_computer_runner.es6.js');
 require('../lib/dao/dao_container.es6.js');
@@ -37,8 +37,8 @@ container.releaseDAO = pkg.LocalJsonDAO.create({
 container.browserMetricsDAO = foam.dao.MDAO.create({
   of: pkg.BrowserMetricData,
 }, container);
-container.apiVelocityDAO = foam.dao.MDAO.create({
-  of: pkg.ApiVelocityData,
+container.apiCountDAO = foam.dao.MDAO.create({
+  of: pkg.ApiCountData,
 }, container);
 
 const runner = pkg.MetricComputerRunner.create(null, container);
@@ -81,10 +81,10 @@ runner.run().then(() => {
                            E.THEN_BY(pkg.BrowserMetricData.BROWSER_NAME,
                                      pkg.BrowserMetricData.DATE)))
         .select().then(store.bind(this, pkg.BrowserMetricData.id)),
-    container.apiVelocityDAO
-        .orderBy(E.THEN_BY(pkg.ApiVelocityData.BROWSER_NAME,
-                           pkg.ApiVelocityData.RELEASE_DATE))
-        .select().then(store.bind(this, pkg.ApiVelocityData.id)),
+    container.apiCountDAO
+        .orderBy(E.THEN_BY(pkg.ApiCountData.BROWSER_NAME,
+                           pkg.ApiCountData.RELEASE_DATE))
+        .select().then(store.bind(this, pkg.ApiCountData.id)),
   ]);
 }).then(() => {
   logger.info(`API JSON => Metrics JSON complete`);

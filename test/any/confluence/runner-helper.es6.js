@@ -16,7 +16,7 @@ beforeAll(() => {
         webInterfaceDAO: ctx.webInterfaceDAO,
         releaseWebInterfaceJunctionDAO: ctx.releaseWebInterfaceJunctionDAO,
         browserMetricsDAO: ctx.browserMetricsDAO,
-        apiVelocityDAO: ctx.apiVelocityDAO,
+        apiCountDAO: ctx.apiCountDAO,
       }, ctx),
     }, args);
     return pkg.MetricComputerRunner.create(finalArgs, ctx);

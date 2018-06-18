@@ -17,10 +17,10 @@ global.FOAM_FLAGS = {gcloud: true};
 require('foam2');
 
 require('../lib/compat.es6.js');
-require('../lib/confluence/aggressive_removal.es6.js');
-require('../lib/confluence/api_velocity.es6.js');
+require('../lib/confluence/lone_removal.es6.js');
+require('../lib/confluence/api_count.es6.js');
 require('../lib/confluence/browser_specific.es6.js');
-require('../lib/confluence/failure_to_ship.es6.js');
+require('../lib/confluence/lone_omission.es6.js');
 require('../lib/dao/json_dao_container.es6.js');
 require('../lib/parse/expressions.es6.js');
 require('../lib/server/server.es6.js');
@@ -84,7 +84,7 @@ const basename = containerMode === pkg.JsonDAOContainerMode.LOCAL ?
       `file://${__dirname}/../data/json` :
       require('../data/http_json_dao_base_url.json');
 
-const compatClassFile = 'class:org.chromium.apis.web.generated.CompatData.json';
+const compatClassFile = pkg.DAOContainer.COMPAT_MODEL_FILE_NAME;
 const compatClassURL = `${basename}/${compatClassFile}`;
 org.chromium.apis.web.ClassGenerator.create({
   classURL: compatClassURL,

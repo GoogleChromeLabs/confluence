@@ -41,16 +41,16 @@
 <h3 class="heading pad-h">Confluence Metrics</h3>
 <ul id="tabs" class="tabs blue darken-3" ng-show="releaseKeys.length!==0">
   <li class="tab">
-    <a ng-click="showTab=0" class="white-text">API Velocity</a>
+    <a ng-click="showTab=0" class="white-text">API Count</a>
   </li>
   <li class="tab">
-    <a ng-click="showTab=1" class="white-text">Failure to Ship</a>
+    <a ng-click="showTab=1" class="white-text">Lone Omission</a>
   </li>
   <li class="tab">
-    <a ng-click="showTab=2" class="white-text">Aggressive removal</a>
+    <a ng-click="showTab=2" class="white-text">Lone Removal</a>
   </li>
   <li class="tab">
-    <a ng-click="showTab=3" class="white-text">Browser-Specific APIs</a>
+    <a ng-click="showTab=3" class="white-text">Browser-Specific</a>
   </li>
   <li class="tab" ng-repeat="view in additionalViews track by $index">
     <a ng-click="$parent.showTab=4+$index">{{"#view"+$index}}</a>
@@ -60,7 +60,7 @@
 <div class="flex-fill-vertical">
   <div class="chart-tab" ng-show="showTab===0">
     <div class="text-content">
-      <h4 class="heading">API Velocity</h4>
+      <h4 class="heading">API Count</h4>
       <blockquote class="yellow lighten-4 warning">
         This site is a work in progress. If something doesn't seem right
         check out the
@@ -68,25 +68,25 @@
         for this metric.
       </blockquote>
       <p>
-        API Velocity indicates the rate at which browsers are adding and
+        API Count indicates the rate at which browsers are adding and
         removing APIs. The trend line tracks the count of APIs in each
         release. The height of the green and red regions indicate the number
         of APIs added and removed, respectively, in each release.
       </p>
     </div>
     <div class="container">
-      <api-velocity-chart
-          ng-repeat="(release, apiVelocity) in apiVelocityMetrics"
-          chart-id="release + '-api-velocity'"
-          title="release + ' API Velocity'"
-          api-velocity="apiVelocity"
+      <api-count-chart
+          ng-repeat="(release, apiCount) in apiCountMetrics"
+          chart-id="release + '-api-count'"
+          title="release + ' API Count'"
+          api-count="apiCount"
           new-diff-view="createNewDiffView(minuend, subtrahend)"
-      ></api-velocity-chart>
+      ></api-count-chart>
     </div>
   </div>
   <div class="chart-tab" ng-show="showTab===1">
     <div class="text-content">
-      <h4 class="heading">Failure to Ship</h4>
+      <h4 class="heading">Lone Omission</h4>
       <blockquote class="yellow lighten-4 warning">
         This site is a work in progress. If something doesn't seem right
         check out the
@@ -94,18 +94,18 @@
         for this metric.
       </blockquote>
       <p>
-        The Failure to Ship metric is intended to indicate when browsers are
+        The Lone Omission metric is intended to indicate when browsers are
         not shipping APIs that developers can reasonably assume is a part of
         the web platform (lower is better).
       </p>
     </div>
     <div class="container">
       <browser-metric-chart
-          ng-if="failureToShipMetric"
-          chart-id="failure-to-ship-chart"
-          title="Failure To Ship Metric"
-          browser-metric="failureToShipMetric"
-          create-new-view="newFailureToShipView(release, prevReleases, comparedReleases)"
+          ng-if="loneOmissionMetric"
+          chart-id="lone-omission-chart"
+          title="Lone Omission Metric"
+          browser-metric="loneOmissionMetric"
+          create-new-view="newLoneOmissionView(release, prevReleases, comparedReleases)"
       >
       </browser-metric-chart>
     </div>
@@ -120,7 +120,7 @@
   </div>
   <div class="chart-tab" ng-show="showTab===2">
     <div class="text-content">
-      <h4 class="heading">Aggressive Removal</h4>
+      <h4 class="heading">Lone Removal</h4>
       <blockquote class="yellow lighten-4 warning">
         This site is a work in progress. If something doesn't seem right
         check out the
@@ -128,18 +128,18 @@
         for this metric.
       </blockquote>
       <p>
-        The Aggressive Removal metric is intended to indicate when browsers
+        The Lone Removal metric is intended to indicate when browsers
         are removing APIs that developers can reasonably assume are still a
         part of the web platform (lower is better).
       </p>
     </div>
     <div class="container">
       <browser-metric-chart
-          ng-if="aggressiveRemovalMetric"
-          chart-id="aggressive-removal-apis-chart"
-          title="Aggressive Removal APIs"
-          browser-metric="aggressiveRemovalMetric"
-          create-new-view="newAggressiveRemovalView(release, prevReleases, comparedReleases)"
+          ng-if="loneRemovalMetric"
+          chart-id="lone-removal-apis-chart"
+          title="Lone Removal APIs"
+          browser-metric="loneRemovalMetric"
+          create-new-view="newLoneRemovalView(release, prevReleases, comparedReleases)"
       >
       </browser-metric-chart>
     </div>
@@ -173,7 +173,7 @@
       <browser-metric-chart
           ng-if="browserSpecificMetric"
           chart-id="browser-specific-apis-chart"
-          title="Browser Specific APIs"
+          title="Browser-Specific APIs"
           browser-metric="browserSpecificMetric"
           create-new-view="newBrowserSpecificView(release, prevReleases, comparedReleases)"
       >

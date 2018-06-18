@@ -26,13 +26,13 @@ Data collected via [BrowserStack](https://www.browserstack.com).
   - [Querying the catalog](#querying-the-catalog)
     - [Examples](#examples)
 - [The Metrics](#the-metrics)
-  - [API Velocity](#api-velocity)
+  - [API Count](#api-count)
     - [Definition](#definition)
     - [Rationale](#rationale)
-  - [Failure to Ship](#failure-to-ship)
+  - [Lone Omission](#lone-omission)
     - [Definition](#definition-1)
     - [Rationale](#rationale-1)
-  - [Aggressive Removal](#aggressive-removal)
+  - [Lone Removal](#lone-removal)
     - [Definition](#definition-2)
     - [Rationale](#rationale-2)
   - [Browser-Specific](#browser-specific)
@@ -95,7 +95,7 @@ interface name + attribute or operation pair.
 
 **Definition**: *The Browser*: Each *API Confluence Metric* is computed with
 respect to some particular browser; this is what’s meant by The Browser. E.g.,
-the “Aggressive Removal metric for Safari on 2016-09-01” describes APIs that
+the “Lone Removal metric for Safari on 2016-09-01” describes APIs that
 Safari once provided (but no longer does) that where the latest release of all
 *other* browsers a year later contains the APIs; in this case Safari is The
 Browser.
@@ -105,18 +105,18 @@ respect to releases of browsers *other than* The Browser sometime in the
 past. This avoids penalizing The Browser for making a change (i.e., shipping
 or removing an API) when other browsers respond in kind. Currently, the Grace
 Period used for all metrics that have one is one year. The "a year later" in
-the above example refers to the Aggressive Removal Grace Period.
+the above example refers to the Lone Removal Grace Period.
 
 *API Confluence metrics* are API counts assessed for a particular browser at a
 particular point in time. Most metrics are computed on every date that *any*
 browser has a major release. Some metrics are only computed on dates when The
 Browser has a major release.
 
-### API Velocity
+### API Count
 
 #### Definition
 
-The API Velocity metric contains three values; the total number of APIs provided
+The API Count metric contains three values; the total number of APIs provided
 as of the latest browser release, the number of APIs removed (since the previous
 release) and the number of APIs added (since the previous release). This metric
 is computed on dates when The Browser has a major release.
@@ -127,11 +127,11 @@ When browsers move too slowly, it holds back the platform. When browsers move
 too quickly, they risk “leaving other browsers behind”. Steady growth is good;
 wild variation is bad.
 
-### Failure to Ship
+### Lone Omission
 
 #### Definition
 
-The Failure to Ship metric indicates the number of APIs that The Browser does
+The Lone Omission metric indicates the number of APIs that The Browser does
 not provide provide for the duration of the Grace Period, but all other
 browsers do provide throughout the Grace Period.
 
@@ -141,11 +141,11 @@ Failing to ship an API that other major vendors provide requires web
 developers to use special code paths to remain interoperable. Smaller values
 are good; larger values are bad.
 
-### Aggressive Removal
+### Lone Removal
 
 #### Definition
 
-The Aggressive Removal metric indicates the number of APIs removed from a The
+The Lone Removal metric indicates the number of APIs removed from a The
 Browser prior to the Grace Period, that have not been added back in the
 latest relase following the Grace Period, and that are provided in all other
 browsers in the latest relase following the Grace Period.
@@ -196,7 +196,7 @@ Then, either:
 
 ```zsh
 cd data/json
-curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.ApiVelocityData.json > org.chromium.apis.web.ApiVelocityData.json
+curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.ApiCountData.json > org.chromium.apis.web.ApiCountData.json
 curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.ReleaseWebInterfaceJunction.json > org.chromium.apis.web.ReleaseWebInterfaceJunction.json
 curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.BrowserMetricData.json > org.chromium.apis.web.BrowserMetricData.json
 curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.WebInterface.json > org.chromium.apis.web.WebInterface.json

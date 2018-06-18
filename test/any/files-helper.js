@@ -14,7 +14,7 @@ function requireBrowserCode() {
   // angular module used by other browser-only code below.
   require('../../main/app.es6.js');
 
-  require('../../lib/chart/api_velocity_chart.es6.js');
+  require('../../lib/chart/api_count_chart.es6.js');
   require('../../lib/chart/browser_metric_chart.es6.js');
   require('../../lib/chart/time_series_chart.es6.js');
   require('../../lib/client/api_confluence.es6.js');
@@ -42,12 +42,12 @@ beforeAll(function() {
 
   require('../../lib/client/stats_controller.es6.js');
   require('../../lib/compat.es6.js');
-  require('../../lib/confluence/aggressive_removal.es6.js');
-  require('../../lib/confluence/api_velocity.es6.js');
-  require('../../lib/confluence/api_velocity_data.es6.js');
+  require('../../lib/confluence/lone_removal.es6.js');
+  require('../../lib/confluence/api_count.es6.js');
+  require('../../lib/confluence/api_count_data.es6.js');
   require('../../lib/confluence/browser_metric_data.es6.js');
   require('../../lib/confluence/browser_specific.es6.js');
-  require('../../lib/confluence/failure_to_ship.es6.js');
+  require('../../lib/confluence/lone_omission.es6.js');
   require('../../lib/confluence/metric_computer.es6.js');
   require('../../lib/confluence/metric_computer_runner.es6.js');
   require('../../lib/confluence/metric_computer_service.es6.js');
