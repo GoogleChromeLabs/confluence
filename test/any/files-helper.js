@@ -36,6 +36,7 @@ beforeAll(function() {
   // Load refinements before anything else.
   require('../../lib/object.es6.js');
   require('../../lib/property.es6.js');
+  require('../../lib/action.es6.js');
 
   if (foam.isServer) requireNodeCode();
   else requireBrowserCode();
