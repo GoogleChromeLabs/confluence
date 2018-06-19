@@ -12,6 +12,7 @@ require('foam2');
 
 require('../lib/object.es6.js');
 require('../lib/property.es6.js');
+require('../lib/action.es6.js');
 
 require('../lib/dao/http_json_dao.es6.js');
 require('../lib/dao/json_dao_container.es6.js');

@@ -11,6 +11,7 @@
 // Refinements before models.
 require('../lib/object.es6.js');
 require('../lib/property.es6.js');
+require('../lib/action.es6.js');
 
 require('../lib/u2/ActionView.es6.js');
 require('../lib/u2/DAOController.es6.js');
