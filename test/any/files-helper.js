@@ -32,7 +32,7 @@ function requireNodeCode() {
   require('../../lib/web_catalog/object_graph_importer.es6.js');
 }
 
-beforeAll(function() {
+beforeAll(function(done) {
   // Load refinements before anything else.
   require('../../lib/object.es6.js');
   require('../../lib/property.es6.js');
@@ -69,4 +69,11 @@ beforeAll(function() {
   require('../../lib/web_apis/version_history.es6.js');
   require('../../lib/web_apis/web_interface.es6.js');
   require('../../lib/web_catalog/api_extractor.es6.js');
+  const pkg = org.chromium.apis.web;
+
+  const compatClassFile = pkg.DAOContainer.COMPAT_MODEL_FILE_NAME;
+  const compatClassURL = `file://${__dirname}/../../data/json/${compatClassFile}`;
+  pkg.ClassGenerator.create({
+    classURL: compatClassURL,
+  }).generateClass().then(done);
 });
