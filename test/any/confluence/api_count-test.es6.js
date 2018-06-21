@@ -11,25 +11,43 @@ describe('ApiCount', () => {
     function sort(array) { return array.sort(foam.util.compare); }
     return equals(sort(a), sort(b));
   }
-  let EasyDAO;
-  let DAOContainer;
   let Release;
-  let ApiCount;
   let ApiCountData;
-  let Junction;
-  let WebInterface;
+  let CompatData;
   let container;
+  let gen;
   let runner;
   let releases;
-  let ifaces;
-  let junctions;
+  let compatData;
+
   beforeEach(() => {
+    gen =
+        foam.lookup('org.chromium.apis.web.AbstractCompatClassGenerator')
+        .create()
+  });
+
+  const init = releaseSpecs => {
+    // Register custom CompatData before looking up classes and instantiating
+    // instances.
+    foam.CLASS({
+      name: 'CompatData',
+      package: 'org.chromium.apis.web.test',
+      extends: 'org.chromium.apis.web.AbstractApiCompatData',
+
+      properties: releaseSpecs.map(r => {
+        return {
+          class: 'org.chromium.apis.web.CompatProperty',
+          release: r,
+          name: gen.propertyNameFromRelease(r),
+          label: gen.propertyLabelFromRelease(r),
+        };
+      }),
+    });
+    foam.register(org.chromium.apis.web.test.CompatData, 'org.chromium.apis.web.generated.CompatData');
+    CompatData = foam.lookup('org.chromium.apis.web.generated.CompatData');
+
     Release = foam.lookup('org.chromium.apis.web.Release');
-    WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
-    Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
-    ApiCount = foam.lookup('org.chromium.apis.web.ApiCount');
     ApiCountData = foam.lookup('org.chromium.apis.web.ApiCountData');
-    Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
 
     container = global.createDAOContainer();
     runner = global.createLocalRunner({
@@ -38,30 +56,29 @@ describe('ApiCount', () => {
       ],
     }, container);
     releases = container.releaseDAO;
-    ifaces = container.webInterfaceDAO;
-    junctions = container.releaseWebInterfaceJunctionDAO;
-  });
+    compatData = container.compatDAO;
+
+    return releaseSpecs.map(rs => Release.create(rs, container));
+  };
 
   it('should compute single release', done => {
-    let release = Release.create({
+    let release = {
       browserName: 'Alpha',
       browserVersion: '1',
       osName: 'Windows',
       osVersion: '10',
       releaseDate: '2015-01-01T00:00:00.000Z'
-    }, container);
-    let iface = WebInterface.create({
+    };
+    [release] = init([release]);
+
+    let compat = CompatData.create({
       interfaceName: 'Alpha',
       apiName: 'iface',
-    }, container);
+      [gen.propertyNameFromRelease(release)]: true,
+    })
     Promise.all([
       releases.put(release),
-      ifaces.put(iface),
-      junctions.put(Junction.create({
-        id: [release.id, iface.id],
-        sourceId: release.id,
-        targetId: iface.id,
-      })),
+      compatData.put(compat),
     ]).then(() => runner.run())
         .then(() => container.apiCountDAO.select())
         .then(sink => {
@@ -92,47 +109,29 @@ describe('ApiCount', () => {
       osVersion: '10',
       releaseDate: '2016-01-01T00:00:00.000Z'
     }, container);
-    let iface1 = WebInterface.create({
+    [release1, release2] = init([release1, release2]);
+    let compat1 = CompatData.create({
       interfaceName: 'Alpha',
       apiName: 'iface1',
+      [gen.propertyNameFromRelease(release1)]: true,
     }, container);
-    let iface2 = WebInterface.create({
+    let compat2 = CompatData.create({
       interfaceName: 'Alpha',
       apiName: 'iface2',
+      [gen.propertyNameFromRelease(release1)]: true,
+      [gen.propertyNameFromRelease(release2)]: true,
     }, container);
-    let iface3 = WebInterface.create({
+    let compat3 = CompatData.create({
       interfaceName: 'AlphaToOmega',
       apiName: 'iface',
+      [gen.propertyNameFromRelease(release2)]: true,
     }, container);
     Promise.all([
       releases.put(release1),
       releases.put(release2),
-      ifaces.put(iface1),
-      ifaces.put(iface2),
-      ifaces.put(iface3),
-      // iface1 in release1 only.
-      junctions.put(Junction.create({
-        id: [release1.id, iface1.id],
-        sourceId: release1.id,
-        targetId: iface1.id,
-      })),
-      // iface2 in release1 and release2.
-      junctions.put(Junction.create({
-        id: [release1.id, iface2.id],
-        sourceId: release1.id,
-        targetId: iface2.id,
-      })),
-      junctions.put(Junction.create({
-        id: [release2.id, iface2.id],
-        sourceId: release2.id,
-        targetId: iface2.id,
-      })),
-      // iface3 in release2 only.
-      junctions.put(Junction.create({
-        id: [release2.id, iface3.id],
-        sourceId: release2.id,
-        targetId: iface3.id,
-      })),
+      compatData.put(compat1),
+      compatData.put(compat2),
+      compatData.put(compat3),
     ]).then(() => runner.run())
         .then(() => container.apiCountDAO.select())
         .then(sink => {
@@ -172,47 +171,30 @@ describe('ApiCount', () => {
       osVersion: '10',
       releaseDate: '2015-01-01T00:00:00.000Z'
     }, container);
-    let iface1 = WebInterface.create({
+    [alpha, beta] = init([alpha, beta]);
+
+    let compat1 = CompatData.create({
       interfaceName: 'Alpha',
       apiName: 'iface',
+      [gen.propertyNameFromRelease(alpha)]: true,
     }, container);
-    let iface2 = WebInterface.create({
+    let compat2 = CompatData.create({
       interfaceName: 'AlphaBeta',
       apiName: 'iface',
+      [gen.propertyNameFromRelease(alpha)]: true,
+      [gen.propertyNameFromRelease(beta)]: true,
     }, container);
-    let iface3 = WebInterface.create({
+    let compat3 = CompatData.create({
       interfaceName: 'Beta',
       apiName: 'iface',
+      [gen.propertyNameFromRelease(beta)]: true,
     }, container);
     Promise.all([
       releases.put(alpha),
       releases.put(beta),
-      ifaces.put(iface1),
-      ifaces.put(iface2),
-      ifaces.put(iface3),
-      // iface1 in alpha only.
-      junctions.put(Junction.create({
-        id: [alpha.id, iface1.id],
-        sourceId: alpha.id,
-        targetId: iface1.id,
-      })),
-      // iface2 in alpha and beta.
-      junctions.put(Junction.create({
-        id: [alpha.id, iface2.id],
-        sourceId: alpha.id,
-        targetId: iface2.id,
-      })),
-      junctions.put(Junction.create({
-        id: [beta.id, iface2.id],
-        sourceId: beta.id,
-        targetId: iface2.id,
-      })),
-      // iface3 in beta only.
-      junctions.put(Junction.create({
-        id: [beta.id, iface3.id],
-        sourceId: beta.id,
-        targetId: iface3.id,
-      })),
+      compatData.put(compat1),
+      compatData.put(compat2),
+      compatData.put(compat3),
     ]).then(() => runner.run())
         .then(() => container.apiCountDAO.select())
         .then(sink => {
