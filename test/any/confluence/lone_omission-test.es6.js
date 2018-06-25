@@ -12,33 +12,17 @@ describe('LoneOmission', function() {
     return equals(sort(a), sort(b));
   }
   let Release;
-  let WebInterface;
-  let Junction;
-  let LoneOmission;
   let BrowserMetricDataType;
   let BrowserMetricData;
   let container;
+  let gen;
   let runner;
   let releases;
-  let ifaces;
-  let junctions;
+  let compatData;
   const date1 = '2015-01-01T00:00:00.000Z';
   const date2 = '2016-02-01T00:00:00.000Z';
   const date2_1 = '2016-03-01T00:00:00.000Z';
   const date3 = '2017-04-01T00:00:00.000Z';
-  function mkIface(interfaceName, apiName) {
-    return WebInterface.create({
-      interfaceName,
-      apiName,
-    });
-  }
-  function mkJunction(release, iface) {
-    return Junction.create({
-          id: [release.id, iface.id],
-      sourceId: release.id,
-      targetId: iface.id,
-    });
-  }
   function mkData(value, date, release, prevReleases, comparedReleases) {
     return BrowserMetricData.create({
       type: BrowserMetricDataType.LONE_OMISSION,
