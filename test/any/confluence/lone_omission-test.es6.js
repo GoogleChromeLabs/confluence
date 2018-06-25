@@ -34,11 +34,17 @@ describe('LoneOmission', function() {
       comparedReleases,
     });
   }
-  beforeEach(function() {
+
+  beforeEach(() => {
+    gen =
+        foam.lookup('org.chromium.apis.web.AbstractCompatClassGenerator')
+        .create();
+  });
+
+  const init = releaseSpecs => {
+    global.defineGeneratedCompatData(gen, releaseSpecs);
+
     Release = foam.lookup('org.chromium.apis.web.Release');
-    WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
-    Junction = foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
-    LoneOmission = foam.lookup('org.chromium.apis.web.LoneOmission');
     BrowserMetricDataType =
       foam.lookup('org.chromium.apis.web.BrowserMetricDataType');
     BrowserMetricData =
@@ -50,65 +56,82 @@ describe('LoneOmission', function() {
       ],
     }, container);
     releases = container.releaseDAO;
-    ifaces = container.webInterfaceDAO;
-    junctions = container.releaseWebInterfaceJunctionDAO;
-  });
+    compatData = container.compatDAO;
 
-  it('should handle simple case', function(done) {
-    let alpha, beta, charlie;
-    Promise.all([
-      releases.put(Release.create({
+    return releaseSpecs.map(rs => Release.create(rs, container));
+  };
+
+  fit('should handle simple case', function(done) {
+    const releasesArray = init([
+      {
         browserName: 'Alpha',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: date1,
-      }, container)),
-      releases.put(Release.create({
+      },
+      {
         browserName: 'Beta',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: date1,
-      }, container)),
-      releases.put(Release.create({
+      },
+      {
         browserName: 'Charlie',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: date1,
-      }, container)),
-    ]).then(function(releasesArray) {
-      alpha = releasesArray[0];
-      beta = releasesArray[1];
-      charlie = releasesArray[2];
+      },
+    ]);
 
-      const bOnly = mkIface('B', 'only');
-      const cOnly1 = mkIface('C', 'only1');
-      const cOnly2 = mkIface('C', 'only2');
-      const abOnly = mkIface('AB', 'only');
-      const acOnly = mkIface('AC', 'only');
-      const bcOnly = mkIface('BC', 'only');
-      const abcAll = mkIface('ABC', 'all');
-      return Promise.all([
-        ifaces.put(bOnly),
-        ifaces.put(cOnly1),
-        ifaces.put(cOnly2),
-        ifaces.put(abOnly),
-        ifaces.put(acOnly),
-        ifaces.put(bcOnly),
-        ifaces.put(abcAll),
-        junctions.put(mkJunction(alpha, abOnly)),
-        junctions.put(mkJunction(alpha, acOnly)),
-        junctions.put(mkJunction(beta, bOnly)),
-        junctions.put(mkJunction(beta, abOnly)),
-        junctions.put(mkJunction(beta, bcOnly)),
-        junctions.put(mkJunction(charlie, cOnly1)),
-        junctions.put(mkJunction(charlie, cOnly2)),
-        junctions.put(mkJunction(charlie, acOnly)),
-        junctions.put(mkJunction(charlie, bcOnly)),
-      ]);
-    }).then(function() {
+    let alpha = releasesArray[0];
+    let beta = releasesArray[1];
+    let charlie = releasesArray[2];
+
+    return Promise.all([
+      compatData.put(CompatData.create({
+        interfaceName: 'B',
+        apiName: 'only',
+        [gen.propertyNameFromRelease(beta)]: true,
+      })),
+      compatData.put(CompatData.create({
+        interfaceName: 'C',
+        apiName: 'only1',
+        [gen.propertyNameFromRelease(charlie)]: true,
+      })),
+      compatData.put(CompatData.create({
+        interfaceName: 'C',
+        apiName: 'only2',
+        [gen.propertyNameFromRelease(charlie)]: true,
+      })),
+      compatData.put(CompatData.create({
+        interfaceName: 'AB',
+        apiName: 'only',
+        [gen.propertyNameFromRelease(alpha)]: true,
+        [gen.propertyNameFromRelease(beta)]: true,
+      })),
+      compatData.put(CompatData.create({
+        interfaceName: 'AC',
+        apiName: 'only',
+        [gen.propertyNameFromRelease(alpha)]: true,
+        [gen.propertyNameFromRelease(charlie)]: true,
+      })),
+      compatData.put(CompatData.create({
+        interfaceName: 'BC',
+        apiName: 'only',
+        [gen.propertyNameFromRelease(beta)]: true,
+        [gen.propertyNameFromRelease(charlie)]: true,
+      })),
+      compatData.put(CompatData.create({
+        interfaceName: 'ABC',
+        apiName: 'all',
+        [gen.propertyNameFromRelease(alpha)]: true,
+        [gen.propertyNameFromRelease(beta)]: true,
+        [gen.propertyNameFromRelease(charlie)]: true,
+      })),
+    ]).then(function() {
       return runner.run();
     }).then(function() {
       return container.browserMetricsDAO.select();
