@@ -23,13 +23,13 @@ describe('ApiCount', () => {
   beforeEach(() => {
     gen =
         foam.lookup('org.chromium.apis.web.AbstractCompatClassGenerator')
-        .create()
+        .create();
   });
 
   const init = releaseSpecs => {
     // Register custom CompatData before looking up classes and instantiating
     // instances.
-    CompatData = global.defineGeneratedCompatData(releaseSpecs);
+    CompatData = global.defineGeneratedCompatData(gen, releaseSpecs);
 
     Release = foam.lookup('org.chromium.apis.web.Release');
     ApiCountData = foam.lookup('org.chromium.apis.web.ApiCountData');

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-global.defineGeneratedCompatData = releaseSpecs => {
+global.defineGeneratedCompatData = (gen, releaseSpecs) => {
   // Register custom CompatData before looking up classes and instantiating
   // instances.
   foam.CLASS({
