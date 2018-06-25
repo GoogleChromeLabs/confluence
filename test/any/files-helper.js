@@ -72,7 +72,7 @@ beforeAll(function(done) {
   const pkg = org.chromium.apis.web;
 
   const compatClassFile = pkg.DAOContainer.COMPAT_MODEL_FILE_NAME;
-  const compatClassURL = `file://${__dirname}/../../data/json/${compatClassFile}`;
+  const compatClassURL = `file://${__dirname}/../data/json/${compatClassFile}`;
   pkg.ClassGenerator.create({
     classURL: compatClassURL,
   }).generateClass().then(done);
