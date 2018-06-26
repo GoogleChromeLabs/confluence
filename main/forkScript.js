@@ -33,7 +33,7 @@ const pkg = org.chromium.apis.web;
 
 const logger = foam.log.ConsoleLogger.create();
 
-const compatClassFile = 'class:org.chromium.apis.web.generated.CompatData.json';
+const compatClassFile = pkg.DAOContainer.COMPAT_MODEL_FILE_NAME;
 
 // TODO(markdittmer): This should be local or remote based on param passed to
 // parent. It should be forwarded to forkScript invocation.

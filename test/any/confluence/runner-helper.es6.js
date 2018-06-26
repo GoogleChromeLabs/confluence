@@ -17,6 +17,7 @@ beforeAll(() => {
         releaseWebInterfaceJunctionDAO: ctx.releaseWebInterfaceJunctionDAO,
         browserMetricsDAO: ctx.browserMetricsDAO,
         apiCountDAO: ctx.apiCountDAO,
+        compatDAO: ctx.compatDAO,
       }, ctx),
     }, args);
     return pkg.MetricComputerRunner.create(finalArgs, ctx);

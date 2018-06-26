@@ -18,6 +18,8 @@ beforeAll(function() {
     var WebInterface = ctx.lookup('org.chromium.apis.web.WebInterface');
     var ReleaseWebInterfaceJunction =
         ctx.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
+    var CompatData =
+        ctx.lookup('org.chromium.apis.web.generated.CompatData');
     var BrowserMetricData =
         ctx.lookup('org.chromium.apis.web.BrowserMetricData');
     var ApiCountData =
@@ -37,6 +39,11 @@ beforeAll(function() {
       releaseWebInterfaceJunctionDAO: EasyDAO.create({
         name: 'releaseWebInterfaceJunctionDAO',
         of: ReleaseWebInterfaceJunction,
+        daoType: 'MDAO',
+      }),
+      compatDAO: EasyDAO.create({
+        name: 'compatDAO',
+        of: CompatData,
         daoType: 'MDAO',
       }),
       browserMetricsDAO: EasyDAO.create({
