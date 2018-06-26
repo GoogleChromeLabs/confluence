@@ -96,7 +96,7 @@ pkg.ClassGenerator.create({
           .select().then(store.bind(this, pkg.BrowserMetricData.id)),
       container.apiCountDAO
           .orderBy(E.THEN_BY(pkg.ApiCountData.BROWSER_NAME,
-                            pkg.ApiCountData.RELEASE_DATE))
+                             pkg.ApiCountData.RELEASE_DATE))
           .select().then(store.bind(this, pkg.ApiCountData.id)),
     ]);
   }).then(() => {
