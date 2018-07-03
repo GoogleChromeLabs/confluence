@@ -11,9 +11,10 @@ describe('LoneOmission', function() {
   function sortedEquals(a, b) {
     return equals(sort(a), sort(b));
   }
-  let Release;
+  let CompatData;
   let BrowserMetricDataType;
   let BrowserMetricData;
+  let Release;
   let container;
   let gen;
   let runner;
@@ -42,7 +43,7 @@ describe('LoneOmission', function() {
   });
 
   const init = releaseSpecs => {
-    global.defineGeneratedCompatData(gen, releaseSpecs);
+    CompatData = global.defineGeneratedCompatData(gen, releaseSpecs);
 
     Release = foam.lookup('org.chromium.apis.web.Release');
     BrowserMetricDataType =
@@ -61,8 +62,8 @@ describe('LoneOmission', function() {
     return releaseSpecs.map(rs => Release.create(rs, container));
   };
 
-  fit('should handle simple case', function(done) {
-    const releasesArray = init([
+  it('should handle simple case', function(done) {
+    let [alpha, beta, charlie] = init([
       {
         browserName: 'Alpha',
         browserVersion: '1',
@@ -86,11 +87,10 @@ describe('LoneOmission', function() {
       },
     ]);
 
-    let alpha = releasesArray[0];
-    let beta = releasesArray[1];
-    let charlie = releasesArray[2];
-
     return Promise.all([
+      releases.put(alpha),
+      releases.put(beta),
+      releases.put(charlie),
       compatData.put(CompatData.create({
         interfaceName: 'B',
         apiName: 'only',
@@ -144,57 +144,56 @@ describe('LoneOmission', function() {
         // Charlie fails to ship AB.
         mkData(1, date1, charlie, [], [alpha, beta]),
       ])).toBe(true);
-      done();
-    });
+    }).then(done, done.fail);
   });
 
   it('should exclude API if this browser ever shipped it', function(done) {
-    let alpha1, alpha2, beta1, beta2;
     // Use date1 and date3 to ensure that version 2 is more than a year after
     // version 1.
-    Promise.all([
-      releases.put(Release.create({
+    let [alpha1, alpha2, beta1, beta2] = init([
+      {
         browserName: 'Alpha',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: date1,
-      }, container)),
-      releases.put(Release.create({
+      },
+      {
         browserName: 'Alpha',
         browserVersion: '2',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: date3,
-      }, container)),
-      releases.put(Release.create({
+      },
+      {
         browserName: 'Beta',
         browserVersion: '1',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: date1,
-      }, container)),
-      releases.put(Release.create({
+      },
+      {
         browserName: 'Beta',
         browserVersion: '2',
         osName: 'Windows',
         osVersion: '10',
         releaseDate: date3,
-      }, container)),
-    ]).then(function(releasesArray) {
-      alpha1 = releasesArray[0];
-      alpha2 = releasesArray[1];
-      beta1 = releasesArray[2];
-      beta2 = releasesArray[3];
+      },
+    ]);
 
-      const iface = mkIface('Removed', 'inB2');
-      return Promise.all([
-        ifaces.put(iface),
-        junctions.put(mkJunction(alpha1, iface)),
-        junctions.put(mkJunction(alpha2, iface)),
-        junctions.put(mkJunction(beta1, iface)),
-      ]);
-    }).then(function() {
+    Promise.all([
+      releases.put(alpha1),
+      releases.put(alpha2),
+      releases.put(beta1),
+      releases.put(beta2),
+      compatData.put(CompatData.create({
+        interfaceName: 'ABC',
+        apiName: 'all',
+        [gen.propertyNameFromRelease(alpha1)]: true,
+        [gen.propertyNameFromRelease(alpha2)]: true,
+        [gen.propertyNameFromRelease(beta1)]: true,
+      })),
+    ]).then(function() {
       return runner.run();
     }).then(function() {
       return container.browserMetricsDAO.select();
@@ -205,72 +204,64 @@ describe('LoneOmission', function() {
         mkData(0, date1, beta1, [], [alpha1]),
         mkData(0, date3, beta2, [beta1], [alpha2]),
       ])).toBe(true);
-      done();
-    });
+    }).then(done, done.fail);
   });
 
   it('should exclude APIs not shipped by even one compared release', function(done) {
-    let alpha2, alpha2_1, beta2, beta2_1, charlie2, charlie2_1;
     // Use date2 and date2_1 to ensure two versions during grace period.
+    let [alpha2, alpha2_1, beta2, beta2_1, charlie2, charlie2_1] = init([
+      {
+        browserName: 'Alpha',
+        browserVersion: '2',
+        osName: 'Windows',
+        osVersion: '10',
+        releaseDate: date2,
+      },
+      {
+        browserName: 'Alpha',
+        browserVersion: '2.1',
+        osName: 'Windows',
+        osVersion: '10',
+        releaseDate: date2_1,
+      },
+      {
+        browserName: 'Beta',
+        browserVersion: '2',
+        osName: 'Windows',
+        osVersion: '10',
+        releaseDate: date2,
+      },
+      {
+        browserName: 'Beta',
+        browserVersion: '2.1',
+        osName: 'Windows',
+        osVersion: '10',
+        releaseDate: date2_1,
+      },
+      {
+        browserName: 'Charlie',
+        browserVersion: '2',
+        osName: 'Windows',
+        osVersion: '10',
+        releaseDate: date2,
+      },
+      {
+        browserName: 'Charlie',
+        browserVersion: '2.1',
+        osName: 'Windows',
+        osVersion: '10',
+        releaseDate: date2_1,
+      },
+    ]);
+    
     Promise.all([
-      releases.put(Release.create({
-        browserName: 'Alpha',
-        browserVersion: '2',
-        osName: 'Windows',
-        osVersion: '10',
-        releaseDate: date2,
-      }, container)),
-      releases.put(Release.create({
-        browserName: 'Alpha',
-        browserVersion: '2.1',
-        osName: 'Windows',
-        osVersion: '10',
-        releaseDate: date2_1,
-      }, container)),
-      releases.put(Release.create({
-        browserName: 'Beta',
-        browserVersion: '2',
-        osName: 'Windows',
-        osVersion: '10',
-        releaseDate: date2,
-      }, container)),
-      releases.put(Release.create({
-        browserName: 'Beta',
-        browserVersion: '2.1',
-        osName: 'Windows',
-        osVersion: '10',
-        releaseDate: date2_1,
-      }, container)),
-      releases.put(Release.create({
-        browserName: 'Charlie',
-        browserVersion: '2',
-        osName: 'Windows',
-        osVersion: '10',
-        releaseDate: date2,
-      }, container)),
-      releases.put(Release.create({
-        browserName: 'Charlie',
-        browserVersion: '2.1',
-        osName: 'Windows',
-        osVersion: '10',
-        releaseDate: date2_1,
-      }, container)),
-    ]).then(function(releasesArray) {
-      alpha2 = releasesArray[0];
-      alpha2_1 = releasesArray[1];
-      beta2 = releasesArray[2];
-      beta2_1 = releasesArray[3];
-      charlie2 = releasesArray[4];
-      charlie2_1 = releasesArray[5];
-
-      const iface = mkIface('NotIn', 'charlie2');
-      return Promise.all([
-        ifaces.put(iface),
-        junctions.put(mkJunction(beta2, iface)),
-        junctions.put(mkJunction(beta2_1, iface)),
-        junctions.put(mkJunction(charlie2_1, iface)),
-      ]);
-    }).then(function() {
+      releases.put(alpha2),
+      releases.put(alpha2_1),
+      releases.put(beta2),
+      releases.put(beta2_1),
+      releases.put(charlie2),
+      releases.put(charlie2_1),
+    ]).then(function() {
       return runner.run();
     }).then(function() {
       return container.browserMetricsDAO.select();
@@ -294,7 +285,6 @@ describe('LoneOmission', function() {
       // browsers within the grace period shipped the API.
       expect(sink.array[1].release.id).toBe('Alpha_2.1_Windows_10');
       expect(sink.array[1].value).toBe(0);
-      done();
-    });
+    }).then(done, done.fail);
   });
 });
