@@ -136,7 +136,6 @@ describe('BrowserSpecific', function() {
     }).then(function() {
       return container.browserMetricsDAO.select();
     }).then(function(sink) {
-      debugger;
       expect(sortedEquals(
         sink.array,
         [
