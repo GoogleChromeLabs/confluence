@@ -51,10 +51,7 @@ pkg.ClassGenerator.create({
     of: pkg.ApiCountData,
   }, container);
 
-  const runner = pkg.MetricComputerRunner.create({
-    // TODO(markdittmer): Testing only.
-    metricComputerTypes: [pkg.MetricComputerType.API_COUNT],
-  }, container);
+  const runner = pkg.MetricComputerRunner.create(null, container);
 
   //
   // Compute data, then store it in data/json/{class}.json
