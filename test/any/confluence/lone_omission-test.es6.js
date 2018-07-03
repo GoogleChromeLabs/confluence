@@ -261,6 +261,13 @@ describe('LoneOmission', function() {
       releases.put(beta2_1),
       releases.put(charlie2),
       releases.put(charlie2_1),
+      compatData.put(CompatData.create({
+        interfaceName: 'ABC',
+        apiName: 'all',
+        [gen.propertyNameFromRelease(beta2)]: true,
+        [gen.propertyNameFromRelease(beta2_1)]: true,
+        [gen.propertyNameFromRelease(charlie2_1)]: true,
+      })),
     ]).then(function() {
       return runner.run();
     }).then(function() {
