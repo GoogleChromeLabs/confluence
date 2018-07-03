@@ -5,3 +5,6 @@
 .web_coverage
 node_modules
 static/bundle/
+data/json/*.json
+data/object-graph/*.json
+.vscode
