@@ -14,6 +14,7 @@ require('../lib/confluence/browser_metric_data.es6.js');
 require('../lib/confluence/metric_computer_runner.es6.js');
 require('../lib/dao/dao_container.es6.js');
 require('../lib/dao/local_json_dao.es6.js');
+require('../lib/data_source.es6.js');
 require('../lib/web_apis/api_compat_data.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
@@ -51,7 +52,9 @@ pkg.ClassGenerator.create({
     of: pkg.ApiCountData,
   }, container);
 
-  const runner = pkg.MetricComputerRunner.create(null, container);
+  const runner = pkg.MetricComputerRunner.create({
+    mode: pkg.DataSource.LOCAL,
+  }, container);
 
   //
   // Compute data, then store it in data/json/{class}.json

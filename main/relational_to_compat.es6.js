@@ -17,6 +17,7 @@ require('../lib/action.es6.js');
 require('../lib/dao/http_json_dao.es6.js');
 require('../lib/dao/json_dao_container.es6.js');
 require('../lib/dao/local_json_dao.es6.js');
+require('../lib/data_source.es6.js');
 require('../lib/web_apis/api_compat_data.es6.js');
 require('../lib/web_apis/relational_to_compat.es6.js');
 require('../lib/web_apis/release.es6.js');
@@ -49,8 +50,8 @@ if (dataUrl.protocol !== 'file:' && dataUrl.protocol !== 'https:') {
 }
 
 let container = pkg.JsonDAOContainer.create({
-  mode: dataUrl.protocol === 'file:' ? pkg.JsonDAOContainerMode.LOCAL :
-      pkg.JsonDAOContainerMode.HTTP,
+  mode: dataUrl.protocol === 'file:' ? pkg.DataSource.LOCAL :
+      pkg.DataSource.HTTP,
   basename: dataUrl.protocol === 'file:' ? dataUrl.pathname :
       url.format(dataUrl),
 }, logger);
