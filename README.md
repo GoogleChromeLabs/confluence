@@ -230,17 +230,11 @@ soon. If you have all the prerequisites, read on…
 2. Create `/path/to/confluence/data/object-graph` and copy
    `/path/to/web-apis/data/og/*.json` into it.
 
-3. Create `/path/to/confluence/data/json` and run `node
-   --max_old_space_size=4096 main/og_to_json.es6.js` compute API data from
-   object graphs. This will take a while. When it's finished, you should see
-   three files in `ls /path/to/confluence/data/json/*.json`.
+3. Create `/path/to/confluence/data/json` and run
+   `./scripts/og_to_confluence.sh` to derive confluence data from the object
+   graphs.
 
-4. Run `node --max_old_space_size=4096 main/json_to_metrics.es6.js` to compute
-   API confluence metrics from API data. This will take longer than the previous
-   step. When it's finished, you should see five files in `ls
-   /path/to/confluence/data/json/*.json`.
-
-5. To run the service locally based on your generated data invoke `node
+4. To run the service locally based on your generated data invoke `node
    main/serve.js "LOCAL" "DEV"`. If you want live reloading of client code,
    change the parameters passed to `main/serve.js` in `scripts/serve.sh` and
    start `webpack` alongside the service with `npm run serve.
