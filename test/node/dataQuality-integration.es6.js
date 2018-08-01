@@ -31,13 +31,14 @@ xdescribe('data quality', function() {
     require('../../lib/confluence/api_count_data.es6.js');
     require('../../lib/confluence/browser_metric_data.es6.js');
     require('../../lib/dao/json_dao_container.es6.js');
+    require('../../lib/data_source.es6.js');
     require('../../lib/web_apis/release.es6.js');
     require('../../lib/web_apis/release_interface_relationship.es6.js');
     require('../../lib/web_apis/web_interface.es6.js');
     const pkg = org.chromium.apis.web;
 
     ctx = pkg.JsonDAOContainer.create({
-      mode: pkg.JsonDAOContainerMode.HTTP,
+      mode: pkg.DataSource.HTTP,
       basename: 'https://storage.googleapis.com/web-api-confluence-data-cache/latest/json',
     }).ctx;
 
