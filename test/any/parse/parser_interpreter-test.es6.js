@@ -229,9 +229,9 @@ describe('QueryParser', () => {
     const terseIDs = releaseIDs.map(org.chromium.parse.util.getTerseReleaseId);
 
     expect(terseIDs).toEqual([
-      'alp1new3.1',
-      'bet54.1old15',
-      'alp2.2old12',
+      'alp1.0new3.1',
+      'bet54.1old15.0',
+      'alp2.2old12.1',
     ]);
   });
 });
