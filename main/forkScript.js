@@ -71,6 +71,15 @@ const args = process.argv.slice(2);
 if (args.length !== 1) panic('Expected exactly one script argument');
 const mode = getMode(args[0]);
 
+const start = () => {
+  const container = pkg.DAOContainer.create(null, logger);
+  foam.box.node.ForkBox.CONNECT_TO_PARENT(
+      foam.box.Context.create({
+        unsafe: false,
+        classWhitelist: require('../data/class_whitelist.json'),
+      }, container));
+}
+
 // TODO(markdittmer): This should be local or remote based on param passed to
 // parent. It should be forwarded to forkScript invocation.
 const compatClassURL = mode === pkg.DataSource.LOCAL ?
@@ -78,14 +87,8 @@ const compatClassURL = mode === pkg.DataSource.LOCAL ?
     `${require('../data/http_json_dao_base_url.json')}/${compatClassFile}`;
 org.chromium.apis.web.ClassGenerator.create({
   classURL: compatClassURL,
-}).generateClass().then(() => {
-  const container = pkg.DAOContainer.create(null, logger);
-  foam.box.node.ForkBox.CONNECT_TO_PARENT(
-      foam.box.Context.create({
-        unsafe: false,
-        classWhitelist: require('../data/class_whitelist.json'),
-      }, container));
-}, err => {
-  logger.error(err);
-  process.exit(1);
+}).generateClass().then(start, err => {
+  logger.warn(err);
+  logger.warn(`Fork (PID=${process.pid}) encountered a dynamic class loading error; continuing anyway...`);
+  start();
 });
