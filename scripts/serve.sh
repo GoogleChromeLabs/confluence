@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 WD=$(readlink -f $(dirname "$0"))
 

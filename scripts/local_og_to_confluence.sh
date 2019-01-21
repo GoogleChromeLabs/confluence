@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 #
 # Perform all steps to transform local data/object-graph/*.json files into all
