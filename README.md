@@ -186,7 +186,7 @@ Please use GitHub’s issue tracker and pull request features.
 
 3. Launch the local server:
 
-```zsh
+```bash
 mkdir -p data/json
 ```
 
@@ -194,7 +194,7 @@ Then, either:
 
    1. Copy the latest data:
 
-```zsh
+```bash
 cd data/json
 curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.ApiCountData.json > org.chromium.apis.web.ApiCountData.json
 curl https://storage.googleapis.com/web-api-confluence-data-cache/latest/json/org.chromium.apis.web.ReleaseWebInterfaceJunction.json > org.chromium.apis.web.ReleaseWebInterfaceJunction.json

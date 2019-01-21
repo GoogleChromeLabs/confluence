@@ -9,9 +9,9 @@
     "coverage": "npm run coverageNode && npm run coverageWeb && istanbul-combine -d .coverage -p summary -r lcov -r html -r json -b . .node_coverage/coverage.json .web_coverage/*/coverage*.json && istanbul check-coverage --config config/istanbul.yml \".coverage/**/coverage*.json\"",
     "coverageNode": "JASMINE_CONFIG_PATH=./config/jasmine.json istanbul cover --config config/istanbul.yml --dir .node_coverage -- jasmine",
     "coverageWeb": "karma start ./config/karma.coverage.conf.js",
-    "deploy": "zsh scripts/deploy.sh",
+    "deploy": "bash scripts/deploy.sh",
     "start": "node main/serve.js HTTP PROD",
-    "serve": "zsh scripts/serve.sh",
+    "serve": "bash scripts/serve.sh",
     "test": "npm run testNode && npm run testWeb",
     "testNode": "JASMINE_CONFIG_PATH=./config/jasmine.json jasmine",
     "testWeb": "karma start ./config/karma.all.conf.js"
