@@ -47,7 +47,7 @@ function stop() {
 trap stop INT
 
 warn "STARTING  OG-TO-JSON"
-node "${WD}/../main/og_to_json.es6.js" &
+node --max_old_space_size=4000 "${WD}/../main/og_to_json.es6.js" &
 og_to_json_PID=$!
 win "OG-TO-JSON STARTED (PID=${og_to_json_PID})"
 
@@ -62,12 +62,12 @@ fi
 
 
 warn "STARTING RELATIONAL-TO-COMPAT"
-node "${WD}/../main/relational_to_compat.es6.js" "file://${WD}/../data/json" &
+node --max_old_space_size=4000 "${WD}/../main/relational_to_compat.es6.js" "file://${WD}/../data/json" &
 relational_to_compat_PID=$!
 win "RELATIONAL-TO-COMPAT STARTED (PID=${relational_to_compat_PID})"
 
 warn "STARTING RELATIONAL-TO-GRID"
-node "${WD}/../main/relational_to_grid.es6.js" "file://${WD}/../data/json" &
+node --max_old_space_size=4000 "${WD}/../main/relational_to_grid.es6.js" "file://${WD}/../data/json" &
 relational_to_grid_PID=$!
 win "RELATIONAL-TO-GRID STARTED (PID=${relational_to_grid_PID})"
 
@@ -81,7 +81,7 @@ fi
 
 
 warn "STARTING JSON-TO-METRICS"
-node "${WD}/../main/json_to_metrics.es6.js"
+node --max_old_space_size=4000 "${WD}/../main/json_to_metrics.es6.js"
 json_to_metrics_PID=$!
 win "JSON-TO-METRICS STARTED (PID=${json_to_metrics_PID})"
 
