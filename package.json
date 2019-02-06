@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GoogleChrome/confluence.git"
+    "url": "git+https://github.com/GoogleChromeLabs/confluence.git"
   },
   "keywords": [
     "javascript",
@@ -26,7 +26,7 @@
     "tools"
   ],
   "author": "Mark Dittmer, Jing Tao",
-  "homepage": "https://github.com/GoogleChrome/confluence#readme",
+  "homepage": "https://github.com/GoogleChromeLabs/confluence#readme",
   "dependencies": {
     "@uirouter/angularjs": "^1.0.18",
     "angular": "^1.7.0",
