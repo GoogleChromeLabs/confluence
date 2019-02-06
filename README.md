@@ -1,4 +1,4 @@
-# [Web API Confluence Dashboard](https://web-confluence.appspot.com) [![Build Status](https://travis-ci.org/GoogleChrome/confluence.svg?branch=master)](https://travis-ci.org/GoogleChrome/confluence)[![Codecov](https://img.shields.io/codecov/c/github/GoogleChrome/confluence.svg)]()
+# [Web API Confluence Dashboard](https://web-confluence.appspot.com) [![Build Status](https://travis-ci.org/GoogleChromeLabs/confluence.svg?branch=master)](https://travis-ci.org/GoogleChromeLabs/confluence)[![Codecov](https://img.shields.io/codecov/c/github/GoogleChromeLabs/confluence.svg)]()
 
 A web service and UI for describing *API confluence metrics*. These metrics are
 intended to capture the how browser vendors
