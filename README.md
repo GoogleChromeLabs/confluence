@@ -16,7 +16,9 @@ fragmentation.
 The purpose of *API Confluence Metrics* is to capture the ways in which
 different browsers risk breaking the elastic band.
 
-Data collected via [BrowserStack](https://www.browserstack.com).
+<img src="https://user-images.githubusercontent.com/498917/52569900-852b3080-2e12-11e9-9bd0-f1e256b13e53.png" width="300" height="70" alt="BrowserStack">
+
+Data for this project is collected using [BrowserStack](https://www.browserstack.com).
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
