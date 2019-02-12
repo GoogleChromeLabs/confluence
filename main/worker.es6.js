@@ -6,133 +6,70 @@
 self.window = self.global = self;
 importScripts('vendors.bundle.js', 'foam.bundle.js');
 
-require('../lib/client/api_confluence.es6.js');
-require('../lib/client/api_matrix.es6.js');
-require('../lib/client/events.es6.js');
-require('../lib/confluence/api_velocity_data.es6.js');
-require('../lib/confluence/browser_metric_data.es6.js');
-require('../lib/dao_container.es6.js');
-require('../lib/web_apis/release.es6.js');
-require('../lib/web_apis/release_interface_relationship.es6.js');
-require('../lib/web_apis/web_interface.es6.js');
+require('../lib/compat.es6.js');
+require('../lib/dao/dao_container.es6.js');
+require('../lib/dao/worker_dao.es6.js');
+require('../lib/parse/expressions.es6.js');
+require('../lib/web_apis/api_compat_data.es6.js');
 const pkg = org.chromium.apis.web;
 
-//
-// Box context setup.
-//
-
-const ctx = foam.box.Context.create({
-  myname: '/worker',
-  unsafe: false,
-  classWhitelist: require('../data/class_whitelist.json'),
-});
-
-//
-// DAO setup.
-//
-
-function getCachingDAO(name, cls, ctx) {
-  return foam.dao.CachingDAO.create({
-    src: foam.dao.RestDAO.create({
-      baseURL: `${self.location.origin}/${name}`,
-      of: cls,
-    }, ctx),
-    cache: foam.dao.MDAO.create({of: cls}, ctx),
-  }, ctx);
-}
-
-function getLazyCacheDAO(name, cls, ctx) {
-  return foam.dao.LazyCacheDAO.create({
-    delegate: foam.dao.RestDAO.create({
-      baseURL: `${self.location.origin}/${name}`,
-      of: cls,
-    }, ctx),
-    cache: foam.dao.MDAO.create({of: cls}, ctx),
-    cacheOnSelect: true,
-    staleTimeout: Infinity,
-  }, ctx);
-}
-
-const C = pkg.DAOContainer;
-
-const releaseDAO = getCachingDAO(
-    C.RELEASE_NAME, pkg.Release, ctx);
-const webInterfaceDAO = getCachingDAO(
-    C.WEB_INTERFACE_NAME, pkg.WebInterface, ctx);
-const apiVelocityDAO = getCachingDAO(
-    C.API_VELOCITY_NAME, pkg.ApiVelocityData, ctx);
-const failureToShipDAO = getCachingDAO(
-    C.FAILURE_TO_SHIP_NAME, pkg.BrowserMetricData, ctx);
-const browserSpecificDAO = getCachingDAO(
-    C.BROWSER_SPECIFIC_NAME, pkg.BrowserMetricData, ctx);
-const aggressiveRemovalDAO = getCachingDAO(
-    C.AGGRESSIVE_REMOVAL_NAME, pkg.BrowserMetricData, ctx);
-
-const releaseWebInterfaceJunctionDAO = getLazyCacheDAO(
-    C.RELEASE_WEB_INTERFACE_JUNCTION_NAME,
-    pkg.ReleaseWebInterfaceJunction,
-    ctx);
-
-const daoCtx = ctx.__subContext__.createSubContext({
-  releaseDAO,
-  webInterfaceDAO,
-  releaseWebInterfaceJunctionDAO,
-});
-
-
-//
-// Setup services for page.
-//
-
-const apiMatrixController = pkg.ApiMatrixController.create(null, daoCtx);
-const apiConfluence = pkg.ApiConfluence.create({
-  apiVelocityDAO,
-  failureToShipDAO,
-  browserSpecificDAO,
-  aggressiveRemovalDAO,
-}, daoCtx);
-
-// Register API under known names.
-ctx.registry.register('apiMatrixController', null, foam.box.SkeletonBox.create({
-  data: apiMatrixController,
-}));
-ctx.registry.register('apiConfluence', null, foam.box.SkeletonBox.create({
-  data: apiConfluence,
-}));
-
-// Now that services are exported, begin accepting messages from page.
-onmessage = function(event) {
-  if (!event.data instanceof MessagePort) {
-    throw new Error('Unexpected control message', event.data);
+// Has initial "this is your name" message been received?
+let nameReceived = false;
+// Post-"this is your name" event backlog; worker context setup is async.
+let events = [];
+self.onmessage =  e => {
+  // If name already received, queue event in backlog.
+  if (nameReceived) {
+    events.push(e);
+    return;
   }
 
-  ctx.messagePortService.addPort(event.data);
+  nameReceived = true;
+
+  foam.assert(
+      e.data && e.data.name, 'Failed to recieve name from worker owner');
+  const name = e.data.name;
+
+  // Set up worker context.
+  //
+  // TODO(markdittmer): Code generation is really only necessary  for worker(s)
+  // that deal with generated.CompatData model. Should this be somehow
+  // conditional and/or driven by a signal from the worker's owner?
+  const compatClassURL = `${window.location.origin}/${pkg.DAOContainer.COMPAT_MODEL_FILE_NAME}`;
+  pkg.ClassGenerator.create({
+    classURL: compatClassURL,
+  }).generateClass().then(() => {
+    const ctx = foam.box.Context.create({
+      myname: name,
+      unsafe: false,
+      classWhitelist: require('../data/class_whitelist.json'),
+    }, pkg.DAOContainer.create());
+
+    // Replay or wait for message port connection from owner.
+    const portHandler = e => {
+      if (!(e.data instanceof MessagePort)) {
+        throw new Error('Unexpected control message', e.data);
+      }
+
+      // Sets self.onmessage.
+      ctx.messagePortService.addPort(e.data);
+    };
+    if (events.length > 0) {
+      // First message is message port.
+      portHandler(events[0]);
+      // Replay remaining messages over onmessage handler.
+      for (let i = 1; i < events.length; i++) {
+        self.onmessage(events[i]);
+      }
+    } else {
+      self.onmessage = portHandler;
+    }
+  });
 };
 
-//
-// Bind to services from page.
-//
-
-// Bind to page events service once service has established MessagePort
-// connection.
-const events = foam.box.PromisedBox.create({
-  delegate: new Promise(function(resolve, reject) {
-    ctx.messagePortService.connect.sub(function(_, __, namedBox) {
-      if (namedBox.name !== '/page') {
-        reject(new Error(`Unexpected MessagePort connection from:
-                              ${namedBox.name}`));
-        return;
-      }
-      resolve(foam.box.NamedBox.create({name: '/page/events'}, ctx));
-    });
-  }),
-}, ctx);
-
-// Forward events to page.
-apiMatrixController.events.sub(function(_, __, event) {
-  events.send(foam.box.Message.create({
-    object: foam.box.EventMessage.create({
-      args: [event],
-    }, ctx),
-  }, ctx));
-});
+// Assert that initial "this is your name" message is recieved in a timely
+// manner.
+self.setTimeout(
+    () => foam.assert(
+        nameReceived, 'Worker timed out waiting for name from owner'),
+    1000);

@@ -4,14 +4,18 @@
 'use strict';
 
 require('materialize-css/dist/js/materialize.js');
-require('materialize-css/dist/css/materialize.css');
 require('angular');
 require('@uirouter/angularjs');
 
+// Refinements before models.
+require('../lib/object.es6.js');
+require('../lib/property.es6.js');
+require('../lib/action.es6.js');
+
+require('../lib/web_apis/api_compat_data.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
-require('../lib/client/api_matrix.es6.js');
 require('../lib/client/api_confluence.es6.js');
 
 let app = angular.module('confluence', ['ui.router']);

@@ -1,12 +1,57 @@
+sudo: required
 language: node_js
 node_js:
- - "6"
+- 8.11.1
 addons:
   firefox: latest
+env:
+  global:
+    secure: lpI6ET89oF/EMcnw9mHY0T2TMiyBsU6OIeXcmnhCx+3mIN6fNUTf4gcyGDc0OqCSYkb1z1BDJtlQHshfqpPGzmMhPO7eNNy8R8kZyhxHAR8E6ckvirDmGS73lciV6tid8dm4omru6qqcA69TNYFy2xWXr8aaRDHiQuayQAecBWspi5lYUvEtKoKoN2eiGPrbcBwK9wB35lf1NRFjdwlNsDKON6fGJ9nv9n7uk/rr44hYlIIJZ0TthZxARUwXrTvLGbL9OjGqZR6p27vSly5O5GkXbWlDH1F0O4lGgIOVQb1A/XTlbbsO0p3J2dy5tSAzQoxvK9D9aWPzSPQXFWHb9AGmy3u6zo3UFKELRvytqbJVrlL+yTl9caAufrPGR/xE/WjzUQBjCBDCPUvH6PSMrXExvpCv7yx5GHurrGaNaiwHFp9e/KkJaNr0z7StxjcAG6Y91P0+6PT4B1f4MqKMHalEs4MYQe6nxP9zOYvWiYM+r7W3FCUL+1cexoHmqPB/j86jznDM1ReKdYDp9dTr0sDzJTD7SoF6WdcXcMfrCf9DToD+vc4e22SIORkpoSwXGCbv/gjQqDRo3prafmGwhltM5TI5YRy3ZaCesg3NSVUDe/Qbu8qZfr+WKg2z5Pm9FDmA5HaWBEBeHu9tEtTBvW+pGUxI81QognpvhbcufEM=
+before_install: | # Decrypt secret iff this is a PR that may need staging.
+  if [ "${TRAVIS_SECURE_ENV_VARS}" != "false" ] \
+      && [ "${TRAVIS_PULL_REQUEST_BRANCH}" != "" ] \
+      && [ "${GITHUB_TOKEN}" != "" ];
+  then
+    openssl aes-256-cbc -K $encrypted_4f3419651c2f_key \
+        -iv $encrypted_4f3419651c2f_iv -in client-secret.json.enc \
+        -out client-secret.json -d
+    if [ ! -d "$HOME/google-cloud-sdk" ]
+    then
+        export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+        echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+        curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+        sudo apt-get update && sudo apt-get install google-cloud-sdk
+    fi
+  fi
 before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3 # give xvfb some time to start
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+- sleep 3 # give xvfb some time to start
 script:
- - npm run coverage
- - codecov
+- npm run coverage
+- codecov
+- | # Report whether or not this is a PR that qualifies for staging.
+  if [ "${TRAVIS_SECURE_ENV_VARS}" != "false" ] \
+      && [ "${TRAVIS_PULL_REQUEST_BRANCH}" != "" ] \
+      && [ "${GITHUB_TOKEN}" != "" ];
+  then
+    webpack --config config/webpack.prod.js || exit $?
+    gcloud config set project web-confluence || exit $?
+    gcloud auth activate-service-account --key-file client-secret.json || exit $?
+    gcloud app deploy -q --no-promote --version=${TRAVIS_PULL_REQUEST_BRANCH} . || exit $?
+    DEPLOYED_URL=$(gcloud app versions describe ${TRAVIS_PULL_REQUEST_BRANCH} -s default | grep -Po 'versionUrl: \K.*$')
+    echo "Deployed to ${DEPLOYED_URL}"
+    POST_BODY='{"body": "Staging instance for ${TRAVIS_COMMIT} deployed by Travis CI!\nRunning at '"${DEPLOYED_URL}"'"}'
+    curl -H "Authorization: token ${GITHUB_TOKEN}" \
+          -X "POST" \
+          -d "${POST_BODY}" \
+          -vv \
+          "https://api.github.com/repos/${TRAVIS_REPO_SLUG}/issues/${TRAVIS_PULL_REQUEST}/comments"
+    CURL_RESULT=$?
+    echo "GitHub comment request status: ${CURL_RESULT}"
+    exit ${CURL_RESULT}
+  else
+    echo "🏚 😢 🏚"
+    echo "️🏚 😢 🏚️ This build does not qualify for staging and commenting"
+    echo "🏚 😢 🏚"
+  fi

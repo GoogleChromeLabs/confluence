@@ -19,11 +19,12 @@ const path = require('path');
 global.FOAM_FLAGS = {gcloud: true};
 require('foam2');
 
+require('../lib/dao/dao_container.es6.js');
+require('../lib/data_source.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
 require('../lib/web_catalog/object_graph_importer.es6.js');
-require('../lib/dao_container.es6.js');
 const pkg = org.chromium.apis.web;
 
 //
@@ -42,6 +43,7 @@ container.releaseWebInterfaceJunctionDAO = foam.dao.MDAO.create({
 }, container);
 
 const importer = pkg.ObjectGraphImporter.create({
+  mode: pkg.DataSource.LOCAL,
   objectGraphPath: path.resolve(`${__dirname}/../data/object-graph`),
 }, container);
 

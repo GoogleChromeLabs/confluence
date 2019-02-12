@@ -16,12 +16,16 @@ const process = require('process');
 global.FOAM_FLAGS = {gcloud: true};
 require('foam2');
 
-require('../lib/confluence/aggressive_removal.es6.js');
-require('../lib/confluence/api_velocity.es6.js');
+require('../lib/compat.es6.js');
+require('../lib/confluence/api_count.es6.js');
 require('../lib/confluence/browser_specific.es6.js');
-require('../lib/confluence/failure_to_ship.es6.js');
-require('../lib/json_dao_container.es6.js');
+require('../lib/confluence/lone_omission.es6.js');
+require('../lib/confluence/lone_removal.es6.js');
+require('../lib/dao/json_dao_container.es6.js');
+require('../lib/data_source.es6.js');
+require('../lib/parse/expressions.es6.js');
 require('../lib/server/server.es6.js');
+require('../lib/web_apis/api_compat_data.es6.js');
 require('../lib/web_apis/release.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/web_apis/web_interface.es6.js');
@@ -29,10 +33,10 @@ const pkg = org.chromium.apis.web;
 
 const USAGE = `USAGE:
 
-    node /path/to/serve.js JsonDAOContainerMode ServerMode
+    node /path/to/serve.js DataSource ServerMode
 
-        JsonDAOContainerMode = [ ${pkg.JsonDAOContainerMode.VALUES.map(
-                                       value => value.name).join(' | ')} ]
+        DataSource = [ ${pkg.DataSource.VALUES
+            .map(value => value.name).join(' | ')} ]
 
         ServerMode = [ ${pkg.ServerMode.VALUES.map(
                              value => value.name).join(' | ')} ]`;
@@ -55,9 +59,9 @@ foam.CLASS({
 });
 
 function getModeString(Enum, str) {
-  const mode = Enum.VALUES.filter(function(value) {
+  const mode = Enum.VALUES.find(function(value) {
     return value.name === str;
-  })[0];
+  });
 
   if (mode) return mode;
 
@@ -71,23 +75,31 @@ function getModeString(Enum, str) {
   return null;
 }
 
-const containerMode = getModeString(pkg.JsonDAOContainerMode, process.argv[2]);
+const containerMode = getModeString(pkg.DataSource, process.argv[2]);
 const serverMode = getModeString(pkg.ServerMode, process.argv[3]);
 
 
 const logger = foam.log.ConsoleLogger.create();
 
-const basename = containerMode === pkg.JsonDAOContainerMode.LOCAL ?
-      `${__dirname}/../data/json` :
+const basename = containerMode === pkg.DataSource.LOCAL ?
+      `file://${__dirname}/../data/json` :
       require('../data/http_json_dao_base_url.json');
-const daoContainer = pkg.JsonDAOContainer.create({
-  mode: containerMode,
-  basename: basename,
-});
-const ctx = daoContainer.ctx;
 
-let server = pkg.Server.create({
-  mode: serverMode,
-  port: 8080,
-}, ctx);
-server.start();
+const compatClassFile = pkg.DAOContainer.COMPAT_MODEL_FILE_NAME;
+const compatClassURL = `${basename}/${compatClassFile}`;
+org.chromium.apis.web.ClassGenerator.create({
+  classURL: compatClassURL,
+}).generateClass().then(() => {
+  const daoContainer = pkg.JsonDAOContainer.create({
+    mode: containerMode,
+    basename: basename,
+  });
+  const ctx = daoContainer.ctx;
+  pkg.Server.create({
+    mode: serverMode,
+    port: 8080,
+  }, ctx).start();
+}, err => {
+  logger.error(err);
+  process.exit(1)
+});

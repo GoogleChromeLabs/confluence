@@ -92,10 +92,14 @@ describe('API extractor', function() {
           '+valueOf+': 6,
           'functionAPI': 10015,
           'InterfaceInstance': 10013,
-          'ObejectInstanceA': 10014,
+          'ObjectInstanceA': 10014,
           'property': 3,
           'constObjectProperty': 7,
-          'constantNumber': 3,
+          'constLikeNumber': 3,
+          '_CONST_LIKE_NUMBER': 3,
+          'CONST__LIKE__NUMBER': 3,
+          'CONST_LIKE_NUMBER_': 3,
+          'CONSTANT_NUMBER': 3,
         },
         '10010': {  // nonObjectLibrary
           '+toString+': 6,
@@ -270,7 +274,7 @@ describe('API extractor', function() {
           'InterfaceInstance': {
             'writable': 1,
           },
-          'ObejectInstanceA': {
+          'ObjectInstanceA': {
             'writable': 1,
           },
           'functionAPI': {
@@ -282,7 +286,19 @@ describe('API extractor', function() {
           'constObjectProperty': {
             'writable': 0,
           },
-          'constantNumber': {
+          'constLikeNumber': {
+            'value': 1,
+          },
+          '_CONST_LIKE_NUMBER': {
+            'value': 1,
+          },
+          'CONST__LIKE__NUMBER': {
+            'value': 1,
+          },
+          'CONST_LIKE_NUMBER_': {
+            'value': 1,
+          },
+          'CONSTANT_NUMBER': {
             'value': 1,
           },
         },
@@ -375,9 +391,11 @@ describe('API extractor', function() {
       expect(apiCatalog.AnObjectInterface).toBeDefined();
       expect(apiCatalog.FunctionInterface.sort()).toEqual(
         ['meaningfulAPI'].sort());
-      expect(apiCatalog.ObjectLibrary.sort()).toEqual(
-        ['functionAPI', 'InterfaceInstance',
-        'ObejectInstanceA', 'property', 'constObjectProperty'].sort());
+      expect(apiCatalog.ObjectLibrary.sort()).toEqual([
+        'functionAPI', 'InterfaceInstance', 'ObjectInstanceA', 'property',
+        'constObjectProperty', 'constLikeNumber', '_CONST_LIKE_NUMBER',
+        'CONST__LIKE__NUMBER', 'CONST_LIKE_NUMBER_',
+      ].sort());
       expect(apiCatalog.AnObjectInterface.sort()).toEqual(
         ['protoProperty', 'meaningfulAPI'].sort());
     });
@@ -443,9 +461,10 @@ describe('API extractor', function() {
   it('only includes own properties.', function() {
     expect(apiCatalog.HiddenInterface).not.toContain('notwnProperty');
   });
-  it('filters out const primitives, but not const objects.', function() {
+  it('filters out CONST_CASE primitives, but not const objects.', function() {
     expect(apiCatalog.ObjectLibrary).toContain('property');
     expect(apiCatalog.ObjectLibrary).toContain('constObjectProperty');
-    expect(apiCatalog.ObjectLibrary).not.toContain('constantNumber');
+    expect(apiCatalog.ObjectLibrary).toContain('constLikeNumber');
+    expect(apiCatalog.ObjectLibrary).not.toContain('CONSTANT_NUMBER');
   });
 });

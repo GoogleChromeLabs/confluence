@@ -15,10 +15,13 @@ describe('ApiImporter', function() {
     ],
   };
 
+  let JunctionId;
   let apiImporter;
   let mlang;
   let junctionDAO;
   beforeEach(function(done) {
+    JunctionId =
+      foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunctionId');
     let container = global.createDAOContainer();
     apiImporter = foam.lookup('org.chromium.apis.web.ApiImporter')
         .create(null, container);
@@ -30,22 +33,22 @@ describe('ApiImporter', function() {
 
   it('correctly imports releaseWebInterfaceJunction to DAO', function(done) {
     let promises = [
-      junctionDAO.find([
-        'Chrome_56.0.2924.87_OSX_10.12.2',
-        'Windows#Function',
-      ]),
-      junctionDAO.find([
-        'Chrome_56.0.2924.87_OSX_10.12.2',
-        'Windows#property',
-      ]),
-      junctionDAO.find([
-        'Chrome_56.0.2924.87_OSX_10.12.2',
-        'Function#arguments',
-      ]),
-      junctionDAO.find([
-        'Chrome_56.0.2924.87_OSX_10.12.2',
-        'Function#caller',
-      ]),
+      junctionDAO.find(JunctionId.create({
+        sourceId: 'Chrome_56.0.2924.87_OSX_10.12.2',
+        targetId: 'Windows#Function',
+      })),
+      junctionDAO.find(JunctionId.create({
+        sourceId: 'Chrome_56.0.2924.87_OSX_10.12.2',
+        targetId: 'Windows#property',
+      })),
+      junctionDAO.find(JunctionId.create({
+        sourceId: 'Chrome_56.0.2924.87_OSX_10.12.2',
+        targetId: 'Function#arguments',
+      })),
+      junctionDAO.find(JunctionId.create({
+        sourceId: 'Chrome_56.0.2924.87_OSX_10.12.2',
+        targetId: 'Function#caller',
+      })),
     ];
     Promise.all(promises).then((results) => {
       results.forEach((releaseAPI) => {
