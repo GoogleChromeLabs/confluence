@@ -58,10 +58,6 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin([C.BUNDLE_PROJECT_DIR], {root: C.ROOT_DIR}),
-    new webpack.ProvidePlugin({
-        'window.$': 'jquery',
-        'window.jQuery': 'jquery',
-    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendors',
       minChunks: function(module) {
