@@ -353,7 +353,7 @@ describe('LoneRemoval', function() {
         releaseDate: '2016-01-05T00:00:00.000Z'
       },
     ]);
-  
+
     // Two APIs, shipped by Alpha, Beta, and Charlie, one removed in Alpha
     // 1, another removed in Alpha 2, one removed over a year before Beta,
     // and Charlie releases, the other removed over a year before Alpha 3

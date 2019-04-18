@@ -21,7 +21,7 @@ describe('WebAPI and api extractor', function() {
     let ApiExtractor = foam.lookup('org.chromium.apis.web.ApiExtractor');
     let apiImporter = foam.lookup('org.chromium.apis.web.ApiImporter')
         .create(null, container);
-    
+
     apiImporter.import('Chrome', '56', 'Windows', '10',
                        ApiExtractor.create({
                          objectGraph: og.fromJSON(chrome56),

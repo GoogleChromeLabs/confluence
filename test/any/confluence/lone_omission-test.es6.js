@@ -253,7 +253,7 @@ describe('LoneOmission', function() {
         releaseDate: date2_1,
       },
     ]);
-    
+
     Promise.all([
       releases.put(alpha2),
       releases.put(alpha2_1),
