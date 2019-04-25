@@ -5,23 +5,36 @@
   },
   "extends": ["google"],
   "rules": {
-    "comma-dangle": ["error", {
-        "arrays": "always-multiline",
-        "objects": "always-multiline",
-        "imports": "always-multiline",
-        "exports": "always-multiline",
-        "functions": "never"
-    }],
-    "no-unused-vars": ["error", {
-      "vars": "all",
-      "args": "after-used",
-      "argsIgnorePattern": "^(var_args|opt_[a-z][a-zA-Z]*)$"
-    }],
+    "arrow-parens": "off",
+    "block-spacing": "off",
+    "brace-style": "off",
+    "camelcase": "off",
+    "comma-dangle": "off",
+    "comma-spacing": "off",
+    "curly": "off",
+    "indent": "off",
+    "key-spacing": "off",
+    "keyword-spacing": "off",
+    "no-invalid-this": "off",
+    "no-multi-spaces": "off",
+    "no-tabs": "off",
+    "no-throw-literal": "off",
+    "no-trailing-spaces": "off",
+    "no-unused-vars": "off",
+    "no-var": "off",
     "new-cap": ["error", {
     	"capIsNew": false
     }],
-    "max-len": ["error", 80],
-    "prefer-rest-params": "off"
+    "max-len": "off",
+    "padded-blocks": "off",
+    "prefer-const": "off",
+    "prefer-promise-reject-errors": "off",
+    "prefer-spread": "off",
+    "prefer-rest-params": "off",
+    "quotes": "off",
+    "require-jsdoc": "off",
+    "semi": "off",
+    "space-before-function-paren": "off"
   },
   "globals": {
     "foam": false
