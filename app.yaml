@@ -2,7 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-runtime: nodejs
+runtime: nodejs8
 env: flex
 resources:
   cpu: 4
