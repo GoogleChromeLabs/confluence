@@ -38,14 +38,14 @@ describe('WorkerDAO', () => {
           this.SUPER();
           latestDelayedCountDAO = this;
         },
-        function select() {
-          return this.SUPER(...arguments).then((ret) => {
+        function select(...args) {
+          return this.SUPER(...args).then((ret) => {
             ++this.batchReads;
             return new Promise((resolve) => setTimeout(() => resolve(ret), 100));
           });
         },
-        function listen() {
-          return this.SUPER(...arguments).then((ret) => {
+        function listen(...args) {
+          return this.SUPER(...args).then((ret) => {
             ++this.batchReads;
             return new Promise((resolve) => setTimeout(() => resolve(ret), 100));
           });
