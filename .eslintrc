@@ -12,7 +12,6 @@
     	"capIsNew": false
     }],
     "max-len": "off",
-    "prefer-promise-reject-errors": "off",
     "prefer-spread": "off",
     "prefer-rest-params": "off",
     "require-jsdoc": "off"
