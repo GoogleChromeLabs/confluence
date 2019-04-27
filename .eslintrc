@@ -7,7 +7,6 @@
   "rules": {
     "camelcase": "off",
     "no-invalid-this": "off",
-    "no-throw-literal": "off",
     "no-unused-vars": "off",
     "new-cap": ["error", {
     	"capIsNew": false
