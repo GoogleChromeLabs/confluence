@@ -39,13 +39,13 @@ describe('WorkerDAO', () => {
           latestDelayedCountDAO = this;
         },
         function select() {
-          return this.SUPER.apply(this, arguments).then((ret) => {
+          return this.SUPER(...arguments).then((ret) => {
             ++this.batchReads;
             return new Promise((resolve) => setTimeout(() => resolve(ret), 100));
           });
         },
         function listen() {
-          return this.SUPER.apply(this, arguments).then((ret) => {
+          return this.SUPER(...arguments).then((ret) => {
             ++this.batchReads;
             return new Promise((resolve) => setTimeout(() => resolve(ret), 100));
           });
