@@ -9,8 +9,6 @@
 // See USAGE string for usage details.
 //
 
-const fs = require('fs');
-const path = require('path');
 const process = require('process');
 
 global.FOAM_FLAGS = {gcloud: true};
@@ -69,9 +67,6 @@ function getModeString(Enum, str) {
 
   if (mode) return mode;
 
-  const modeNames = Enum.VALUES.map(function(value) {
-    return value.name;
-  });
   console.error(`Invalid ${Enum.name}`);
   console.error(USAGE);
 

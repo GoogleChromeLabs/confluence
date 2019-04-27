@@ -8,7 +8,6 @@
 // code and perform code generation steps before connecting to parent.
 //
 
-const fs = require('fs');
 const path = require('path');
 const process = require('process');
 
