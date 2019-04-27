@@ -35,20 +35,10 @@ describe('CompatClassGenerator', () => {
     expect(axioms.length).toBe(2);
   });
 
-  // The behavior of `console.assert` changed in Node.JS 10, which is used
-  // internally in foam2. This means the expected behavior depends on the
-  // Node.JS version.
-  // See https://github.com/GoogleChromeLabs/confluence/issues/338
-  if (parseInt(process.versions.node.split('.')[0]) >= 10) {
-    it('should ignore duplicate relases', () => {
-      const CompatData = generateClass(true);
-      const axioms = CompatData.getAxiomsByClass(org.chromium.apis.web.CompatProperty);
-      expect(axioms.length).toBe(1);
-    });
-  } else {
-    it('should throw for duplicate relases', () => {
-      expect(() => generateClass(true)).toThrow();
-    });
-  }
+  it('should ignore duplicate relases', () => {
+    const CompatData = generateClass(true);
+    const axioms = CompatData.getAxiomsByClass(org.chromium.apis.web.CompatProperty);
+    expect(axioms.length).toBe(1);
+  });
 
 });
