@@ -31,7 +31,7 @@ module.exports = {
               name: '[name].bundle.js',
               publicPath: '/bundle/',
             },
-          }
+          },
         ],
       },
       {

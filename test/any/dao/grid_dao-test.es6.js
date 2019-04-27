@@ -82,7 +82,7 @@ describe('GridDAO', () => {
     }))).toBe(2);
   });
 
-  it('should project appropriately on proper use of projectCols()', done => {
+  it('should project appropriately on proper use of projectCols()', (done) => {
     foam.CLASS({
       package: 'org.chromium.apis.web.test',
       name: 'Col',
@@ -113,7 +113,7 @@ describe('GridDAO', () => {
     ]).then(() => {
       return dao.orderBy(GridRow.ID).select(E.MAP(
           dao.projectCols(dao.cols[3], dao.cols[2], dao.cols[1], dao.cols[0])));
-    }).then(mapSink => {
+    }).then((mapSink) => {
       const array = mapSink.delegate.array;
       expect(array[0].id).toBe(0);
       expect(array[1].id).toBe(1);
@@ -127,7 +127,7 @@ describe('GridDAO', () => {
     }).catch(done.fail);
   });
 
-  it('should project appropriately over a subset of cols using projectCols()', done => {
+  it('should project appropriately over a subset of cols using projectCols()', (done) => {
     foam.CLASS({
       package: 'org.chromium.apis.web.test',
       name: 'Col',
@@ -158,7 +158,7 @@ describe('GridDAO', () => {
     ]).then(() => {
       return dao.orderBy(GridRow.ID).select(E.MAP(
           dao.projectCols(dao.cols[3], dao.cols[1])));
-    }).then(mapSink => {
+    }).then((mapSink) => {
       const array = mapSink.delegate.array;
       expect(array[0].id).toBe(0);
       expect(array[1].id).toBe(1);
@@ -172,7 +172,7 @@ describe('GridDAO', () => {
     }).catch(done.fail);
   });
 
-  it('should warn and ignore invalid projection columns', done => {
+  it('should warn and ignore invalid projection columns', (done) => {
     const warn = foam.__context__.warn;
     let warnCount = 0;
     const ctx = foam.createSubContext({
@@ -211,7 +211,7 @@ describe('GridDAO', () => {
           Col.create({id: 'B'}, ctx), dao.cols[0], null, undefined, -1));
       expect(warnCount).toBe(4);
       return dao.orderBy(GridRow.ID).select(sink);
-    }).then(mapSink => {
+    }).then((mapSink) => {
       const array = mapSink.delegate.array;
       expect(array[0].id).toBe(0);
       expect(array[1].id).toBe(1);

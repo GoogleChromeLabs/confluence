@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-var process = require('process');
+const process = require('process');
 
 // Tests that are only run locally (not on Travis CI bots).
 global.isLocal = !(process.env.TRAVIS && process.env.CI);

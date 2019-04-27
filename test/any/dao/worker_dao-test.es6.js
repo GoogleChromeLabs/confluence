@@ -39,15 +39,15 @@ describe('WorkerDAO', () => {
           latestDelayedCountDAO = this;
         },
         function select() {
-          return this.SUPER.apply(this, arguments).then(ret => {
+          return this.SUPER.apply(this, arguments).then((ret) => {
             ++this.batchReads;
-            return new Promise(resolve => setTimeout(() => resolve(ret), 100));
+            return new Promise((resolve) => setTimeout(() => resolve(ret), 100));
           });
         },
         function listen() {
-          return this.SUPER.apply(this, arguments).then(ret => {
+          return this.SUPER.apply(this, arguments).then((ret) => {
             ++this.batchReads;
-            return new Promise(resolve => setTimeout(() => resolve(ret), 100));
+            return new Promise((resolve) => setTimeout(() => resolve(ret), 100));
           });
         },
       ],
@@ -88,7 +88,7 @@ describe('WorkerDAO', () => {
     }, ctx))).not.toThrow();
   });
 
-  it('select/listen against cache once during setup', done => {
+  it('select/listen against cache once during setup', (done) => {
     const dao = pkg.WorkerDAO.create({
       of: pkg.test.Thing,
       baseURL: 'https://example.com/restDAO',

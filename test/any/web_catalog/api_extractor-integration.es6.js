@@ -35,7 +35,7 @@ describe('API extractor', function() {
 
     og = ObjectGraph.fromJSON({
       'data': {
-        '10000': {  // window
+        '10000': { // window
           'Function': 10001,
           'Object': 10003,
           'FunctionInterface': 10005,
@@ -47,35 +47,35 @@ describe('API extractor', function() {
           'constant': 3,
           'window': 10000,
         },
-        '10001': {  // Function
+        '10001': { // Function
           'name': 4,
           'prototype': 10002,
         },
-        '10002': {  // Function.prototype
+        '10002': { // Function.prototype
           'caller': 7,
           'length': 3,
           'name': 4,
         },
-        '10003': {  // Object
+        '10003': { // Object
           'arguments': 6,
           'caller': 6,
           'prototype': 10004,
         },
-        '10004': {  // Object.prototype
+        '10004': { // Object.prototype
           '+constructor+': 10003,
           '+toLocaleString+': 6,
           '+toString+': 6,
           '+valueOf+': 6,
         },
-        '10005': {  // FunctionInterface
+        '10005': { // FunctionInterface
           'prototype': 10006,
           'caller': 7,
           'length': 3,
         },
-        '10006': {  // FunctionInterface.prototype
+        '10006': { // FunctionInterface.prototype
           'meaningfulAPI': 6,
         },
-        '10007': {  // AnObjectInterface
+        '10007': { // AnObjectInterface
           'prototype': 10008,
           'protoProperty': 10016,
           // AnObjectInterface.protoProperty is __proto__ of
@@ -83,11 +83,11 @@ describe('API extractor', function() {
           // Without __proto__ revisiting,
           // FunctionInterface.__proto__ will be missed.
         },
-        '10008': {  // AnObjectInterface.prototype
+        '10008': { // AnObjectInterface.prototype
           'meaningfulAPI': 6,
           '+valueOf+': 6,
         },
-        '10009': {  // ObjectLibrary
+        '10009': { // ObjectLibrary
           '+toString+': 6,
           '+valueOf+': 6,
           'functionAPI': 10015,
@@ -101,19 +101,19 @@ describe('API extractor', function() {
           'CONST_LIKE_NUMBER_': 3,
           'CONSTANT_NUMBER': 3,
         },
-        '10010': {  // nonObjectLibrary
+        '10010': { // nonObjectLibrary
           '+toString+': 6,
           '+valueOf+': 6,
           '+constructor+': 6,
           '+toLocaleString+': 6,
         },
-        '10011': {  // FunctionNonInterface
+        '10011': { // FunctionNonInterface
           'prototype': 10012,
           'caller': 7,
           'length': 3,
           'name': 4,
         },
-        '10012': {  // FunctionNonInterface.prototype
+        '10012': { // FunctionNonInterface.prototype
         },
         '10013': {
           'hiddenAPI': 3,
@@ -121,17 +121,17 @@ describe('API extractor', function() {
         '10014': {
           'hiddenAPI': 3,
         },
-        '10015': {  // ObjectLibrary.functionAPI
+        '10015': { // ObjectLibrary.functionAPI
           'extraProperty': 3,
         },
-        '10016': {  // FunctionInterface.__proto__
+        '10016': { // FunctionInterface.__proto__
           'meaningfulAPI': 3,
           'prototype': 10019,
         },
-        '10017': {  // HiddenInterface.prototype
+        '10017': { // HiddenInterface.prototype
           '+constructor+': 10018,
         },
-        '10018': {  // HiddenInterface
+        '10018': { // HiddenInterface
           'caller': 7,
           'length': 3,
           'name': 4,
@@ -153,7 +153,7 @@ describe('API extractor', function() {
         '10018': 'HiddenInterface',
       },
       'metadata': {
-        '10000': {  // window
+        '10000': { // window
           'Function': {
             'writable': 1,
           },
@@ -182,7 +182,7 @@ describe('API extractor', function() {
             'writable': 0,
           },
         },
-        '10001': {  // Function
+        '10001': { // Function
           'name': {
             'writable': 0,
           },
@@ -190,7 +190,7 @@ describe('API extractor', function() {
             'writable': 0,
           },
         },
-        '10002': {  // Function.prototype
+        '10002': { // Function.prototype
           'constructor': {
             'writable': 1,
           },
@@ -207,7 +207,7 @@ describe('API extractor', function() {
             'writable': 0,
           },
         },
-        '10003': {  // Object
+        '10003': { // Object
           'arguments': {
             'writable': 1,
           },
@@ -218,7 +218,7 @@ describe('API extractor', function() {
             'writable': 1,
           },
         },
-        '10004': {  // Object.prototype
+        '10004': { // Object.prototype
           'constructor': {
             'writable': 1,
           },
@@ -232,12 +232,12 @@ describe('API extractor', function() {
             'writable': 1,
           },
         },
-        '10005': {  // FunctionInterface
+        '10005': { // FunctionInterface
           'prototype': {
             'writable': 1,
           },
         },
-        '10006': {  // FunctionInterface.prototype
+        '10006': { // FunctionInterface.prototype
           'meaningfulAPI': {
             'writable': 1,
           },
@@ -248,7 +248,7 @@ describe('API extractor', function() {
             'writable': 1,
           },
         },
-        '10007': {  // ObjectInterface
+        '10007': { // ObjectInterface
           'prototype': {
             'writable': 1,
           },
@@ -256,7 +256,7 @@ describe('API extractor', function() {
             'writable': 1,
           },
         },
-        '10008': {  // ObjectInterface.prototype
+        '10008': { // ObjectInterface.prototype
           'meaningfulAPI': {
             'writable': 1,
           },
@@ -264,7 +264,7 @@ describe('API extractor', function() {
             'writable': 1,
           },
         },
-        '10009': {  // ObjectLibrary
+        '10009': { // ObjectLibrary
           'toString': {
             'writable': 1,
           },
@@ -302,7 +302,7 @@ describe('API extractor', function() {
             'value': 1,
           },
         },
-        '10010': {  // nonObjectLibrary
+        '10010': { // nonObjectLibrary
           'toString': {
             'writable': 1,
           },
@@ -316,12 +316,12 @@ describe('API extractor', function() {
             'writable': 1,
           },
         },
-        '10011': {  // FunctionNonInterface
+        '10011': { // FunctionNonInterface
           'prototype': {
             'writable': 1,
           },
         },
-        '10012': {  // FunctionNonInterface.prototype
+        '10012': { // FunctionNonInterface.prototype
           'caller': {
             'writable': 1,
           },
@@ -390,20 +390,20 @@ describe('API extractor', function() {
       expect(apiCatalog.ObjectLibrary).toBeDefined();
       expect(apiCatalog.AnObjectInterface).toBeDefined();
       expect(apiCatalog.FunctionInterface.sort()).toEqual(
-        ['meaningfulAPI'].sort());
+          ['meaningfulAPI'].sort());
       expect(apiCatalog.ObjectLibrary.sort()).toEqual([
         'functionAPI', 'InterfaceInstance', 'ObjectInstanceA', 'property',
         'constObjectProperty', 'constLikeNumber', '_CONST_LIKE_NUMBER',
         'CONST__LIKE__NUMBER', 'CONST_LIKE_NUMBER_',
       ].sort());
       expect(apiCatalog.AnObjectInterface.sort()).toEqual(
-        ['protoProperty', 'meaningfulAPI'].sort());
+          ['protoProperty', 'meaningfulAPI'].sort());
     });
     it('has separate interfaces even two first level interfaces' +
     ' reference to the same object.', function() {
       expect(apiCatalog.FunctionInterface).toBeDefined();
       expect(apiCatalog.DuplicateFunctionInterface).toBeDefined();
-        expect(apiCatalog.DuplicateFunctionInterface.sort()).toEqual(
+      expect(apiCatalog.DuplicateFunctionInterface.sort()).toEqual(
           apiCatalog.FunctionInterface.sort());
     });
     it('is contained in Window interface as API', function() {
@@ -423,16 +423,16 @@ describe('API extractor', function() {
   });
 
   it('extracts api for Object and Function without filtering built-in APIs.',
-    function() {
-      expect(apiCatalog.Object.sort()).toEqual([
-        'constructor',
-        'toLocaleString',
-        'toString',
-        'valueOf',
-      ].sort());
-      expect(apiCatalog.Function.sort()).toEqual([
-        'prototype', 'caller', 'length', 'name'].sort());
-    });
+      function() {
+        expect(apiCatalog.Object.sort()).toEqual([
+          'constructor',
+          'toLocaleString',
+          'toString',
+          'valueOf',
+        ].sort());
+        expect(apiCatalog.Function.sort()).toEqual([
+          'prototype', 'caller', 'length', 'name'].sort());
+      });
   it('filters built-in APIs for non-special cases.', function() {
     expect(apiCatalog.FunctionNonInterface).not.toContain('caller');
     expect(apiCatalog.FunctionNonInterface).not.toContain('length');
@@ -447,10 +447,10 @@ describe('API extractor', function() {
     expect(apiCatalog.ObjectLibrary).not.toContain('valueOf');
   });
   it('extracts __proto__ as interface if it includes meaningful APIs',
-    function() {
-      expect(apiCatalog.ProtoInterface).toBeDefined();
-      expect(apiCatalog.ProtoInterface).toContain('meaningfulAPI');
-    }
+      function() {
+        expect(apiCatalog.ProtoInterface).toBeDefined();
+        expect(apiCatalog.ProtoInterface).toContain('meaningfulAPI');
+      }
   );
   it('adds instances\' api to its class if class is not Object', function() {
     expect(apiCatalog.HiddenInterface).toBeDefined();

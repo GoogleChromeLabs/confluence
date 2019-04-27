@@ -18,7 +18,7 @@ require('../lib/web_apis/web_interface.es6.js');
 require('../lib/web_apis/release_interface_relationship.es6.js');
 require('../lib/client/api_confluence.es6.js');
 
-let app = angular.module('confluence', ['ui.router']);
+const app = angular.module('confluence', ['ui.router']);
 
 require('../lib/client/api_service.es6.js');
 require('../lib/controller/api_catalog.es6.js');

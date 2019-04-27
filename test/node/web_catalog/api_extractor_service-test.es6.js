@@ -22,7 +22,7 @@ describe('ApiExtractorService', () => {
   it('should use data from filename when "environment" data is missing', () => {
     const aes = ApiExtractorService.create(null, DAOContainer.create());
     const jsonFilePath = path.join(objectGraphPath,
-                                   'window_Firefox_53.0_OSX_10.11.json');
+        'window_Firefox_53.0_OSX_10.11.json');
     const json = JSON.parse(fs.readFileSync(jsonFilePath));
     const releaseInfo = aes.getReleaseInfo(jsonFilePath, json);
     expect(releaseInfo.browser).toBeDefined();
@@ -36,7 +36,7 @@ describe('ApiExtractorService', () => {
   it('should use data from "environment" when it is available', () => {
     const aes = ApiExtractorService.create(null, DAOContainer.create());
     const jsonFilePath = path.join(objectGraphPath,
-                                   'window_IgnoreThisNameEntirely.json');
+        'window_IgnoreThisNameEntirely.json');
     const json = JSON.parse(fs.readFileSync(jsonFilePath));
     const releaseInfo = aes.getReleaseInfo(jsonFilePath, json);
 
@@ -53,7 +53,7 @@ describe('ApiExtractorService', () => {
   it('should throw when "environment" data is missing and filename is malformed', () => {
     const aes = ApiExtractorService.create(null, DAOContainer.create());
     const jsonFilePath = path.join(objectGraphPath,
-                                   'window_Name_is_Malformed.json');
+        'window_Name_is_Malformed.json');
     const json = JSON.parse(fs.readFileSync(jsonFilePath));
     expect(() => aes.getReleaseInfo(jsonFilePath, json)).toThrow();
   });

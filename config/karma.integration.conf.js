@@ -7,8 +7,8 @@
 const base = require('./karma.conf.js');
 const webpack = base.webpackConfig;
 const files = base.deps
-  .concat(base.helpers)
-  .concat(base.integrations);
+    .concat(base.helpers)
+    .concat(base.integrations);
 
 module.exports = function(config) {
   base(config);

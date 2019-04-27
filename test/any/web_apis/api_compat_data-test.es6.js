@@ -35,7 +35,7 @@ describe('AbstractApiCompatData', () => {
     expect(() => pkg.AbstractApiCompatData.create({apiName: 'a'}).validate())
         .toThrow();
     expect(() => pkg.AbstractApiCompatData.create({interfaceName: 'i'})
-           .validate()).toThrow();
+        .validate()).toThrow();
     expect(() => pkg.AbstractApiCompatData.create({
       interfaceName: 'i',
       apiName: 'a',
@@ -75,22 +75,22 @@ describe('CompatClassGenerator', () => {
 
   it('should accept a model', () => {
     const model = foam.json.parse(
-      generator.generateSpec('org.chromium.apis.web', 'CompatClass', []));
+        generator.generateSpec('org.chromium.apis.web', 'CompatClass', []));
     expect(foam.core.Model.isInstance(model)).toBe(true);
     generator.generateClass(model);
     expect(foam.lookup('org.chromium.apis.web.CompatClass')).toBeDefined();
   });
 
-  it('should create a property for each release',  () => {
+  it('should create a property for each release', () => {
     const release0 = Release.create({
       browserName: 'Alpha',
-      browserVersion:'1.2.3',
+      browserVersion: '1.2.3',
       osName: 'Zulu',
       osVersion: '9.8.7',
     });
     const release1 = Release.create({
       browserName: 'Beta',
-      browserVersion:'3.2.1',
+      browserVersion: '3.2.1',
       osName: 'Yankee',
       osVersion: '7.8.9',
     });
@@ -110,13 +110,13 @@ describe('CompatClassGenerator', () => {
   it('should disambiguate similar versions', () => {
     const release0 = Release.create({
       browserName: 'Alpha',
-      browserVersion:'1.2.3',
+      browserVersion: '1.2.3',
       osName: 'Zulu',
       osVersion: '9.8.7',
     });
     const release1 = Release.create({
       browserName: 'Alpha',
-      browserVersion:'1.23',
+      browserVersion: '1.23',
       osName: 'Zulu',
       osVersion: '9.8.7',
     });

@@ -4,12 +4,12 @@
 'use strict';
 
 describe('ClassGenerator', () => {
-  it('should load compat data class from file', done => {
+  it('should load compat data class from file', (done) => {
     org.chromium.apis.web.ClassGenerator.create({
       classURL: `file://${__dirname}/../data/class:org.chromium.apis.web.generated.CompatData.json`,
-    }).generateClass().then(cls => {
+    }).generateClass().then((cls) => {
       expect(cls.id).toBe('org.chromium.apis.web.generated.CompatData');
       done();
     }, done.fail);
   });
-})
+});

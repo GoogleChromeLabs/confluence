@@ -13,20 +13,20 @@ describe('CompatClassGenerator', () => {
 
   function generateClass(dupe) {
     return generator.generateClass(
-      generator.generateSpec('org.chromium.apis.web', 'CompatClass', [
-        Release.create({
-          browserName: 'Alpha',
-          browserVersion:'1.2.3',
-          osName: 'Zulu',
-          osVersion: '9.8.7',
-        }),
-        Release.create({
-          browserName: dupe ? 'Alpha' : 'Beta',
-          browserVersion:'1.2.3',
-          osName: 'Zulu',
-          osVersion: '9.8.7',
-        }),
-      ]));
+        generator.generateSpec('org.chromium.apis.web', 'CompatClass', [
+          Release.create({
+            browserName: 'Alpha',
+            browserVersion: '1.2.3',
+            osName: 'Zulu',
+            osVersion: '9.8.7',
+          }),
+          Release.create({
+            browserName: dupe ? 'Alpha' : 'Beta',
+            browserVersion: '1.2.3',
+            osName: 'Zulu',
+            osVersion: '9.8.7',
+          }),
+        ]));
   }
 
   it('should handle multiple relases', () => {
@@ -40,5 +40,4 @@ describe('CompatClassGenerator', () => {
     const axioms = CompatData.getAxiomsByClass(org.chromium.apis.web.CompatProperty);
     expect(axioms.length).toBe(1);
   });
-
 });

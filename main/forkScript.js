@@ -38,7 +38,7 @@ const USAGE = `USAGE:
     node /path/to/forkScript.js DataSource
 
         DataSource = [ ${pkg.DataSource.VALUES
-            .map(value => value.name).join(' | ')} ]`;
+      .map((value) => value.name).join(' | ')} ]`;
 
 const logger = foam.log.ConsoleLogger.create();
 
@@ -61,7 +61,7 @@ function getMode(str) {
     return value.name;
   });
   panic(`Invalid ${pkg.DataSource.name} (not one of "${modeNames
-    .join('", "')}")`);
+      .join('", "')}")`);
 
   return null;
 }
@@ -78,7 +78,7 @@ const start = () => {
         unsafe: false,
         classWhitelist: require('../data/class_whitelist.json'),
       }, container));
-}
+};
 
 // TODO(markdittmer): This should be local or remote based on param passed to
 // parent. It should be forwarded to forkScript invocation.
@@ -87,7 +87,7 @@ const compatClassURL = mode === pkg.DataSource.LOCAL ?
     `${require('../data/http_json_dao_base_url.json')}/${compatClassFile}`;
 org.chromium.apis.web.ClassGenerator.create({
   classURL: compatClassURL,
-}).generateClass().then(start, err => {
+}).generateClass().then(start, (err) => {
   logger.warn(err);
   logger.warn(`Fork (PID=${process.pid}) encountered a dynamic class loading error; continuing anyway...`);
   start();

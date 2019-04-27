@@ -31,19 +31,19 @@ const logger = foam.log.ConsoleLogger.create(null, foam.createSubContext({
   releasePredicate: E.EQ(pkg.Release.IS_MOBILE, false),
 }));
 
-let container = pkg.DAOContainer.create(null, logger);
+const container = pkg.DAOContainer.create(null, logger);
 
 const compatClassURL = `file://${__dirname}/../data/json/${pkg.DAOContainer.COMPAT_MODEL_FILE_NAME}`;
 pkg.ClassGenerator.create({
   classURL: compatClassURL,
-}).generateClass().then(CompatData => {
+}).generateClass().then((CompatData) => {
   container.releaseDAO = pkg.LocalJsonDAO.create({
     of: pkg.Release,
-    path: `${__dirname}/../data/json/${pkg.Release.id}.json`
+    path: `${__dirname}/../data/json/${pkg.Release.id}.json`,
   }, container);
   container.compatDAO = pkg.LocalJsonDAO.create({
     of: CompatData,
-    path: `${__dirname}/../data/json/${CompatData.id}.json`
+    path: `${__dirname}/../data/json/${CompatData.id}.json`,
   }, container);
   container.browserMetricsDAO = foam.dao.MDAO.create({
     of: pkg.BrowserMetricData,
@@ -74,36 +74,36 @@ pkg.ClassGenerator.create({
       logger.info(`Storing ${cls.id} as ${basename}`);
       return new Promise((resolve, reject) => {
         require('fs').writeFile(
-          `${__dirname}/../data/json/${basename}.json`,
-          outputter.stringify(arraySink.array, cls),
-          error => {
-            if (error) {
-              logger.error(`Error storing ${cls.id} as ${basename}`, error);
-              reject(error);
-            } else {
-              logger.info(`Stored ${cls.id} as ${basename}`, error);
-              resolve();
-            }
-          });
+            `${__dirname}/../data/json/${basename}.json`,
+            outputter.stringify(arraySink.array, cls),
+            (error) => {
+              if (error) {
+                logger.error(`Error storing ${cls.id} as ${basename}`, error);
+                reject(error);
+              } else {
+                logger.info(`Stored ${cls.id} as ${basename}`, error);
+                resolve();
+              }
+            });
       });
     }
 
     return Promise.all([
       container.browserMetricsDAO
           .orderBy(E.THEN_BY(pkg.BrowserMetricData.TYPE,
-                            E.THEN_BY(pkg.BrowserMetricData.BROWSER_NAME,
-                                      pkg.BrowserMetricData.DATE)))
+              E.THEN_BY(pkg.BrowserMetricData.BROWSER_NAME,
+                  pkg.BrowserMetricData.DATE)))
           .select().then(store.bind(this, pkg.BrowserMetricData.id)),
       container.apiCountDAO
           .orderBy(E.THEN_BY(pkg.ApiCountData.BROWSER_NAME,
-                             pkg.ApiCountData.RELEASE_DATE))
+              pkg.ApiCountData.RELEASE_DATE))
           .select().then(store.bind(this, pkg.ApiCountData.id)),
     ]);
   }).then(() => {
     logger.info(`API JSON => Metrics JSON complete`);
     require('process').exit(0);
   });
-}).catch(error => {
+}).catch((error) => {
   logger.error(`Error: ${error}
                     EXITING`);
   require('process').exit(1);

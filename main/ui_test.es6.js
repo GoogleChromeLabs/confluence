@@ -53,7 +53,7 @@ global.uiTestEnvPromise = (function() {
       osVersion: '1',
     }),
   ];
-  let apis = [];
+  const apis = [];
   for (let i = 0; i < 30; i++) {
     for (let j = 0; j < 10; j++) {
       apis.push(pkg.WebInterface.create({
@@ -63,10 +63,10 @@ global.uiTestEnvPromise = (function() {
       }));
     }
   }
-  let joins = [];
+  const joins = [];
   for (let i = 0; i < releases.length; i++) {
     for (let j = 0; j < apis.length; j++) {
-      if (j  % 2 == i % 2) {
+      if (j % 2 == i % 2) {
         joins.push(pkg.ReleaseWebInterfaceJunction.create({
           sourceId: releases[i],
           targetId: apis[j],
@@ -83,7 +83,7 @@ global.uiTestEnvPromise = (function() {
   const data = foam.dao.MDAO.create({
     of: Cls,
   });
-  return Promise.all(array.map(item => data.put(item))).then(() => {
+  return Promise.all(array.map((item) => data.put(item))).then(() => {
     foam.CLASS({
       name: 'SearchViewWrapper',
       package: 'org.chromium.test',
@@ -144,43 +144,43 @@ global.uiTestEnvPromise = (function() {
           this.SUPER();
           this.error = function() {
             const args = Array.from(arguments);
-            const msg = args.map(arg => arg.message || arg).join(' ');
+            const msg = args.map((arg) => arg.message || arg).join(' ');
             if (!msg) return;
             this.errorMessage = msg;
           }.bind(this);
           this.importedSelectable$
-            .mapTo(this.selectable$, function(array) {
-              return array.map(prop => prop.release.id);
-            });
+              .mapTo(this.selectable$, function(array) {
+                return array.map((prop) => prop.release.id);
+              });
           this.importedSelected$
-            .mapTo(this.selected$, function(array) {
-              return array.map(prop => prop.release.id);
-            });
+              .mapTo(this.selected$, function(array) {
+                return array.map((prop) => prop.release.id);
+              });
         },
         function initE() {
           this.addClass(this.myClass())
-            .start('div')
-                .add('Selectable (browserName_browserVersion_osName_osVersion): ')
-                .add(this.selectable$.map(selectable => selectable.join(', ')))
-            .end().start('div')
-                .add('Selected (browserName_browserVersion_osName_osVersion): ')
-                .add(this.selected$.map(selected => selected.join(', ')))
-            .end().start('br').end()
-            .start('div').style({border: '1px solid black'})
-                .tag(this.searchViewSpec, {data$: this.data$}, this.searchView$)
-            .end().start('br').end()
-            .start('div')
-                .add('Predicate:').start('br').end()
-                .start('pre')
-                    .add(this.predicate$
-                        .map(predicate => predicate ? predicate.toString() : ''))
-                .end()
-            .end().start('div')
-                .add('Error:').start('br').end()
-                .start('pre')
-                    .add(this.errorMessage$)
-                .end()
-            .end();
+              .start('div')
+              .add('Selectable (browserName_browserVersion_osName_osVersion): ')
+              .add(this.selectable$.map((selectable) => selectable.join(', ')))
+              .end().start('div')
+              .add('Selected (browserName_browserVersion_osName_osVersion): ')
+              .add(this.selected$.map((selected) => selected.join(', ')))
+              .end().start('br').end()
+              .start('div').style({border: '1px solid black'})
+              .tag(this.searchViewSpec, {data$: this.data$}, this.searchView$)
+              .end().start('br').end()
+              .start('div')
+              .add('Predicate:').start('br').end()
+              .start('pre')
+              .add(this.predicate$
+                  .map((predicate) => predicate ? predicate.toString() : ''))
+              .end()
+              .end().start('div')
+              .add('Error:').start('br').end()
+              .start('pre')
+              .add(this.errorMessage$)
+              .end()
+              .end();
           this.SUPER();
         },
       ],
@@ -188,7 +188,7 @@ global.uiTestEnvPromise = (function() {
 
     const compatProperties = Cls.getAxiomsByClass(pkg.CompatProperty);
     const columns = [Cls.ID].concat(compatProperties);
-    const removeColumn  = () => true;
+    const removeColumn = () => true;
     const selectable = compatProperties;
     const selected = compatProperties.slice(-2);
     const ctx = foam.createSubContext({

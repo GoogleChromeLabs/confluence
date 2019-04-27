@@ -65,17 +65,17 @@ importer.import().then(() => {
     logger.info(`Storing ${cls.id} as ${basename}`);
     return new Promise((resolve, reject) => {
       require('fs').writeFile(
-        `${__dirname}/../data/json/${basename}.json`,
-        outputter.stringify(arraySink.array, cls),
-        error => {
-          if (error) {
-            logger.error(`Error storing ${cls.id} as ${basename}`, error);
-            reject(error);
-          } else {
-            logger.info(`Stored ${cls.id} as ${basename}`, error);
-            resolve();
-          }
-        });
+          `${__dirname}/../data/json/${basename}.json`,
+          outputter.stringify(arraySink.array, cls),
+          (error) => {
+            if (error) {
+              logger.error(`Error storing ${cls.id} as ${basename}`, error);
+              reject(error);
+            } else {
+              logger.info(`Stored ${cls.id} as ${basename}`, error);
+              resolve();
+            }
+          });
     });
   }
   return Promise.all([
@@ -90,7 +90,7 @@ importer.import().then(() => {
 }).then(() => {
   logger.info(`ObjectGraph => JSON complete`);
   require('process').exit(0);
-}).catch(error => {
+}).catch((error) => {
   logger.error(`Error: ${error}
                      EXITING`);
   require('process').exit(1);

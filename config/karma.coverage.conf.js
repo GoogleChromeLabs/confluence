@@ -10,7 +10,7 @@ const path = require('path');
 const base = require('./karma.conf.js');
 
 // Prepend istanbul-instrumenter-loader to default loaders.
-let webpack = base.webpackConfig;
+const webpack = base.webpackConfig;
 
 webpack.module.rules = [
   {
@@ -21,9 +21,9 @@ webpack.module.rules = [
 ].concat(webpack.module.rules);
 
 const files = base.deps
-  .concat(base.helpers)
-  .concat(base.units)
-  .concat(base.integrations);
+    .concat(base.helpers)
+    .concat(base.units)
+    .concat(base.integrations);
 const preprocessors = {
   'browser/webpack-helper.js': ['webpack'],
 };

@@ -5,24 +5,24 @@
 
 beforeAll(function() {
   global.createDAOContainer = function(opt_ctx) {
-    var E = foam.mlang.ExpressionsSingleton.create();
-    var ctx = (opt_ctx || foam.__context__).createSubContext({
+    const E = foam.mlang.ExpressionsSingleton.create();
+    const ctx = (opt_ctx || foam.__context__).createSubContext({
       releasePredicate: E.EQ(
           foam.lookup('org.chromium.apis.web.Release').IS_MOBILE,
           false),
     });
-    var EasyDAO = ctx.lookup('foam.dao.EasyDAO');
-    var DAOContainer =
+    const EasyDAO = ctx.lookup('foam.dao.EasyDAO');
+    const DAOContainer =
         ctx.lookup('org.chromium.apis.web.DAOContainer');
-    var Release = ctx.lookup('org.chromium.apis.web.Release');
-    var WebInterface = ctx.lookup('org.chromium.apis.web.WebInterface');
-    var ReleaseWebInterfaceJunction =
+    const Release = ctx.lookup('org.chromium.apis.web.Release');
+    const WebInterface = ctx.lookup('org.chromium.apis.web.WebInterface');
+    const ReleaseWebInterfaceJunction =
         ctx.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
-    var CompatData =
+    const CompatData =
         ctx.lookup('org.chromium.apis.web.generated.CompatData');
-    var BrowserMetricData =
+    const BrowserMetricData =
         ctx.lookup('org.chromium.apis.web.BrowserMetricData');
-    var ApiCountData =
+    const ApiCountData =
         ctx.lookup('org.chromium.apis.web.ApiCountData');
 
     return DAOContainer.create({

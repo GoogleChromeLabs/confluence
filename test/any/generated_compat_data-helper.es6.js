@@ -11,7 +11,7 @@ global.defineGeneratedCompatData = (gen, releaseSpecs) => {
     package: 'org.chromium.apis.web.test',
     extends: 'org.chromium.apis.web.AbstractApiCompatData',
 
-    properties: releaseSpecs.map(r => {
+    properties: releaseSpecs.map((r) => {
       return {
         class: 'org.chromium.apis.web.CompatProperty',
         release: r,
