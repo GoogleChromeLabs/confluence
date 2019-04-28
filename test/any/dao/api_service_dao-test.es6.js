@@ -35,7 +35,7 @@ describe('ApiServiceDAO', () => {
     }, ctx)
         // Access delegate to trigger lazy factory responsible for validate().
         .delegate).toThrow();
-  },);
+  });
 
   it('should require workerRegistry', () => {
     expect(() => pkg.ApiServiceDAO.create({
