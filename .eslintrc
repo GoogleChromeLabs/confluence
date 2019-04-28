@@ -39,5 +39,7 @@
   "globals": {
     "foam": false
   },
-  "parser": "babel-eslint"
+  "parserOptions": {
+    "ecmaVersion": 6
+  }
 }
