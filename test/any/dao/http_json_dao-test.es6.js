@@ -109,7 +109,10 @@ describe('HttpJsonDAO', () => {
                        foam.json.Strict.stringify(array));
     ctx.register(test.NonEmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
 
-    createHttpJsonDAO([], ctx).select().then(done.fail, done);
+    createHttpJsonDAO([], ctx).select().then(done.fail, error => {
+      expect(error.message).toBe('Class "test.Item" is not whitelisted.');
+      done();
+    });
   });
 
   it('should succeed when URL is safe, using custom safety params', done => {
@@ -132,7 +135,10 @@ describe('HttpJsonDAO', () => {
 
     createHttpJsonDAO([], ctx, {
       url: 'https://evil.com/something/maniacal',
-    }).select().then(done.fail, done);
+    }).select().then(done.fail, error => {
+      expect(error.message).toBe('HttpJsonDAO: URL is not safe: https://evil.com/something/maniacal');
+      done();
+    });
   });
 
   it('should not issue requests or instantiate delegate, in Serializable flavour', done => {
