@@ -89,7 +89,10 @@ describe('Set ops', () => {
       }
 
       set.select(E.SET_MINUS(subtrahend))
-          .then(done.fail, done);
+          .then(done.fail, error => {
+            expect(error.message).toBe('ErrorDAO: Error on select()');
+            done();
+          });
     });
 
     it('should reject when subtrahend rejects find()', done => {
@@ -104,7 +107,10 @@ describe('Set ops', () => {
       }
 
       set.select(E.SET_MINUS(subtrahend))
-          .then(done.fail, done);
+          .then(done.fail, error => {
+            expect(error.message).toBe('ErrorDAO: Error on find()');
+            done();
+          });
     });
   });
 
