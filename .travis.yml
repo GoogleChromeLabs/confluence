@@ -18,12 +18,19 @@ matrix:
     - npm run lint
     - npm run coverageNode
 
+  - name: chrome
+    node_js: 10
+    addons:
+      chrome: stable
+    script:
+    - npm run coverageWeb -- --browsers=ChromeHeadless
+
   - name: firefox
     node_js: 10
     addons:
       firefox: latest
     script:
-    - npm run coverageWeb
+    - npm run coverageWeb -- --browsers=FirefoxHeadless
 
 after_script:
 - codecov --flags=$TRAVIS_JOB_NAME

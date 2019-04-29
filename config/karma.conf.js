@@ -76,8 +76,7 @@ function configurator(config) {
     // start these browsers
     // available browser launchers:
     // https://npmjs.org/browse/keyword/karma-launcher
-    // If run in travisCI, use firefox, otherwise, use Chrome.
-    browsers: process.env.TRAVIS ? ['FirefoxHeadless'] : ['ChromeHeadless'],
+    browsers: ['ChromeHeadless', 'FirefoxHeadless'],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
