@@ -16,8 +16,8 @@ const pkg = org.chromium.apis.web;
 // Has initial "this is your name" message been received?
 let nameReceived = false;
 // Post-"this is your name" event backlog; worker context setup is async.
-let events = [];
-self.onmessage =  e => {
+const events = [];
+self.onmessage = (e) => {
   // If name already received, queue event in backlog.
   if (nameReceived) {
     events.push(e);
@@ -46,7 +46,7 @@ self.onmessage =  e => {
     }, pkg.DAOContainer.create());
 
     // Replay or wait for message port connection from owner.
-    const portHandler = e => {
+    const portHandler = (e) => {
       if (!(e.data instanceof MessagePort)) {
         throw new Error('Unexpected control message', e.data);
       }

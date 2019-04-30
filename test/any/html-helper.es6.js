@@ -5,8 +5,8 @@
 
 global.describeRawTableCellFormatterTests = (clsId, propName, objsFactory) => {
   function setUp() {
-    let cls = foam.lookup(clsId);
-    let prop = cls.getAxiomByName(propName);
+    const cls = foam.lookup(clsId);
+    const prop = cls.getAxiomByName(propName);
     let objs = objsFactory(cls, prop);
     if (!Array.isArray(objs)) objs = [objs];
 
@@ -16,7 +16,7 @@ global.describeRawTableCellFormatterTests = (clsId, propName, objsFactory) => {
   describe(`rawTableCellFormatter: ${clsId}.${propName}`, () => {
     it('should handle undefined, null, 0, "", false', () => {
       const data = setUp();
-      for (const value of [undefined, null, 0, "", false]) {
+      for (const value of [undefined, null, 0, '', false]) {
         for (const obj of data.objs) {
           expect(foam.String.isInstance(
               data.prop.rawTableCellFormatter(value, obj, data.prop)))

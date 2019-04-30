@@ -54,14 +54,18 @@ describe('RelationalToCompatConverter', () => {
       extends: 'org.chromium.apis.web.AbstractCompatClassGenerator',
 
       methods: [
-        function generateSpec() { return compatDataSpec; },
-        function generateClass() { return compatDataCls; },
+        function generateSpec() {
+          return compatDataSpec;
+        },
+        function generateClass() {
+          return compatDataCls;
+        },
       ],
     });
 
     classGenerator =
         foam.lookup('org.chromium.apis.web.test.FakeCompatClassGenerator')
-        .create();
+            .create();
     converter = pkg.AbstractRelationalToCompatConverter.create({
       classGenerator,
     });

@@ -8,7 +8,7 @@ describe('StatsController', () => {
     foam.CLASS({
       package: 'org.chromium.apis.web.test',
       name: 'StatsController',
-      extends:   'org.chromium.apis.web.StatsController',
+      extends: 'org.chromium.apis.web.StatsController',
 
       properties: [
         {
@@ -40,7 +40,7 @@ describe('StatsController', () => {
     });
   });
 
-  it('should record display matrix time exactly once on catalog page', done => {
+  it('should record display matrix time exactly once on catalog page', (done) => {
     const ctrl = org.chromium.apis.web.test.StatsController.create({
       initialHash: '#!/catalog',
     });
@@ -53,7 +53,7 @@ describe('StatsController', () => {
     }, 30);
   });
 
-  it('should not record display matrix on non-catalog page', done => {
+  it('should not record display matrix on non-catalog page', (done) => {
     const ctrl = org.chromium.apis.web.test.StatsController.create({
       initialHash: '#!/confluence',
     });

@@ -4,7 +4,7 @@
 'use strict';
 
 describe('ApiImporter', function() {
-  let webCatalog = {
+  const webCatalog = {
     'Windows': [
       'Function',
       'property',
@@ -22,17 +22,17 @@ describe('ApiImporter', function() {
   beforeEach(function(done) {
     JunctionId =
       foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunctionId');
-    let container = global.createDAOContainer();
+    const container = global.createDAOContainer();
     apiImporter = foam.lookup('org.chromium.apis.web.ApiImporter')
         .create(null, container);
     mlang = foam.mlang.ExpressionsSingleton.create();
     junctionDAO = container.releaseWebInterfaceJunctionDAO;
     apiImporter.import('Chrome', '56.0.2924.87',
-                       'OSX', '10.12.2', webCatalog).then(done);
+        'OSX', '10.12.2', webCatalog).then(done);
   });
 
   it('correctly imports releaseWebInterfaceJunction to DAO', function(done) {
-    let promises = [
+    const promises = [
       junctionDAO.find(JunctionId.create({
         sourceId: 'Chrome_56.0.2924.87_OSX_10.12.2',
         targetId: 'Windows#Function',

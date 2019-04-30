@@ -8,7 +8,9 @@ describe('ApiCount', () => {
     return foam.util.equals(a, b);
   }
   function sortedEquals(a, b) {
-    function sort(array) { return array.sort(foam.util.compare); }
+    function sort(array) {
+      return array.sort(foam.util.compare);
+    }
     return equals(sort(a), sort(b));
   }
   let Release;
@@ -23,10 +25,10 @@ describe('ApiCount', () => {
   beforeEach(() => {
     gen =
         foam.lookup('org.chromium.apis.web.AbstractCompatClassGenerator')
-        .create();
+            .create();
   });
 
-  const init = releaseSpecs => {
+  const init = (releaseSpecs) => {
     // Register custom CompatData before looking up classes and instantiating
     // instances.
     CompatData = global.defineGeneratedCompatData(gen, releaseSpecs);
@@ -43,30 +45,30 @@ describe('ApiCount', () => {
     releases = container.releaseDAO;
     compatData = container.compatDAO;
 
-    return releaseSpecs.map(rs => Release.create(rs, container));
+    return releaseSpecs.map((rs) => Release.create(rs, container));
   };
 
-  it('should compute single release', done => {
+  it('should compute single release', (done) => {
     let release = {
       browserName: 'Alpha',
       browserVersion: '1',
       osName: 'Windows',
       osVersion: '10',
-      releaseDate: '2015-01-01T00:00:00.000Z'
+      releaseDate: '2015-01-01T00:00:00.000Z',
     };
     [release] = init([release]);
 
-    let compat = CompatData.create({
+    const compat = CompatData.create({
       interfaceName: 'Alpha',
       apiName: 'iface',
       [gen.propertyNameFromRelease(release)]: true,
-    })
+    });
     Promise.all([
       releases.put(release),
       compatData.put(compat),
     ]).then(() => runner.run())
         .then(() => container.apiCountDAO.select())
-        .then(sink => {
+        .then((sink) => {
           expect(sortedEquals(sink.array, [
             ApiCountData.create({
               releaseDate: release.releaseDate,
@@ -79,34 +81,34 @@ describe('ApiCount', () => {
         });
   });
 
-  it('should compute two releases from the same browser', done => {
+  it('should compute two releases from the same browser', (done) => {
     let release1 = Release.create({
       browserName: 'Alpha',
       browserVersion: '1',
       osName: 'Windows',
       osVersion: '10',
-      releaseDate: '2015-01-01T00:00:00.000Z'
+      releaseDate: '2015-01-01T00:00:00.000Z',
     }, container);
     let release2 = Release.create({
       browserName: 'Alpha',
       browserVersion: '2',
       osName: 'Windows',
       osVersion: '10',
-      releaseDate: '2016-01-01T00:00:00.000Z'
+      releaseDate: '2016-01-01T00:00:00.000Z',
     }, container);
     [release1, release2] = init([release1, release2]);
-    let compat1 = CompatData.create({
+    const compat1 = CompatData.create({
       interfaceName: 'Alpha',
       apiName: 'iface1',
       [gen.propertyNameFromRelease(release1)]: true,
     }, container);
-    let compat2 = CompatData.create({
+    const compat2 = CompatData.create({
       interfaceName: 'Alpha',
       apiName: 'iface2',
       [gen.propertyNameFromRelease(release1)]: true,
       [gen.propertyNameFromRelease(release2)]: true,
     }, container);
-    let compat3 = CompatData.create({
+    const compat3 = CompatData.create({
       interfaceName: 'AlphaToOmega',
       apiName: 'iface',
       [gen.propertyNameFromRelease(release2)]: true,
@@ -119,7 +121,7 @@ describe('ApiCount', () => {
       compatData.put(compat3),
     ]).then(() => runner.run())
         .then(() => container.apiCountDAO.select())
-        .then(sink => {
+        .then((sink) => {
           expect(sortedEquals(sink.array, [
             ApiCountData.create({
               releaseDate: release1.releaseDate,
@@ -141,35 +143,35 @@ describe('ApiCount', () => {
         });
   });
 
-  it('should compute two releases from different browsers', done => {
+  it('should compute two releases from different browsers', (done) => {
     let alpha = Release.create({
       browserName: 'Alpha',
       browserVersion: '1',
       osName: 'Windows',
       osVersion: '10',
-      releaseDate: '2015-01-01T00:00:00.000Z'
+      releaseDate: '2015-01-01T00:00:00.000Z',
     }, container);
     let beta = Release.create({
       browserName: 'Beta',
       browserVersion: '1',
       osName: 'Windows',
       osVersion: '10',
-      releaseDate: '2015-01-01T00:00:00.000Z'
+      releaseDate: '2015-01-01T00:00:00.000Z',
     }, container);
     [alpha, beta] = init([alpha, beta]);
 
-    let compat1 = CompatData.create({
+    const compat1 = CompatData.create({
       interfaceName: 'Alpha',
       apiName: 'iface',
       [gen.propertyNameFromRelease(alpha)]: true,
     }, container);
-    let compat2 = CompatData.create({
+    const compat2 = CompatData.create({
       interfaceName: 'AlphaBeta',
       apiName: 'iface',
       [gen.propertyNameFromRelease(alpha)]: true,
       [gen.propertyNameFromRelease(beta)]: true,
     }, container);
-    let compat3 = CompatData.create({
+    const compat3 = CompatData.create({
       interfaceName: 'Beta',
       apiName: 'iface',
       [gen.propertyNameFromRelease(beta)]: true,
@@ -182,7 +184,7 @@ describe('ApiCount', () => {
       compatData.put(compat3),
     ]).then(() => runner.run())
         .then(() => container.apiCountDAO.select())
-        .then(sink => {
+        .then((sink) => {
           expect(sortedEquals(sink.array, [
             ApiCountData.create({
               releaseDate: alpha.releaseDate,

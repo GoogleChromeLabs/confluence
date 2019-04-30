@@ -49,7 +49,7 @@ if (dataUrl.protocol !== 'file:' && dataUrl.protocol !== 'https:') {
   console.error('BaseConfluenceDataURL parameter must be file: or https: URL');
 }
 
-let container = pkg.JsonDAOContainer.create({
+const container = pkg.JsonDAOContainer.create({
   mode: dataUrl.protocol === 'file:' ? pkg.DataSource.LOCAL :
       pkg.DataSource.HTTP,
   basename: dataUrl.protocol === 'file:' ? dataUrl.pathname :
@@ -72,7 +72,7 @@ function storeDataFromArray(array, cls) {
     fs.writeFile(
         `${__dirname}/../data/json/${cls.id}.json`,
         dataOutputter.stringify(array, cls),
-        error => {
+        (error) => {
           if (error) {
             logger.error(`Error storing collection of ${cls.id}`, error);
             reject(error);
@@ -81,7 +81,7 @@ function storeDataFromArray(array, cls) {
             resolve();
           }
         });
-    });
+  });
 }
 
 const modelOutputter = foam.json.Outputter.create({
@@ -98,7 +98,7 @@ function storeClassModel(model) {
     fs.writeFile(
         `${__dirname}/../data/json/class:${model.id}.json`,
         modelOutputter.stringify(model, foam.core.Model),
-        error => {
+        (error) => {
           if (error) {
             logger.error(`Error storing model for ${model.id}`, error);
             reject(error);
@@ -107,7 +107,7 @@ function storeClassModel(model) {
             resolve();
           }
         });
-    });
+  });
 }
 
 Promise.all([
@@ -139,7 +139,7 @@ Promise.all([
 }).then(() => {
   logger.info('New data model and collection stored');
   process.exit(0);
-}).catch(error => {
+}).catch((error) => {
   logger.error(`ERROR: ${error}`);
   process.exit(1);
 });

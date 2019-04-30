@@ -7,7 +7,9 @@ describe('BrowserSpecific', function() {
   function equals(a, b) {
     return foam.util.equals(a, b);
   }
-  function sort(array) { return array.sort(foam.util.compare); }
+  function sort(array) {
+    return array.sort(foam.util.compare);
+  }
   function sortedEquals(a, b) {
     return equals(sort(a), sort(b));
   }
@@ -40,10 +42,10 @@ describe('BrowserSpecific', function() {
   beforeEach(() => {
     gen =
         foam.lookup('org.chromium.apis.web.AbstractCompatClassGenerator')
-        .create();
+            .create();
   });
 
-  const init = releaseSpecs => {
+  const init = (releaseSpecs) => {
     // Register custom CompatData before looking up classes and instantiating
     // instances.
     CompatData = global.defineGeneratedCompatData(gen, releaseSpecs);
@@ -60,11 +62,11 @@ describe('BrowserSpecific', function() {
     releases = container.releaseDAO;
     compatData = container.compatDAO;
 
-    return releaseSpecs.map(rs => Release.create(rs, container));
+    return releaseSpecs.map((rs) => Release.create(rs, container));
   };
 
   it('should handle simple case', function(done) {
-    let [alpha, beta, charlie] = init([
+    const [alpha, beta, charlie] = init([
       {
         browserName: 'Alpha',
         browserVersion: '1',
@@ -137,19 +139,19 @@ describe('BrowserSpecific', function() {
       return container.browserMetricsDAO.select();
     }).then(function(sink) {
       expect(sortedEquals(
-        sink.array,
-        [
-          mkData(0, date1, alpha, [], [beta, charlie]),
-          mkData(1, date1, beta, [], [alpha, charlie]),
-          mkData(2, date1, charlie, [], [alpha, beta]),
-        ])).toBe(true);
+          sink.array,
+          [
+            mkData(0, date1, alpha, [], [beta, charlie]),
+            mkData(1, date1, beta, [], [alpha, charlie]),
+            mkData(2, date1, charlie, [], [alpha, beta]),
+          ])).toBe(true);
     }).then(done, done.fail);
   });
 
   it('should handle old removals from other browsers', function(done) {
     // Use date1 and date3 to ensure that version 2 is more than a year after
     // version 1.
-    let [alpha1, alpha2, beta1, beta2] = init([
+    const [alpha1, alpha2, beta1, beta2] = init([
       {
         browserName: 'Alpha',
         browserVersion: '1',
@@ -180,7 +182,7 @@ describe('BrowserSpecific', function() {
       },
     ]);
 
-    
+
     Promise.all([
       releases.put(alpha1),
       releases.put(alpha2),
@@ -199,19 +201,19 @@ describe('BrowserSpecific', function() {
       return container.browserMetricsDAO.select();
     }).then(function(sink) {
       expect(sortedEquals(
-        sink.array,
-        [
-          mkData(0, date1, alpha1, [], [beta1]),
-          mkData(1, date3, alpha2, [], [beta2]),
-          mkData(0, date1, beta1, [], [alpha1]),
-          mkData(0, date3, beta2, [], [alpha2]),
-        ])).toBe(true);
+          sink.array,
+          [
+            mkData(0, date1, alpha1, [], [beta1]),
+            mkData(1, date3, alpha2, [], [beta2]),
+            mkData(0, date1, beta1, [], [alpha1]),
+            mkData(0, date3, beta2, [], [alpha2]),
+          ])).toBe(true);
     }).then(done, done.fail);
   });
 
   it('should exclude additions during grace period', function(done) {
     // Use date2 and date2_1 to ensure two versions during grace period.
-    let [alpha2, alpha2_1, alpha3, beta2, beta2_1, beta3] = init([
+    const [alpha2, alpha2_1, alpha3, beta2, beta2_1, beta3] = init([
       {
         browserName: 'Alpha',
         browserVersion: '2',
@@ -256,7 +258,7 @@ describe('BrowserSpecific', function() {
       },
     ]);
 
-   
+
     Promise.all([
       releases.put(alpha2),
       releases.put(alpha2_1),
@@ -299,7 +301,7 @@ describe('BrowserSpecific', function() {
 
   it('should exclude anything when just one other browser shipped during grace period', function(done) {
     // Use date2 and date2 to ensure two versions during grace period.
-    let [alpha2_1, beta2, beta2_1, charlie2, charlie2_1] = init([
+    const [alpha2_1, beta2, beta2_1, charlie2, charlie2_1] = init([
       {
         browserName: 'Alpha',
         browserVersion: '2.1',

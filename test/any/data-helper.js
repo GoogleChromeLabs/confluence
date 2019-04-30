@@ -4,7 +4,7 @@
 'use strict';
 
 // Load external libraries and data.
-let libs = {
+const libs = {
   ObjectGraph: require('object-graph-js').BrowserObjectGraph,
   DATA: {
     chrome56: require('../data/window_Chrome_56_Windows_10.0.json'),

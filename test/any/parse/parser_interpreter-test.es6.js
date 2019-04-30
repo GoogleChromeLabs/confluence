@@ -56,7 +56,7 @@ describe('QueryParser', () => {
           class: 'String',
           name: 'id',
         },
-      ].concat(releases.map(release => {
+      ].concat(releases.map((release) => {
         return {
           class: 'org.chromium.apis.web.CompatProperty',
           name: release.id.replace(/_/g, '$').replace(/[^a-zA-Z0-9$]/g, '_')
@@ -98,7 +98,7 @@ describe('QueryParser', () => {
     const parse = parser.parseString('alpha beta ~gamma');
     expect(parse.rest).toBe('~gamma');
     expect(foam.util.equals(parse.result,
-                            E.AND(E.KEYWORD('alpha'), E.KEYWORD('beta'))));
+        E.AND(E.KEYWORD('alpha'), E.KEYWORD('beta'))));
   });
 
   it('should interpret counts in terms of selected browsers', () => {
@@ -107,7 +107,7 @@ describe('QueryParser', () => {
     expect(foam.util.equals(
         parse.result,
         E.EQ(E.ARRAY_COUNT(E.SEQ(Cls.ALPHA2ZULU1, Cls.BETA1YANKEE1),
-                           E.TRUTHY()), 1)))
+            E.TRUTHY()), 1)))
         .toBe(true);
   });
 
@@ -167,7 +167,7 @@ describe('QueryParser', () => {
     const parse = parser.parseString(str);
     expect(parse.rest).toBe('');
     expect(foam.util.equals(parse.result, E.AND(E.KEYWORD('foo'),
-                                                E.KEYWORD('bar')))).toBe(true);
+        E.KEYWORD('bar')))).toBe(true);
   });
 
   it('should throw on semantics interpretation error', () => {

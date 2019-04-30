@@ -61,17 +61,17 @@ describe('HttpJsonDAO', () => {
     return pkg.HttpJsonDAO.create(daoArgs, ctx);
   }
 
-  it('should load empty array from HTTPRequest', done => {
-    let ctx = foam.__context__.createSubContext();
+  it('should load empty array from HTTPRequest', (done) => {
+    const ctx = foam.__context__.createSubContext();
     declareReplayClass('EmptyArrayHTTPRequest', JSON.stringify([]));
     ctx.register(test.EmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
 
-    createHttpJsonDAO([], ctx).select().then(arraySink => {
+    createHttpJsonDAO([], ctx).select().then((arraySink) => {
       expect(arraySink.array.length).toBe(0);
     }).then(done, done.fail);
   });
 
-  it('should load non-empty array from HTTPRequest', done => {
+  it('should load non-empty array from HTTPRequest', (done) => {
     foam.CLASS({
       package: 'test',
       name: 'Item',
@@ -79,23 +79,23 @@ describe('HttpJsonDAO', () => {
       properties: [{class: 'Int', name: 'id'}],
     });
 
-    let ctx = foam.__context__.createSubContext();
+    const ctx = foam.__context__.createSubContext();
     const array = [
       test.Item.create({id: 0}),
       test.Item.create({id: 1}),
       test.Item.create({id: 2}),
     ];
     declareReplayClass('NonEmptyArrayHTTPRequest',
-                       foam.json.Strict.stringify(array));
+        foam.json.Strict.stringify(array));
     ctx.register(test.NonEmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
 
     createHttpJsonDAO(['test.Item'], ctx).select()
-        .then(arraySink => {
+        .then((arraySink) => {
           expect(foam.util.equals(array, arraySink.array)).toBe(true);
         }).then(done, done.fail);
   });
 
-  it('should fail when item class is not whitelisted', done => {
+  it('should fail when item class is not whitelisted', (done) => {
     foam.CLASS({
       package: 'test',
       name: 'Item',
@@ -103,20 +103,20 @@ describe('HttpJsonDAO', () => {
       properties: [{class: 'Int', name: 'id'}],
     });
 
-    let ctx = foam.__context__.createSubContext();
+    const ctx = foam.__context__.createSubContext();
     const array = [test.Item.create({id: 0})];
     declareReplayClass('NonEmptyArrayHTTPRequest',
-                       foam.json.Strict.stringify(array));
+        foam.json.Strict.stringify(array));
     ctx.register(test.NonEmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
 
-    createHttpJsonDAO([], ctx).select().then(done.fail, error => {
+    createHttpJsonDAO([], ctx).select().then(done.fail, (error) => {
       expect(error.message).toBe('Class "test.Item" is not whitelisted.');
       done();
     });
   });
 
-  it('should succeed when URL is safe, using custom safety params', done => {
-    let ctx = foam.__context__.createSubContext();
+  it('should succeed when URL is safe, using custom safety params', (done) => {
+    const ctx = foam.__context__.createSubContext();
     declareReplayClass('EmptyArrayHTTPRequest', JSON.stringify([]));
     ctx.register(test.EmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
 
@@ -128,21 +128,21 @@ describe('HttpJsonDAO', () => {
     }).select().then(done, done.fail);
   });
 
-  it('should fail when URL is unsafe', done => {
-    let ctx = foam.__context__.createSubContext();
+  it('should fail when URL is unsafe', (done) => {
+    const ctx = foam.__context__.createSubContext();
     declareReplayClass('EmptyArrayHTTPRequest', JSON.stringify([]));
     ctx.register(test.EmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
 
     createHttpJsonDAO([], ctx, {
       url: 'https://evil.com/something/maniacal',
-    }).select().then(done.fail, error => {
+    }).select().then(done.fail, (error) => {
       expect(error.message).toBe('HttpJsonDAO: URL is not safe: https://evil.com/something/maniacal');
       done();
     });
   });
 
-  it('should not issue requests or instantiate delegate, in Serializable flavour', done => {
-    let ctx = foam.__context__.createSubContext();
+  it('should not issue requests or instantiate delegate, in Serializable flavour', (done) => {
+    const ctx = foam.__context__.createSubContext();
     foam.CLASS({
       package: 'test',
       name: 'ErrorHTTPRequest',
@@ -173,7 +173,9 @@ describe('HttpJsonDAO', () => {
           preSet: function() {
             throw new Error('Expected no instantiation of delegate');
           },
-          factory: function() { return foam.dao.NullDAO.create(); },
+          factory: function() {
+            return foam.dao.NullDAO.create();
+          },
         },
       ],
     });
@@ -184,7 +186,7 @@ describe('HttpJsonDAO', () => {
       safeProtocols: ['http:'],
       safeHostnames: ['localhost'],
       safePathPrefixes: ['/'],
-    }, ctx).promise.then(done.fail, error => {
+    }, ctx).promise.then(done.fail, (error) => {
       expect(error.message).toBe('Expected no HTTPRequest.send() calls');
       try {
         test.NoDelegateHttpJsonDAO.create({

@@ -36,10 +36,10 @@ const USAGE = `USAGE:
     node /path/to/serve.js DataSource ServerMode
 
         DataSource = [ ${pkg.DataSource.VALUES
-            .map(value => value.name).join(' | ')} ]
+      .map((value) => value.name).join(' | ')} ]
 
         ServerMode = [ ${pkg.ServerMode.VALUES.map(
-                             value => value.name).join(' | ')} ]`;
+      (value) => value.name).join(' | ')} ]`;
 
 if (process.argv.length !== 4) {
   console.error(USAGE);
@@ -53,8 +53,12 @@ foam.CLASS({
       request handlers`,
 
   methods: [
-    function reportWarnMsg(req, msg) { this.warn(msg); },
-    function reportErrorMsg(req, msg) { this.error(msg); },
+    function reportWarnMsg(req, msg) {
+      this.warn(msg);
+    },
+    function reportErrorMsg(req, msg) {
+      this.error(msg);
+    },
   ],
 });
 
@@ -99,7 +103,7 @@ org.chromium.apis.web.ClassGenerator.create({
     mode: serverMode,
     port: 8080,
   }, ctx).start();
-}, err => {
+}, (err) => {
   logger.error(err);
-  process.exit(1)
+  process.exit(1);
 });

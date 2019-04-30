@@ -134,12 +134,12 @@ describe('ApiServiceDAO', () => {
     expect(numRegisters).toBeGreaterThan(0);
   });
 
-  it('should change delegate after async select()', done => {
+  it('should change delegate after async select()', (done) => {
     const workerCtx = foam.createSubContext({});
     const overwriteRegister = (cls, id) => {
       ctx.register(cls, id);
       workerCtx.register(cls, id);
-    }
+    };
     overwriteRegister(foam.dao.NullDAO, 'org.chromium.apis.web.WorkerDAO');
     overwriteRegister(foam.dao.NullDAO, 'foam.dao.RestDAO');
 

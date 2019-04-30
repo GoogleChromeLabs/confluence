@@ -43,7 +43,7 @@ if (dataUrl.protocol !== 'file:' && dataUrl.protocol !== 'https:') {
   console.error('BaseConfluenceDataURL parameter must be file: or https: URL');
 }
 
-let container = pkg.JsonDAOContainer.create({
+const container = pkg.JsonDAOContainer.create({
   mode: dataUrl.protocol === 'file:' ? pkg.DataSource.LOCAL :
       pkg.DataSource.HTTP,
   basename: dataUrl.protocol === 'file:' ? dataUrl.pathname : url.format(dataUrl),
@@ -66,7 +66,7 @@ function store(arraySink) {
     fs.writeFile(
         `${__dirname}/../data/json/${cls.id}.json`,
         outputter.stringify(arraySink.array, cls),
-        error => {
+        (error) => {
           if (error) {
             logger.error(`Error storing ${cls.id}`, error);
             reject(error);
@@ -75,7 +75,7 @@ function store(arraySink) {
             resolve();
           }
         });
-    });
+  });
 }
 
 Promise.all([
@@ -90,12 +90,12 @@ Promise.all([
   const joins = arraySinks[2].array;
 
   logger.info('Indexing data');
-  let releaseIdxs = {};
+  const releaseIdxs = {};
   for (let i = 0; i < releases.length; i++) {
     releaseIdxs[releases[i].id] = i;
   }
-  let rows = new Array(apis.length);
-  let apiIdxs = {};
+  const rows = new Array(apis.length);
+  const apiIdxs = {};
   for (let i = 0; i < apis.length; i++) {
     rows[i] = pkg.GridRow.create({id: apis[i].id, data: new Array(releases.length)});
     for (let j = 0; j < releases.length; j++) {
@@ -115,7 +115,7 @@ Promise.all([
 }).then(() => {
   logger.info('Grid data stored');
   process.exit(0);
-}).catch(error => {
+}).catch((error) => {
   logger.error(`ERROR: ${error}`);
   process.exit(1);
 });

@@ -8,9 +8,9 @@
 const base = require('./karma.conf.js');
 const webpack = base.webpackConfig;
 const files = base.deps
-  .concat(base.helpers)
-  .concat(base.units)
-  .concat(base.integrations);
+    .concat(base.helpers)
+    .concat(base.units)
+    .concat(base.integrations);
 const preprocessors = {
   'browser/webpack-helper.js': ['webpack'],
 };

@@ -7,7 +7,9 @@ describe('LoneOmission', function() {
   function equals(a, b) {
     return foam.util.equals(a, b);
   }
-  function sort(array) { return array.sort(foam.util.compare); }
+  function sort(array) {
+    return array.sort(foam.util.compare);
+  }
   function sortedEquals(a, b) {
     return equals(sort(a), sort(b));
   }
@@ -39,10 +41,10 @@ describe('LoneOmission', function() {
   beforeEach(() => {
     gen =
         foam.lookup('org.chromium.apis.web.AbstractCompatClassGenerator')
-        .create();
+            .create();
   });
 
-  const init = releaseSpecs => {
+  const init = (releaseSpecs) => {
     CompatData = global.defineGeneratedCompatData(gen, releaseSpecs);
 
     Release = foam.lookup('org.chromium.apis.web.Release');
@@ -59,11 +61,11 @@ describe('LoneOmission', function() {
     releases = container.releaseDAO;
     compatData = container.compatDAO;
 
-    return releaseSpecs.map(rs => Release.create(rs, container));
+    return releaseSpecs.map((rs) => Release.create(rs, container));
   };
 
   it('should handle simple case', function(done) {
-    let [alpha, beta, charlie] = init([
+    const [alpha, beta, charlie] = init([
       {
         browserName: 'Alpha',
         browserVersion: '1',
@@ -150,7 +152,7 @@ describe('LoneOmission', function() {
   it('should exclude API if this browser ever shipped it', function(done) {
     // Use date1 and date3 to ensure that version 2 is more than a year after
     // version 1.
-    let [alpha1, alpha2, beta1, beta2] = init([
+    const [alpha1, alpha2, beta1, beta2] = init([
       {
         browserName: 'Alpha',
         browserVersion: '1',
@@ -209,7 +211,7 @@ describe('LoneOmission', function() {
 
   it('should exclude APIs not shipped by even one compared release', function(done) {
     // Use date2 and date2_1 to ensure two versions during grace period.
-    let [alpha2, alpha2_1, beta2, beta2_1, charlie2, charlie2_1] = init([
+    const [alpha2, alpha2_1, beta2, beta2_1, charlie2, charlie2_1] = init([
       {
         browserName: 'Alpha',
         browserVersion: '2',

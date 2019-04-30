@@ -8,16 +8,16 @@ if (global.isLocal) {
 }
 
 xdescribe('data quality', function() {
-  var E;
-  var RWIJunction;
-  var WebInterface;
+  let E;
+  let RWIJunction;
+  let WebInterface;
 
-  var ctx;
+  let ctx;
 
-  var chrome;
-  var firefox;
-  var safari;
-  var edge;
+  let chrome;
+  let firefox;
+  let safari;
+  let edge;
 
   beforeAll(function(done) {
     E = foam.lookup('foam.mlang.ExpressionsSingleton').create();
@@ -25,8 +25,8 @@ xdescribe('data quality', function() {
         foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
     WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
 
-    var fs = require('fs');
-    var path = require('path');
+    const fs = require('fs');
+    const path = require('path');
 
     require('../../lib/confluence/api_count_data.es6.js');
     require('../../lib/confluence/browser_metric_data.es6.js');
@@ -44,13 +44,21 @@ xdescribe('data quality', function() {
 
     Promise.all([
       ctx.releaseDAO.find('Chrome_56.0.2924.87_Windows_10.0')
-          .then(function(release) { chrome = release; }),
+          .then(function(release) {
+            chrome = release;
+          }),
       ctx.releaseDAO.find('Firefox_52.0_Windows_10.0')
-          .then(function(release) { firefox = release; }),
+          .then(function(release) {
+            firefox = release;
+          }),
       ctx.releaseDAO.find('Safari_11.0_OSX_10.12.6')
-          .then(function(release) { safari = release; }),
+          .then(function(release) {
+            safari = release;
+          }),
       ctx.releaseDAO.find('Edge_14.14393_Windows_10.0')
-          .then(function(release) { edge = release; }),
+          .then(function(release) {
+            edge = release;
+          }),
     ]).then(done);
   });
 
@@ -62,7 +70,7 @@ xdescribe('data quality', function() {
         .then(function(sink) {
           if (sink.array.length !== (shouldFind ? 1 : 0)) {
             console.error('Expected', shouldFind ? '' : 'not', 'to find',
-                          api.id, 'on', release.id);
+                api.id, 'on', release.id);
           }
           expect(sink.array.length).toBe(shouldFind ? 1 : 0);
         });
@@ -78,7 +86,7 @@ xdescribe('data quality', function() {
   function mkAPI(ifName, apiName) {
     return WebInterface.create({
       interfaceName: ifName,
-      apiName: apiName
+      apiName: apiName,
     }, ctx);
   }
 
@@ -105,7 +113,7 @@ xdescribe('data quality', function() {
       CSSStyleDeclaration.border should exist`, function(done) {
     expectAPILookup(true, firefox, mkAPI('CSSStyleDeclaration', 'border'))
         .then(done, done.fail);
-      });
+  });
 
   it(`should list exposed namespaces as interfaces. E.g., Window.Math,
       Math.abs.`, function(done) {
