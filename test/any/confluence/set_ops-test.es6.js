@@ -109,8 +109,7 @@ describe('Set ops', () => {
       set.select(E.SET_MINUS(subtrahend))
           .then(done.fail, (error) => {
             expect(error.message).toBe('ErrorDAO: Error on find()');
-            done();
-          });
+          }).then(done, done.fail);
     });
   });
 
@@ -127,8 +126,7 @@ describe('Set ops', () => {
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-            done();
-          });
+          }).then(done, done.fail);
     });
 
     it('should exclude all items when sets are identical', (done) => {
@@ -143,9 +141,7 @@ describe('Set ops', () => {
       set.select(E.SET_MINUS(subtrahend))
           .then((sink) => {
             expect(sink.array).toEqual([]);
-
-            done();
-          });
+          }).then(done, done.fail);
     });
 
     it('should exclude some items when there is overlap', (done) => {
@@ -164,9 +160,7 @@ describe('Set ops', () => {
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([1, 3, 5, 7, 9]);
-
-            done();
-          });
+          }).then(done, done.fail);
     });
 
     it('should support composition', (done) => {
@@ -191,9 +185,7 @@ describe('Set ops', () => {
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([0, 2, 4, 6, 8]);
-
-            done();
-          });
+          }).then(done, done.fail);
     });
 
     it('should support array-of-DAOs', (done) => {
@@ -217,9 +209,7 @@ describe('Set ops', () => {
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([0, 2, 4, 6, 8]);
-
-            done();
-          });
+          }).then(done, done.fail);
     });
 
     it('should ignore extra items in subtrahend', (done) => {
@@ -236,9 +226,7 @@ describe('Set ops', () => {
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
-
-            done();
-          });
+          }).then(done, done.fail);
     });
 
     it('should deliver items in order, even when subtrahend would resolve find()s out of order', (done) => {
@@ -260,9 +248,7 @@ describe('Set ops', () => {
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([1, 3, 5, 7, 9]);
-
-            done();
-          });
+          }).then(done, done.fail);
     });
   });
 
@@ -280,8 +266,7 @@ describe('Set ops', () => {
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-            done();
-          });
+          }).then(done, done.fail);
     });
 
     it('should yield null set on INTERSECT(nullSet)', (done) => {
@@ -295,8 +280,7 @@ describe('Set ops', () => {
       set.orderBy(Num.ID).select(E.INTERSECT(nullSet))
           .then((sink) => {
             expect(sink.array.map((num) => num.id)).toEqual([]);
-            done();
-          });
+          }).then(done, done.fail);
     });
 
     it('should exclude some items when secondary is subset', (done) => {
@@ -315,9 +299,7 @@ describe('Set ops', () => {
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([0, 2, 4, 6, 8]);
-
-            done();
-          });
+          }).then(done, done.fail);
     });
 
     it('should exclude some items when primary is subset', (done) => {
@@ -337,9 +319,7 @@ describe('Set ops', () => {
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([0, 2, 4, 6, 8]);
-
-            done();
-          });
+          }).then(done, done.fail);
     });
 
     it('should support composition', (done) => {
@@ -364,9 +344,7 @@ describe('Set ops', () => {
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([7]);
-
-            done();
-          });
+          }).then(done, done.fail);
     });
 
     it('should support array-of-DAOs', (done) => {
@@ -391,9 +369,7 @@ describe('Set ops', () => {
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([7]);
-
-            done();
-          });
+          }).then(done, done.fail);
     });
 
     it('should deliver items in order, even when secondary would resolve find()s out of order', (done) => {
@@ -415,9 +391,7 @@ describe('Set ops', () => {
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([0, 2, 4, 6, 8]);
-
-            done();
-          });
+          }).then(done, done.fail);
     });
   });
 
@@ -457,8 +431,7 @@ describe('Set ops', () => {
 
       E.UNION(primary, secondary).select().then((sink) => {
         expect(sink.array.map((num) => num.id).sort()).toEqual([0, 1]);
-        done();
-      });
+      }).then(done, done.fail);
     });
 
     it('should combine intersecting sets', (done) => {
@@ -471,8 +444,7 @@ describe('Set ops', () => {
 
       E.UNION(primary, secondary).select().then((sink) => {
         expect(sink.array.map((num) => num.id).sort()).toEqual([0, 1]);
-        done();
-      });
+      }).then(done, done.fail);
     });
 
     it('should be composable', (done) => {
@@ -486,8 +458,7 @@ describe('Set ops', () => {
 
       E.UNION(primary, E.UNION(secondary, tertiary)).select().then((sink) => {
         expect(sink.array.map((num) => num.id).sort()).toEqual([0, 1, 2]);
-        done();
-      });
+      }).then(done, done.fail);
     });
 
     it('should support more than 2 DAOs', (done) => {
@@ -501,8 +472,7 @@ describe('Set ops', () => {
 
       E.UNION(primary, secondary, tertiary).select().then((sink) => {
         expect(sink.array.map((num) => num.id).sort()).toEqual([0, 1, 2]);
-        done();
-      });
+      }).then(done, done.fail);
     });
 
     it('should compose correctly with inconsistent find() callback timing', (done) => {
@@ -525,8 +495,7 @@ describe('Set ops', () => {
 
       E.UNION(aDAO, E.UNION(bDAO, cDAO)).select().then((sink) => {
         expect(sink.array.map((num) => num.id).sort()).toEqual([0, 1, 2, 3, 4, 5, 6]);
-        done();
-      });
+      }).then(done, done.fail);
     });
 
     it('should resolve null on find() with inconsistent callback timing', (done) => {

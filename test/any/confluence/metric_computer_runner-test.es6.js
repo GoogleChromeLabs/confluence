@@ -127,16 +127,14 @@ describe('MetricComputerRunner', function() {
         expect(releases.length).toBe(1);
         expect(releases[0].browserName).toBe('Edge');
         expect(releases[0].browserVersion).toBe('14');
-        done();
-      });
+      }).then(done, done.fail);
     });
     it('gets correct releases before a given date even if the' +
         ' releases list are empty.', function(done) {
       runner.getLatestReleaseFromEachBrowserAtDate(
           new Date('2014-01-01')).then((releases) => {
         expect(releases.length).toBe(0);
-        done();
-      });
+      }).then(done, done.fail);
     });
     it('gets all browsers a date when all browsers has a release.',
         function(done) {
@@ -149,8 +147,7 @@ describe('MetricComputerRunner', function() {
             expect(releases[1].browserVersion).toBe('55');
             expect(releases[2].browserName).toBe('Edge');
             expect(releases[2].browserVersion).toBe('14');
-            done();
-          });
+          }).then(done, done.fail);
         });
   });
 });

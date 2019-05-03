@@ -6,7 +6,8 @@
     "worker": true,
     "node": true
   },
-  "extends": ["eslint:recommended", "google"],
+  "plugins": ["promise"],
+  "extends": ["eslint:recommended", "google", "plugin:promise/recommended"],
   "rules": {
     "camelcase": "off",
     "no-console": "off",
@@ -16,6 +17,12 @@
     	"capIsNew": false
     }],
     "max-len": "off",
+    "promise/always-return": "off",
+    "promise/catch-or-return": ["error", {
+      "allowThen": true
+    }],
+    "promise/no-callback-in-promise": "off",
+    "promise/no-nesting": "off",
     "require-jsdoc": "off"
   },
   "globals": {

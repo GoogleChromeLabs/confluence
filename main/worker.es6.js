@@ -36,6 +36,7 @@ self.onmessage = (e) => {
   // that deal with generated.CompatData model. Should this be somehow
   // conditional and/or driven by a signal from the worker's owner?
   const compatClassURL = `${window.location.origin}/${pkg.DAOContainer.COMPAT_MODEL_FILE_NAME}`;
+  // eslint-disable-next-line promise/catch-or-return
   pkg.ClassGenerator.create({
     classURL: compatClassURL,
   }).generateClass().then(() => {

@@ -46,9 +46,7 @@ describe('WebAPI and api extractor', function() {
         init(webCatalog[apiParts[0]], apiParts[1]);
         webCatalog[apiParts[0]][apiParts[1]][junction.sourceId] = true;
       }
-
-      done();
-    });
+    }).then(done, done.fail);
   });
 
   it('filters out constant primitive properties', function() {

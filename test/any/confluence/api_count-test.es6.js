@@ -77,8 +77,7 @@ describe('ApiCount', () => {
               totalApis: 1,
             }),
           ])).toBe(true);
-          done();
-        });
+        }).then(done, done.fail);
   });
 
   it('should compute two releases from the same browser', (done) => {
@@ -139,8 +138,7 @@ describe('ApiCount', () => {
               newApis: 1,
             }),
           ])).toBe(true);
-          done();
-        });
+        }).then(done, done.fail);
   });
 
   it('should compute two releases from different browsers', (done) => {
@@ -199,7 +197,6 @@ describe('ApiCount', () => {
               totalApis: 2,
             }),
           ])).toBe(true);
-          done();
-        });
+        }).then(done, done.fail);
   });
 });

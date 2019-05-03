@@ -28,7 +28,7 @@ describe('ApiImporter', function() {
     mlang = foam.mlang.ExpressionsSingleton.create();
     junctionDAO = container.releaseWebInterfaceJunctionDAO;
     apiImporter.import('Chrome', '56.0.2924.87',
-        'OSX', '10.12.2', webCatalog).then(done);
+        'OSX', '10.12.2', webCatalog).then(done, done.fail);
   });
 
   it('correctly imports releaseWebInterfaceJunction to DAO', function(done) {
@@ -57,7 +57,6 @@ describe('ApiImporter', function() {
       return junctionDAO.select(mlang.COUNT());
     }).then((countSink) => {
       expect(countSink.value).toBe(promises.length);
-      done();
-    });
+    }).then(done, done.fail);
   });
 });

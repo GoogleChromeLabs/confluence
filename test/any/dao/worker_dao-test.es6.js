@@ -110,7 +110,6 @@ describe('WorkerDAO', () => {
       // No subsequent remote selects or listens to service requests.
       expect(latestDelayedCountDAO.selects).toBe(setupSelects);
       expect(latestDelayedCountDAO.listens).toBe(setupListens);
-      done();
-    });
+    }).then(done, done.fail);
   });
 });

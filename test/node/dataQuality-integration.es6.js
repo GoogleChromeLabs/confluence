@@ -56,7 +56,7 @@ xdescribe('data quality', function() {
           .then(function(release) {
             edge = release;
           }),
-    ]).then(done);
+    ]).then(done, done.fail);
   });
 
   function expectAPILookup(shouldFind, release, api) {
