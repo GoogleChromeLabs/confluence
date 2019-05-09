@@ -91,7 +91,7 @@ function configurator(config) {
     browserDisconnectTolerance: 5,
     browserNoActivityTimeout: 150000,
   });
-};
+}
 
 configurator.srcGlobs = [
   '../lib/**/*.js',

@@ -3,10 +3,12 @@
     "browser": true,
     "node": true
   },
-  "extends": ["google"],
+  "extends": ["eslint:recommended", "google"],
   "rules": {
     "camelcase": "off",
+    "no-console": "off",
     "no-invalid-this": "off",
+    "no-undef": "off",
     "no-unused-vars": "off",
     "new-cap": ["error", {
     	"capIsNew": false
