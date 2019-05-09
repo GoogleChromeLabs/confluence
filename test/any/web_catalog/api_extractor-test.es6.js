@@ -285,9 +285,9 @@ describe('API extractor', () => {
   });
 
   it('should combine non-built-in prototypes on libraries', (done) => {
-    function method1() {};
+    function method1() {}
     const libProto = {method1};
-    function method2() {};
+    function method2() {}
     const lib = Object.create(libProto, {method2: {value: method2}});
     Promise.all([
       getCatalog({Object, Function}, {key: 'window'}, {}),
