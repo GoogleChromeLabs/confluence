@@ -7,14 +7,11 @@
   "rules": {
     "camelcase": "off",
     "no-invalid-this": "off",
-    "no-tabs": "off",
-    "no-throw-literal": "off",
     "no-unused-vars": "off",
     "new-cap": ["error", {
     	"capIsNew": false
     }],
     "max-len": "off",
-    "prefer-promise-reject-errors": "off",
     "prefer-spread": "off",
     "prefer-rest-params": "off",
     "require-jsdoc": "off"
