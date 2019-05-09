@@ -1,10 +1,10 @@
 **/.DS_Store
-.coverage
-.local
-.node_coverage
-.web_coverage
-node_modules
+.local/
+.node_coverage/
+.nyc_output/
+.web_coverage/
+node_modules/
 static/bundle/
 data/json/*.json
 data/object-graph/*.json
-.vscode
+.vscode/
