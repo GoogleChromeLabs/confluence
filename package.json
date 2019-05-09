@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "description": "Web API Confluence Dashboard",
   "scripts": {
-    "coverage": "npm run coverageNode && npm run coverageWeb && istanbul-combine -d .coverage -p summary -r lcov -r html -r json -b . .node_coverage/coverage.json .web_coverage/*/coverage*.json && istanbul check-coverage --config config/istanbul.yml \".coverage/**/coverage*.json\"",
-    "coverageNode": "JASMINE_CONFIG_PATH=./config/jasmine.json nyc --nycrc-path config/nyc.config.js jasmine",
+    "coverage": "npm run coverageNode && npm run coverageWeb",
+    "coverageNode": "JASMINE_CONFIG_PATH=./config/jasmine.json nyc --nycrc-path ./config/nyc.config.js jasmine",
     "coverageWeb": "karma start ./config/karma.coverage.conf.js",
     "deploy": "bash scripts/deploy.sh",
     "lint": "eslint .",

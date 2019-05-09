@@ -46,8 +46,8 @@ function configurator(config) {
     frameworks: ['jasmine'],
     client: {
       jasmine: {
-        random: false
-      }
+        random: false,
+      },
     },
 
     // list of files / patterns to load in the browser
