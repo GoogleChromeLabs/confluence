@@ -110,14 +110,14 @@ describe('MetricComputerRunner', function() {
         .create(null, container);
   });
   describe('getOrderedListOfReleaseDates()', function() {
-    it('gets correct dates from releaseWebInterfaceJunctionDAO', function() {
+    it('gets correct dates from releaseWebInterfaceJunctionDAO', function(done) {
       runner.getOrderedListOfReleaseDates().then((dateArr) => {
         expect(dateArr).toEqual([
           new Date('2014-02-01'),
           new Date('2015-01-10'),
           new Date('2015-04-01'),
         ]);
-      });
+      }).then(done, done.fail);
     });
   });
   describe('getLatestReleaseFromEachBrowserAtDate()', function() {
