@@ -62,7 +62,7 @@
     "babel-runtime": "6.26.0",
     "clean-webpack-plugin": "0.1.19",
     "codecov": "3.4.0",
-    "css-loader": "2.1.0",
+    "css-loader": "2.1.1",
     "doctoc": "1.4.0",
     "eslint": "5.16.0",
     "eslint-config-google": "0.12.0",
