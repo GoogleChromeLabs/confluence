@@ -27,7 +27,7 @@
   "homepage": "https://github.com/GoogleChromeLabs/confluence#readme",
   "dependencies": {
     "@uirouter/angularjs": "1.0.22",
-    "angular": "1.7.7",
+    "angular": "1.7.8",
     "d3": "4.13.0",
     "foam2": "git://github.com/foam-framework/foam2.git#confluence",
     "materialize-css": "1.0.0",
