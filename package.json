@@ -83,6 +83,6 @@
     "uglifyjs-webpack-plugin": "0.4.6",
     "webpack": "2.7.0",
     "webpack-merge": "4.2.1",
-    "worker-loader": "1.1.1"
+    "worker-loader": "2.0.0"
   }
 }
