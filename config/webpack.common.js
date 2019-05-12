@@ -5,7 +5,6 @@
 
 const path = require('path');
 
-const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const C = require('./webpack.constants.js');
@@ -56,14 +55,19 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new CleanWebpackPlugin([C.BUNDLE_PROJECT_DIR], {root: C.ROOT_DIR}),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendors',
-      minChunks: function(module) {
-        return module.context && module.context.indexOf('node_modules') !== -1;
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
       },
-    }),
+    },
+  },
+  plugins: [
+    new CleanWebpackPlugin(),
   ],
   resolve: {
     extensions: ['.js'],

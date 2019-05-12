@@ -104,6 +104,7 @@ configurator.srcGlobs = [
 
 const C = require('./webpack.constants.js');
 configurator.webpackConfig = {
+  mode: 'development',
   module: {
     rules: [
       {

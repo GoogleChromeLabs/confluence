@@ -19,6 +19,7 @@ module.exports = merge(common, {
     ui_test: [path.resolve(C.ROOT_DIR, 'main/ui_test.es6')],
   },
   devtool: 'inline-source-map',
+  mode: 'development',
   module: {
     rules: [
       {

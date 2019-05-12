@@ -4,7 +4,7 @@
 'use strict';
 
 const merge = require('webpack-merge');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const C = require('./webpack.constants.js');
 const common = require('./webpack.common.js');
@@ -15,6 +15,7 @@ execSync(`node '${C.FOAM_DIR}/tools/build.js'  ${C.FOAM_FLAGS} "${C.FOAM_BIN_TMP
 
 module.exports = merge(common, {
   devtool: false,
+  mode: 'production',
   module: {
     rules: [
       {
@@ -46,11 +47,15 @@ module.exports = merge(common, {
       },
     ],
   },
-  plugins: [
-    new UglifyJSPlugin({
-      compress: {keep_fnames: true},
-      mangle: false,
-      output: {comments: false},
-    }),
-  ],
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          keep_fnames: true,
+          mangle: false,
+          output: {comments: false},
+        },
+      }),
+    ],
+  },
 });
