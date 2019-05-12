@@ -78,7 +78,7 @@
     "karma-firefox-launcher": "1.1.0",
     "karma-jasmine": "2.0.1",
     "karma-webpack": "3.0.5",
-    "nyc": "14.1.0",
+    "nyc": "14.1.1",
     "style-loader": "0.16.1",
     "uglifyjs-webpack-plugin": "0.4.6",
     "webpack": "2.7.0",
