@@ -1,6 +1,7 @@
 {
   "name": "web-api-confluence-dashboard",
   "version": "0.0.1",
+  "license": "BSD-3-Clause",
   "description": "Web API Confluence Dashboard",
   "scripts": {
     "coverage": "npm run coverageNode && npm run coverageWeb",
