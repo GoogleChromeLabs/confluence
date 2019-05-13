@@ -73,7 +73,9 @@ module.exports = {
     extensions: ['.js'],
   },
   node: {
+    crypto: 'empty',
     fs: 'empty',
-    dns: 'empty',
+    path: 'empty',
+    process: false,
   },
 };
