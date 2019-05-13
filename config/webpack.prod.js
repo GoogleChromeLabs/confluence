@@ -4,6 +4,7 @@
 'use strict';
 
 const merge = require('webpack-merge');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const TerserPlugin = require('terser-webpack-plugin');
 
 const C = require('./webpack.constants.js');
@@ -52,4 +53,7 @@ module.exports = merge(common, {
     maxAssetSize: 1.5*1024*1024,
     maxEntrypointSize: 2.2*1024*1024,
   },
+  plugins: [
+    new BundleAnalyzerPlugin(),
+  ],
 });
