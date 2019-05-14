@@ -3,11 +3,9 @@
 // found in the LICENSE file.
 'use strict';
 
-if (global.isLocal) {
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
-}
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
 
-xdescribe('data quality', function() {
+describe('data quality', function() {
   let E;
   let RWIJunction;
   let WebInterface;
@@ -36,7 +34,7 @@ xdescribe('data quality', function() {
 
     ctx = pkg.JsonDAOContainer.create({
       mode: pkg.DataSource.HTTP,
-      basename: 'https://storage.googleapis.com/web-api-confluence-data-cache/latest/json',
+      basename: 'https://storage.googleapis.com/web-api-confluence-data-cache/archive/2017-10-31/00/json',
     }).ctx;
 
     Promise.all([
