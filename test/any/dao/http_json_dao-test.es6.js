@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 'use strict';
 
+/* global test */
+
 describe('HttpJsonDAO', () => {
   let pkg;
   beforeAll(() => {

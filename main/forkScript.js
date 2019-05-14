@@ -57,7 +57,7 @@ function getMode(str) {
 
   if (mode) return mode;
 
-  const modeNames = Enum.VALUES.map(function(value) {
+  const modeNames = pkg.DataSource.VALUES.map(function(value) {
     return value.name;
   });
   panic(`Invalid ${pkg.DataSource.name} (not one of "${modeNames
