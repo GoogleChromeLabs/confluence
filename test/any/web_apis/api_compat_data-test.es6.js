@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 'use strict';
 
+/* global describeRawTableCellFormatterTests */
+
 describe('CompatProperty', () => {
   let pkg;
   beforeEach(() => {

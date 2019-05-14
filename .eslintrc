@@ -1,6 +1,9 @@
 {
   "env": {
+    "es6": true,
+    "jasmine": true,
     "browser": true,
+    "worker": true,
     "node": true
   },
   "extends": ["eslint:recommended", "google"],
@@ -8,7 +11,6 @@
     "camelcase": "off",
     "no-console": "off",
     "no-invalid-this": "off",
-    "no-undef": "off",
     "no-unused-vars": "off",
     "new-cap": ["error", {
     	"capIsNew": false
@@ -19,6 +21,8 @@
     "require-jsdoc": "off"
   },
   "globals": {
+    "angular": false,
+    "org": false,
     "foam": false
   },
   "parserOptions": {
