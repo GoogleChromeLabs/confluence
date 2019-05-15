@@ -11,6 +11,6 @@ before_script:
 script:
 - npm run lint
 - npm run coverageNode
-- CODECOV_FLAGS=node codecov --clear
+- codecov --clear --flags=node
 - npm run coverageWeb
-- CODECOV_FLAGS=web codecov --clear
+- codecov --clear --flags=web
