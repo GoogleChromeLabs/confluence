@@ -1,16 +1,29 @@
 language: node_js
-node_js:
-- 10
-- 12
-addons:
-  firefox: latest
-before_script:
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
-- sleep 3 # give xvfb some time to start
-script:
-- npm run lint
-- npm run coverageNode
-- codecov --clear --flags=node
-- npm run coverageWeb
-- codecov --clear --flags=web
+
+matrix:
+  include:
+  - name: node10
+    node_js: 10
+    script:
+    - npm run lint
+    - npm run coverageNode
+
+  - name: node12
+    node_js: 12
+    script:
+    - npm run lint
+    - npm run coverageNode
+
+  - name: firefox
+    node_js: 10
+    addons:
+      firefox: latest
+    before_script:
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
+    - sleep 3 # give xvfb some time to start
+    script:
+    - npm run coverageWeb
+
+after_script:
+- codecov --flags=$TRAVIS_JOB_NAME
