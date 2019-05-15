@@ -16,6 +16,7 @@ webpack.module.rules = [
   {
     test: /\.js$/,
     use: {loader: 'istanbul-instrumenter-loader'},
+    enforce: 'post',
     include: path.resolve(__dirname, '../lib/'),
   },
 ].concat(webpack.module.rules);
