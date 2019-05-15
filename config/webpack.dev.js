@@ -20,17 +20,4 @@ module.exports = merge(common, {
   },
   devtool: 'inline-source-map',
   mode: 'development',
-  module: {
-    rules: [
-      {
-        test: C.ES6_REG_EXP,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: C.ES6_LOADER_OPTIONS_DEV,
-          },
-        ],
-      },
-    ],
-  },
 });

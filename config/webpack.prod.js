@@ -19,27 +19,13 @@ module.exports = merge(common, {
   module: {
     rules: [
       {
-        test: C.ES6_REG_EXP,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: C.ES6_LOADER_OPTIONS_PROD,
-          },
-        ],
-      },
-      {
-        test: C.FOAM_BIN_REG_EXP,
+        test: [C.ES6_REG_EXP, C.FOAM_BIN_REG_EXP],
         use: [
           {
             loader: 'babel-loader',
             options: {
-              comments: false,
-              plugins: [
-                'transform-es2015-block-scoping',
-                'transform-es2015-arrow-functions',
-                'transform-es2015-template-literals',
-                ['transform-es2015-modules-commonjs', {strict: false}],
-              ],
+              presets: ['@babel/preset-env'],
+              // No, really. Without strict mode.
               parserOpts: {strictMode: false},
             },
           },
