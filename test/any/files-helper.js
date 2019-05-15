@@ -70,7 +70,6 @@ beforeAll(function() {
   require('../../lib/web_apis/version_history.es6.js');
   require('../../lib/web_apis/web_interface.es6.js');
   require('../../lib/web_catalog/api_extractor.es6.js');
-  const pkg = org.chromium.apis.web;
 
   foam.CLASS(require('../data/class:org.chromium.apis.web.generated.CompatData.json'));
 });

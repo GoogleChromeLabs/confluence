@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 'use strict';
 
-const path = require('path');
-
 global.FOAM_FLAGS = {gcloud: true};
 require('foam2');
 

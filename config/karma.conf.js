@@ -102,7 +102,6 @@ configurator.srcGlobs = [
   '../lib/**/*.js',
 ];
 
-const C = require('./webpack.constants.js');
 configurator.webpackConfig = {
   mode: 'development',
   module: {

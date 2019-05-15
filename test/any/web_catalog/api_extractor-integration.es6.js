@@ -23,15 +23,9 @@ describe('API extractor', function() {
   let ApiExtractor;
   let apiCatalog;
 
-  // TODO(markdittmer): firefox53 data required for test that is to be moved.
-  let firefox53og;
-
   // Load non-FOAM-related data once.
   beforeAll(function() {
     ObjectGraph = global.ObjectGraph;
-
-    // TODO(markdittmer): firefox53 data required for test that is to be moved.
-    firefox53og = ObjectGraph.fromJSON(global.DATA.firefox53);
 
     og = ObjectGraph.fromJSON({
       'data': {

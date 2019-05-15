@@ -6,9 +6,7 @@
 /* global describeRawTableCellFormatterTests */
 
 describe('CompatProperty', () => {
-  let pkg;
   beforeEach(() => {
-    pkg = org.chromium.apis.web;
     foam.CLASS({
       name: 'CompatPropertyContainer',
       package: 'org.chromium.apis.web.test',

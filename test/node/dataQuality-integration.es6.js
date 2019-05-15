@@ -25,9 +25,6 @@ xdescribe('data quality', function() {
         foam.lookup('org.chromium.apis.web.ReleaseWebInterfaceJunction');
     WebInterface = foam.lookup('org.chromium.apis.web.WebInterface');
 
-    const fs = require('fs');
-    const path = require('path');
-
     require('../../lib/confluence/api_count_data.es6.js');
     require('../../lib/confluence/browser_metric_data.es6.js');
     require('../../lib/dao/json_dao_container.es6.js');

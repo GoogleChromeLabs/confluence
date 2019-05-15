@@ -13,7 +13,6 @@ describe('LoneRemoval', function() {
     }
     return equals(sort(a), sort(b));
   }
-  let BrowserMetricData;
   let CompatData;
   let Release;
   let compatData;
@@ -34,7 +33,6 @@ describe('LoneRemoval', function() {
     CompatData = global.defineGeneratedCompatData(gen, releaseSpecs);
 
     Release = foam.lookup('org.chromium.apis.web.Release');
-    BrowserMetricData = foam.lookup('org.chromium.apis.web.ApiCountData');
 
     container = global.createDAOContainer();
     runner = global.createLocalRunner({

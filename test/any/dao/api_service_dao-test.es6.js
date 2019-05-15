@@ -148,7 +148,10 @@ describe('ApiServiceDAO', () => {
       baseURL: 'https://example.com/thingDAO',
       workerRegistry: foam.box.Context.create(null, workerCtx).registry,
     }, ctx);
-    const initialDelegate = dao.delegate;
+
+    // Access the delegate property to trigger the async select() and updating
+    // of dao's internal delegate client.
+    dao.delegate;
 
     // Assert that a property change event is fired by dao.delegate$ property
     // slot. This test will time out (because done() isn't called) if
