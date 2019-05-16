@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000;
 
 describe('data quality', function() {
   let E;
