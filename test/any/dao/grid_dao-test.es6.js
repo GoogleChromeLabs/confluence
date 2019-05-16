@@ -176,9 +176,9 @@ describe('GridDAO', () => {
     const warn = foam.__context__.warn;
     let warnCount = 0;
     const ctx = foam.createSubContext({
-      warn: function() {
+      warn: function(...args) {
         warnCount++;
-        return warn.apply(this, arguments);
+        return warn(...args);
       },
     });
     foam.CLASS({

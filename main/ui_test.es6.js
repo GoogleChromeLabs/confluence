@@ -142,8 +142,7 @@ global.uiTestEnvPromise = (function() {
       methods: [
         function init() {
           this.SUPER();
-          this.error = function() {
-            const args = Array.from(arguments);
+          this.error = function(...args) {
             const msg = args.map((arg) => arg.message || arg).join(' ');
             if (!msg) return;
             this.errorMessage = msg;
