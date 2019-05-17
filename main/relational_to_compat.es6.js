@@ -5,6 +5,7 @@
 
 const fs = require('fs');
 const process = require('process');
+const url = require('url');
 
 require('foam2');
 
@@ -42,7 +43,7 @@ if (process.argv.length !== 3) {
   process.exit(1);
 }
 
-const dataUrl = new URL(process.argv[2]);
+const dataUrl = url.parse(process.argv[2]);
 if (dataUrl.protocol !== 'file:' && dataUrl.protocol !== 'https:') {
   console.error('BaseConfluenceDataURL parameter must be file: or https: URL');
 }
@@ -51,7 +52,7 @@ const container = pkg.JsonDAOContainer.create({
   mode: dataUrl.protocol === 'file:' ? pkg.DataSource.LOCAL :
       pkg.DataSource.HTTP,
   basename: dataUrl.protocol === 'file:' ? dataUrl.pathname :
-      dataUrl.toString(),
+      url.format(dataUrl),
 }, logger);
 
 logger.info('Gathering Confluence data from JSON');
