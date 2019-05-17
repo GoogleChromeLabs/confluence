@@ -6,16 +6,23 @@ language: node_js
 
 matrix:
   include:
-  - name: node10
+  - name: lint
     node_js: 10
     script:
     - npm run lint
+    # Run webpack to check size limits.
+    - npx webpack --config config/webpack.prod.js
+    after_script:
+    - true # don't run codecov
+
+  - name: node10
+    node_js: 10
+    script:
     - npm run coverageNode
 
   - name: node12
     node_js: 12
     script:
-    - npm run lint
     - npm run coverageNode
 
   - name: chrome

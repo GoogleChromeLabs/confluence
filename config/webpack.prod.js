@@ -44,4 +44,12 @@ module.exports = merge(common, {
       }),
     ],
   },
+  performance: {
+    // These size limits are *much* larger than webpack's default
+    // recommendation of 250kb, but are combined with 'error' to ensure that
+    // they don't grow accidentally beyond the current size.
+    hints: 'error',
+    maxAssetSize: 1.5*1024*1024,
+    maxEntrypointSize: 2.2*1024*1024,
+  },
 });
