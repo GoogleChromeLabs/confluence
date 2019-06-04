@@ -82,7 +82,7 @@ describe('GridDAO', () => {
     }))).toBe(2);
   });
 
-  it('should project appropriately on proper use of projectCols()', (done) => {
+  it('should project appropriately on proper use of projectCols()', () => {
     foam.CLASS({
       package: 'org.chromium.apis.web.test',
       name: 'Col',
@@ -105,7 +105,7 @@ describe('GridDAO', () => {
     });
     const E = foam.mlang.ExpressionsSingleton.create();
     const GridRow = org.chromium.apis.web.GridRow;
-    Promise.all([
+    return Promise.all([
       dao.put(GridRow.create({id: 0, data: [1, 0, 0, 0]})),
       dao.put(GridRow.create({id: 1, data: [0, 1, 0, 0]})),
       dao.put(GridRow.create({id: 2, data: [0, 0, 1, 0]})),
@@ -123,11 +123,10 @@ describe('GridDAO', () => {
       expect(array[1].data).toEqual([0, 0, 1, 0]);
       expect(array[2].data).toEqual([0, 1, 0, 0]);
       expect(array[3].data).toEqual([1, 0, 0, 0]);
-      done();
-    }).catch(done.fail);
+    });
   });
 
-  it('should project appropriately over a subset of cols using projectCols()', (done) => {
+  it('should project appropriately over a subset of cols using projectCols()', () => {
     foam.CLASS({
       package: 'org.chromium.apis.web.test',
       name: 'Col',
@@ -150,7 +149,7 @@ describe('GridDAO', () => {
     });
     const E = foam.mlang.ExpressionsSingleton.create();
     const GridRow = org.chromium.apis.web.GridRow;
-    Promise.all([
+    return Promise.all([
       dao.put(GridRow.create({id: 0, data: [1, 0, 0, 0]})),
       dao.put(GridRow.create({id: 1, data: [0, 1, 0, 0]})),
       dao.put(GridRow.create({id: 2, data: [0, 0, 1, 0]})),
@@ -168,11 +167,10 @@ describe('GridDAO', () => {
       expect(array[1].data).toEqual([0, 1]);
       expect(array[2].data).toEqual([0, 0]);
       expect(array[3].data).toEqual([1, 0]);
-      done();
-    }).catch(done.fail);
+    });
   });
 
-  it('should warn and ignore invalid projection columns', (done) => {
+  it('should warn and ignore invalid projection columns', () => {
     const warn = foam.__context__.warn;
     let warnCount = 0;
     const ctx = foam.createSubContext({
@@ -200,7 +198,7 @@ describe('GridDAO', () => {
     }, ctx);
     const E = foam.mlang.ExpressionsSingleton.create(null, ctx);
     const GridRow = org.chromium.apis.web.GridRow;
-    Promise.all([
+    return Promise.all([
       dao.put(GridRow.create({id: 0, data: [0]}, ctx)),
       dao.put(GridRow.create({id: 1, data: [1]}, ctx)),
       dao.put(GridRow.create({id: 2, data: [2]}, ctx)),
@@ -221,7 +219,6 @@ describe('GridDAO', () => {
       expect(array[1].data).toEqual([1]);
       expect(array[2].data).toEqual([2]);
       expect(array[3].data).toEqual([3]);
-      done();
-    }).catch(done.fail);
+    });
   });
 });

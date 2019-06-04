@@ -114,7 +114,7 @@ describe('Set ops', () => {
   });
 
   describe('SetMinus', () => {
-    it('should yield full set on SET_MINUS(nullSet)', (done) => {
+    it('should yield full set on SET_MINUS(nullSet)', () => {
       const set = MDAO.create({of: Num});
       const nullSet = MDAO.create({of: Num});
 
@@ -122,14 +122,14 @@ describe('Set ops', () => {
         set.put(mkNum(i));
       }
 
-      set.orderBy(Num.ID).select(E.SET_MINUS(nullSet))
+      return set.orderBy(Num.ID).select(E.SET_MINUS(nullSet))
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-          }).then(done, done.fail);
+          });
     });
 
-    it('should exclude all items when sets are identical', (done) => {
+    it('should exclude all items when sets are identical', () => {
       const set = MDAO.create({of: Num});
       const subtrahend = MDAO.create({of: Num});
 
@@ -138,13 +138,13 @@ describe('Set ops', () => {
         subtrahend.put(mkNum(i));
       }
 
-      set.select(E.SET_MINUS(subtrahend))
+      return set.select(E.SET_MINUS(subtrahend))
           .then((sink) => {
             expect(sink.array).toEqual([]);
-          }).then(done, done.fail);
+          });
     });
 
-    it('should exclude some items when there is overlap', (done) => {
+    it('should exclude some items when there is overlap', () => {
       const set = MDAO.create({of: Num});
       const subtrahend = MDAO.create({of: Num});
 
@@ -156,14 +156,14 @@ describe('Set ops', () => {
       }
 
       // {0..9} \ {0, 2, 4, 6, 8}
-      set.orderBy(Num.ID).select(E.SET_MINUS(subtrahend))
+      return set.orderBy(Num.ID).select(E.SET_MINUS(subtrahend))
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([1, 3, 5, 7, 9]);
-          }).then(done, done.fail);
+          });
     });
 
-    it('should support composition', (done) => {
+    it('should support composition', () => {
       const set = MDAO.create({of: Num});
       const subtrahend1 = MDAO.create({of: Num});
       const subtrahend2 = MDAO.create({of: Num});
@@ -180,12 +180,12 @@ describe('Set ops', () => {
       subtrahend2.put(mkNum(9));
 
       // {0..9} \ {1, 7} \ {3, 5, 9}
-      set.orderBy(Num.ID)
+      return set.orderBy(Num.ID)
           .select(E.SET_MINUS(subtrahend1, E.SET_MINUS(subtrahend2)))
           .then((sink) => {
             expect(sink.array.map((num) => num.id))
                 .toEqual([0, 2, 4, 6, 8]);
-          }).then(done, done.fail);
+          });
     });
 
     it('should support array-of-DAOs', (done) => {

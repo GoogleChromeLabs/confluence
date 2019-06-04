@@ -88,7 +88,7 @@ describe('WorkerDAO', () => {
     }, ctx))).not.toThrow();
   });
 
-  it('select/listen against cache once during setup', (done) => {
+  it('select/listen against cache once during setup', () => {
     const dao = pkg.WorkerDAO.create({
       of: pkg.test.Thing,
       baseURL: 'https://example.com/restDAO',
@@ -96,7 +96,7 @@ describe('WorkerDAO', () => {
 
     let setupSelects;
     let setupListens;
-    dao.select().then(() => {
+    return dao.select().then(() => {
       // CachingDAO may select(), listen(), or both on remote.
       setupSelects = latestDelayedCountDAO.selects;
       setupListens = latestDelayedCountDAO.listens;
@@ -110,6 +110,6 @@ describe('WorkerDAO', () => {
       // No subsequent remote selects or listens to service requests.
       expect(latestDelayedCountDAO.selects).toBe(setupSelects);
       expect(latestDelayedCountDAO.listens).toBe(setupListens);
-    }).then(done, done.fail);
+    });
   });
 });

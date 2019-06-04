@@ -63,17 +63,17 @@ describe('HttpJsonDAO', () => {
     return pkg.HttpJsonDAO.create(daoArgs, ctx);
   }
 
-  it('should load empty array from HTTPRequest', (done) => {
+  it('should load empty array from HTTPRequest', () => {
     const ctx = foam.__context__.createSubContext();
     declareReplayClass('EmptyArrayHTTPRequest', JSON.stringify([]));
     ctx.register(test.EmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
 
-    createHttpJsonDAO([], ctx).select().then((arraySink) => {
+    return createHttpJsonDAO([], ctx).select().then((arraySink) => {
       expect(arraySink.array.length).toBe(0);
-    }).then(done, done.fail);
+    });
   });
 
-  it('should load non-empty array from HTTPRequest', (done) => {
+  it('should load non-empty array from HTTPRequest', () => {
     foam.CLASS({
       package: 'test',
       name: 'Item',
@@ -91,10 +91,10 @@ describe('HttpJsonDAO', () => {
         foam.json.Strict.stringify(array));
     ctx.register(test.NonEmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
 
-    createHttpJsonDAO(['test.Item'], ctx).select()
+    return createHttpJsonDAO(['test.Item'], ctx).select()
         .then((arraySink) => {
           expect(foam.util.equals(array, arraySink.array)).toBe(true);
-        }).then(done, done.fail);
+        });
   });
 
   it('should fail when item class is not whitelisted', (done) => {
@@ -117,17 +117,17 @@ describe('HttpJsonDAO', () => {
     });
   });
 
-  it('should succeed when URL is safe, using custom safety params', (done) => {
+  it('should succeed when URL is safe, using custom safety params', () => {
     const ctx = foam.__context__.createSubContext();
     declareReplayClass('EmptyArrayHTTPRequest', JSON.stringify([]));
     ctx.register(test.EmptyArrayHTTPRequest, 'foam.net.HTTPRequest');
 
-    createHttpJsonDAO([], ctx, {
+    return createHttpJsonDAO([], ctx, {
       url: 'http://json.safe.com/data/0',
       safeProtocols: ['http:'],
       safeHostnames: ['json.safe.com'],
       safePathPrefixes: ['/data'],
-    }).select().then(done, done.fail);
+    }).select();
   });
 
   it('should fail when URL is unsafe', (done) => {

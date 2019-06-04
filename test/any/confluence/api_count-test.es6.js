@@ -48,7 +48,7 @@ describe('ApiCount', () => {
     return releaseSpecs.map((rs) => Release.create(rs, container));
   };
 
-  it('should compute single release', (done) => {
+  it('should compute single release', () => {
     let release = {
       browserName: 'Alpha',
       browserVersion: '1',
@@ -63,7 +63,7 @@ describe('ApiCount', () => {
       apiName: 'iface',
       [gen.propertyNameFromRelease(release)]: true,
     });
-    Promise.all([
+    return Promise.all([
       releases.put(release),
       compatData.put(compat),
     ]).then(() => runner.run())
@@ -77,10 +77,10 @@ describe('ApiCount', () => {
               totalApis: 1,
             }),
           ])).toBe(true);
-        }).then(done, done.fail);
+        });
   });
 
-  it('should compute two releases from the same browser', (done) => {
+  it('should compute two releases from the same browser', () => {
     let release1 = Release.create({
       browserName: 'Alpha',
       browserVersion: '1',
@@ -112,7 +112,7 @@ describe('ApiCount', () => {
       apiName: 'iface',
       [gen.propertyNameFromRelease(release2)]: true,
     }, container);
-    Promise.all([
+    return Promise.all([
       releases.put(release1),
       releases.put(release2),
       compatData.put(compat1),
@@ -138,10 +138,10 @@ describe('ApiCount', () => {
               newApis: 1,
             }),
           ])).toBe(true);
-        }).then(done, done.fail);
+        });
   });
 
-  it('should compute two releases from different browsers', (done) => {
+  it('should compute two releases from different browsers', () => {
     let alpha = Release.create({
       browserName: 'Alpha',
       browserVersion: '1',
@@ -174,7 +174,7 @@ describe('ApiCount', () => {
       apiName: 'iface',
       [gen.propertyNameFromRelease(beta)]: true,
     }, container);
-    Promise.all([
+    return Promise.all([
       releases.put(alpha),
       releases.put(beta),
       compatData.put(compat1),
@@ -197,6 +197,6 @@ describe('ApiCount', () => {
               totalApis: 2,
             }),
           ])).toBe(true);
-        }).then(done, done.fail);
+        });
   });
 });

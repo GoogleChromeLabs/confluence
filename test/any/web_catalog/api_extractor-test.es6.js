@@ -38,8 +38,8 @@ describe('API extractor', () => {
     if (typeof window === 'undefined') global.window = {setTimeout};
   });
 
-  it('should expose Object interface', (done) => {
-    getCatalog({Object}, {key: 'window'}, {})
+  it('should expose Object interface', () => {
+    return getCatalog({Object}, {key: 'window'}, {})
         .then((catalog) => {
           for (const key in Object) {
             if (!Object.hasOwnProperty(key)) continue;
@@ -49,11 +49,11 @@ describe('API extractor', () => {
             if (!Object.prototype.hasOwnProperty(key)) continue;
             expect(catalog.Object.includes(key)).toBe(true);
           }
-        }).then(done, done.fail);
+        });
   });
 
-  it('should expose Function interface', (done) => {
-    getCatalog({Function}, {key: 'window'}, {})
+  it('should expose Function interface', () => {
+    return getCatalog({Function}, {key: 'window'}, {})
         .then((catalog) => {
           for (const key in Function) {
             if (!Function.hasOwnProperty(key)) continue;
@@ -63,13 +63,13 @@ describe('API extractor', () => {
             if (!Function.prototype.hasOwnProperty(key)) continue;
             expect(catalog.Function.includes(key)).toBe(true);
           }
-        }).then(done, done.fail);
+        });
   });
 
-  it('should expose method', (done) => {
+  it('should expose method', () => {
     function Alpha() {}
     Alpha.prototype.beta = function beta() {};
-    Promise.all([
+    return Promise.all([
       getCatalog({Object, Function}, {key: 'window'}, {}),
       getCatalog({Object, Function, Alpha}, {key: 'window'}, {}),
     ]).then((baseAndAlpha) => {
@@ -79,13 +79,13 @@ describe('API extractor', () => {
       expect(baseCatalog.Function.sort()).toEqual(alphaCatalog.Function.sort());
       expect(alphaCatalog.Alpha.sort()).toEqual(['beta'].sort());
       expect(Object.keys(alphaCatalog).length).toBe(3);
-    }).then(done, done.fail);
+    });
   });
 
-  it('should expose null-property', (done) => {
+  it('should expose null-property', () => {
     function Alpha() {}
     Alpha.prototype.beta = null;
-    Promise.all([
+    return Promise.all([
       getCatalog({Object, Function}, {key: 'window'}, {}),
       getCatalog({Object, Function, Alpha}, {key: 'window'}, {}),
     ]).then((baseAndAlpha) => {
@@ -95,14 +95,14 @@ describe('API extractor', () => {
       expect(baseCatalog.Function.sort()).toEqual(alphaCatalog.Function.sort());
       expect(alphaCatalog.Alpha.sort()).toEqual(['beta'].sort());
       expect(Object.keys(alphaCatalog).length).toBe(3);
-    }).then(done, done.fail);
+    });
   });
 
-  it('should expose function-like object as interface', (done) => {
+  it('should expose function-like object as interface', () => {
     const Alpha = {prototype: {}};
     Alpha.prototype.beta = function beta() {};
     Alpha.prototype.charlie = null;
-    Promise.all([
+    return Promise.all([
       getCatalog({Object, Function}, {key: 'window'}, {}),
       getCatalog({Object, Function, Alpha}, {key: 'window'}, {}),
     ]).then((baseAndAlpha) => {
@@ -112,10 +112,10 @@ describe('API extractor', () => {
       expect(baseCatalog.Function.sort()).toEqual(alphaCatalog.Function.sort());
       expect(alphaCatalog.Alpha.sort()).toEqual(['beta', 'charlie'].sort());
       expect(Object.keys(alphaCatalog).length).toBe(3);
-    }).then(done, done.fail);
+    });
   });
 
-  it('should expose properties from instances and libraries', (done) => {
+  it('should expose properties from instances and libraries', () => {
     function Alpha() {}
     Alpha.prototype.beta = null;
     const alpha = new Alpha();
@@ -123,7 +123,7 @@ describe('API extractor', () => {
     const superAlpha = Object.create(alpha);
     superAlpha.delta = {};
     const alphaLib = {alpha, superAlpha};
-    Promise.all([
+    return Promise.all([
       getCatalog({Object, Function}, {key: 'window'}, {}),
       getCatalog({Object, Function, Alpha, alphaLib}, {key: 'window'}, {}),
     ]).then((baseAndAlpha) => {
@@ -136,10 +136,10 @@ describe('API extractor', () => {
       expect(alphaCatalog.alphaLib.sort())
           .toEqual(['alpha', 'superAlpha'].sort());
       expect(Object.keys(alphaCatalog).length).toBe(4);
-    }).then(done, done.fail);
+    });
   });
 
-  it('should expose properties from "hidden" prototypes', (done) => {
+  it('should expose properties from "hidden" prototypes', () => {
     function Alpha() {}
     function Beta() {}
     Alpha.prototype = Object.create({alpha: null});
@@ -147,7 +147,7 @@ describe('API extractor', () => {
     hiddenPrototype.charlie = function charlie() {};
     Beta.prototype = Object.create(hiddenPrototype);
     Beta.prototype.beta = function beta() {};
-    Promise.all([
+    return Promise.all([
       getCatalog({Object, Function}, {key: 'window'}, {}),
       getCatalog({Object, Function, Alpha, Beta}, {key: 'window'}, {}),
     ]).then((baseAndAlphaBeta) => {
@@ -161,10 +161,10 @@ describe('API extractor', () => {
       expect(alphaBetaCatalog.Beta.sort())
           .toEqual(['beta', 'charlie'].sort());
       expect(Object.keys(alphaBetaCatalog).length).toBe(4);
-    }).then(done, done.fail);
+    });
   });
 
-  it('should deduce function names from graph paths', (done) => {
+  it('should deduce function names from graph paths', () => {
     // Ensure that Alpha.name is not automatically assigned 'Alpha'.
     const Alpha = (function() {
       return function() {};
@@ -173,7 +173,7 @@ describe('API extractor', () => {
     Alpha.prototype = {};
     Alpha.alpha = null;
     const lib = {property: {Alpha}};
-    Promise.all([
+    return Promise.all([
       getCatalog({Object, Function}, {key: 'window'}, {}),
       getCatalog({Object, Function, lib}, {key: 'window'}, {}),
       getCatalog({Object, Function, lib}, {key: 'window'},
@@ -195,15 +195,15 @@ describe('API extractor', () => {
           .toEqual(libNoAlphaCatalog.Function.sort());
       expect(libNoAlphaCatalog.lib.sort()).toEqual(['property'].sort());
       expect(Object.keys(libNoAlphaCatalog).length).toBe(3);
-    }).then(done, done.fail);
+    });
   });
 
-  it('should skip constants', (done) => {
+  it('should skip constants', () => {
     function Alpha() {}
     Alpha.INT_CONSTANT = 0;
     Alpha.prototype.STRING_CONSTANT = '';
     Alpha.prototype.BOOLEAN_CONSTANT = false;
-    Promise.all([
+    return Promise.all([
       getCatalog({Object, Function}, {key: 'window'}, {}),
       getCatalog({Object, Function, Alpha}, {key: 'window'}, {}),
       getCatalog({Object, Function, Alpha}, {key: 'window'},
@@ -228,10 +228,10 @@ describe('API extractor', () => {
         'BOOLEAN_CONSTANT',
       ].sort());
       expect(Object.keys(alphaWithConstantsCatalog).length).toBe(3);
-    }).then(done, done.fail);
+    });
   });
 
-  it('should combine multiple instances and prototypes without duplicates', (done) => {
+  it('should combine multiple instances and prototypes without duplicates', () => {
     function Alpha() {}
     Alpha.prototype.alpha = function alpha() {};
     const superAlpha = Object.create(Alpha.prototype);
@@ -262,7 +262,7 @@ describe('API extractor', () => {
     superBeta.instanceProperty = null;
     superBeta.superProperty = '';
 
-    Promise.all([
+    return Promise.all([
       getCatalog({Object, Function}, {key: 'window'}, {}),
       getCatalog({Object, Function, lib: {superBeta}}, {key: 'window'}, {}),
     ]).then((catalogs) => {
@@ -281,15 +281,15 @@ describe('API extractor', () => {
             'superAlpha',
           ].sort());
       expect(Object.keys(catalog).length).toBe(5);
-    }).then(done, done.fail);
+    });
   });
 
-  it('should combine non-built-in prototypes on libraries', (done) => {
+  it('should combine non-built-in prototypes on libraries', () => {
     function method1() {}
     const libProto = {method1};
     function method2() {}
     const lib = Object.create(libProto, {method2: {value: method2}});
-    Promise.all([
+    return Promise.all([
       getCatalog({Object, Function}, {key: 'window'}, {}),
       getCatalog({Object, Function, lib}, {key: 'window'}, {}),
     ]).then((catalogs) => {
@@ -299,6 +299,6 @@ describe('API extractor', () => {
       expect(baseCatalog.Function.sort()).toEqual(catalog.Function.sort());
       expect(catalog.lib.sort()).toEqual(['method1', 'method2'].sort());
       expect(Object.keys(catalog).length).toBe(3);
-    }).then(done, done.fail);
+    });
   });
 });
