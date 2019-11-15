@@ -11,6 +11,7 @@
     "camelcase": "off",
     "no-console": "off",
     "no-invalid-this": "off",
+    "no-prototype-builtins": "off",
     "new-cap": ["error", {
     	"capIsNew": false
     }],
