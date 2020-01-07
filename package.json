@@ -57,7 +57,7 @@
     "karma-firefox-launcher": "1.2.0",
     "karma-jasmine": "3.0.1",
     "karma-webpack": "4.0.2",
-    "nyc": "14.1.1",
+    "nyc": "15.0.0",
     "style-loader": "1.1.2",
     "terser-webpack-plugin": "1.4.3",
     "webpack": "4.41.5",
