@@ -36,8 +36,8 @@
     "object-graph-js": "git://github.com/mdittmer/object-graph-js.git"
   },
   "devDependencies": {
-    "@babel/core": "7.8.6",
-    "@babel/preset-env": "7.8.6",
+    "@babel/core": "7.8.7",
+    "@babel/preset-env": "7.8.7",
     "babel-loader": "8.0.6",
     "clean-webpack-plugin": "3.0.0",
     "codecov": "3.6.5",
