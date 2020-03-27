@@ -49,7 +49,7 @@ module.exports = merge(common, {
     // recommendation of 250kb, but are combined with 'error' to ensure that
     // they don't grow accidentally beyond the current size.
     hints: 'error',
-    maxAssetSize: 1.5*1024*1024,
-    maxEntrypointSize: 2.2*1024*1024,
+    maxAssetSize: 2*1024*1024,
+    maxEntrypointSize: 2.5*1024*1024,
   },
 });
