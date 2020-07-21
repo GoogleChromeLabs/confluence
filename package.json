@@ -28,7 +28,7 @@
   "homepage": "https://web-confluence.appspot.com/",
   "browserslist": "since 2018 and last 2 versions",
   "dependencies": {
-    "@uirouter/angularjs": "1.0.26",
+    "@uirouter/angularjs": "1.0.27",
     "angular": "1.8.0",
     "d3": "5.16.0",
     "foam2": "git://github.com/foam-framework/foam2.git#confluence",
