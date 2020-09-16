@@ -27,7 +27,7 @@ module.exports = {
           {
             loader: 'worker-loader',
             options: {
-              name: '[name].bundle.js',
+              filename: '[name].bundle.js',
               publicPath: '/bundle/',
             },
           },
