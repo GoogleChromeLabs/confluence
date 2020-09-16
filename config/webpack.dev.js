@@ -5,7 +5,7 @@
 
 const path = require('path');
 
-const merge = require('webpack-merge');
+const {merge} = require('webpack-merge');
 
 const C = require('./webpack.constants.js');
 const common = require('./webpack.common.js');
