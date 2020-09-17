@@ -62,7 +62,7 @@
     "terser-webpack-plugin": "4.2.1",
     "webpack": "4.44.1",
     "webpack-cli": "3.3.12",
-    "webpack-merge": "4.2.2",
+    "webpack-merge": "5.1.4",
     "worker-loader": "2.0.0"
   }
 }
