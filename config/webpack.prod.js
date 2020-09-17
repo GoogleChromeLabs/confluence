@@ -50,6 +50,6 @@ module.exports = merge(common, {
     // they don't grow accidentally beyond the current size.
     hints: 'error',
     maxAssetSize: 2*1024*1024,
-    maxEntrypointSize: 2.5*1024*1024,
+    maxEntrypointSize: 2*1024*1024,
   },
 });
