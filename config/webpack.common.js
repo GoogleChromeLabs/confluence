@@ -18,6 +18,7 @@ module.exports = {
   output: {
     filename: '[name].bundle.js',
     path: C.BUNDLE_DIR,
+    publicPath: '/bundle/',
   },
   module: {
     rules: [
@@ -27,8 +28,7 @@ module.exports = {
           {
             loader: 'worker-loader',
             options: {
-              name: '[name].bundle.js',
-              publicPath: '/bundle/',
+              esModule: false,
             },
           },
         ],
@@ -48,7 +48,6 @@ module.exports = {
             loader: 'file-loader',
             options: {
               name: 'fonts/[name].[ext]',
-              publicPath: '/bundle/',
             },
           },
         ],
