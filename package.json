@@ -58,7 +58,7 @@
     "karma-jasmine": "4.0.1",
     "karma-webpack": "4.0.2",
     "nyc": "15.1.0",
-    "style-loader": "1.2.1",
+    "style-loader": "2.0.0",
     "terser-webpack-plugin": "4.2.3",
     "webpack": "4.44.2",
     "webpack-cli": "3.3.12",
