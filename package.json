@@ -27,6 +27,9 @@
   "author": "Mark Dittmer, Jing Tao",
   "homepage": "https://web-confluence.appspot.com/",
   "browserslist": "since 2018 and last 2 versions",
+  "engines": {
+    "node": "12.x"
+  },
   "dependencies": {
     "@uirouter/angularjs": "1.0.28",
     "angular": "1.8.2",
