@@ -1,0 +1,21 @@
+name: test
+on:
+  pull_request: {}
+  push:
+    branches:
+    - main
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 12.x
+    - run: npm ci
+    - run: npm run lint
+    - run: npm run coverageNode
+    - run: npm run coverageWeb -- --browsers=ChromeHeadless
+    - run: npm run coverageWeb -- --browsers=FirefoxHeadless
+    # Run webpack to check size limits.
+    - run: npx webpack --config config/webpack.prod.js
