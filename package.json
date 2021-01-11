@@ -45,7 +45,7 @@
     "clean-webpack-plugin": "3.0.0",
     "codecov": "3.8.1",
     "css-loader": "5.0.1",
-    "doctoc": "1.4.0",
+    "doctoc": "2.0.0",
     "eslint": "7.17.0",
     "eslint-config-google": "0.14.0",
     "file-loader": "6.2.0",
