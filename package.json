@@ -34,9 +34,9 @@
     "@uirouter/angularjs": "1.0.30",
     "angular": "1.8.2",
     "d3": "5.16.0",
-    "foam2": "git://github.com/foam-framework/foam2.git#confluence",
+    "foam2": "git+https://github.com/foam-framework/foam2.git#confluence",
     "materialize-css": "1.0.0",
-    "object-graph-js": "git://github.com/mdittmer/object-graph-js.git"
+    "object-graph-js": "git+https://github.com/mdittmer/object-graph-js.git"
   },
   "devDependencies": {
     "@babel/core": "7.14.6",
