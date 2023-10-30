@@ -84,9 +84,9 @@ describe('MetricComputerRunner', function() {
     junctionDAO.put(releaseAPI(
         'Chrome', '55', 'Windows', '10', 'Audio', 'stop'));
     junctionDAO.put(releaseAPI(
-        'Edge', '14', 'Windows', '10', 'Array', 'find'));
+        'Firefox', '34', 'Windows', '10', 'Array', 'find'));
     junctionDAO.put(releaseAPI(
-        'Edge', '14', 'Windows', '10', 'Audio', 'play'));
+        'Firefox', '34', 'Windows', '10', 'Audio', 'play'));
     junctionDAO.put(releaseAPI(
         'Safari', '10', 'OSX', '601', 'ApplePay', 'about'));
     junctionDAO.put(releaseAPI(
@@ -97,8 +97,8 @@ describe('MetricComputerRunner', function() {
         'Safari', '10', 'OSX', '601', 'Array', 'find'));
     releaseDAO.put(release('Chrome', '55', 'Windows', '10',
         new Date('2015-01-10')));
-    releaseDAO.put(release('Edge', '14', 'Windows', '10',
-        new Date('2014-02-01')));
+    releaseDAO.put(release('Firefox', '34', 'Windows', '10',
+        new Date('2014-12-01')));
     releaseDAO.put(release('Safari', '10', 'OSX', '601',
         new Date('2015-04-01')));
     webInterfaceDAO.put(webInterface('Array', 'find'));
@@ -113,7 +113,7 @@ describe('MetricComputerRunner', function() {
     it('gets correct dates from releaseWebInterfaceJunctionDAO', function(done) {
       runner.getOrderedListOfReleaseDates().then((dateArr) => {
         expect(dateArr).toEqual([
-          new Date('2014-02-01'),
+          new Date('2014-12-01'),
           new Date('2015-01-10'),
           new Date('2015-04-01'),
         ]);
@@ -123,10 +123,10 @@ describe('MetricComputerRunner', function() {
   describe('getLatestReleaseFromEachBrowserAtDate()', function() {
     it('gets correct releases before a given date.', function(done) {
       runner.getLatestReleaseFromEachBrowserAtDate(
-          new Date('2014-02-01')).then((releases) => {
+          new Date('2014-12-01')).then((releases) => {
         expect(releases.length).toBe(1);
-        expect(releases[0].browserName).toBe('Edge');
-        expect(releases[0].browserVersion).toBe('14');
+        expect(releases[0].browserName).toBe('Firefox');
+        expect(releases[0].browserVersion).toBe('34');
         done();
       });
     });
@@ -147,8 +147,8 @@ describe('MetricComputerRunner', function() {
             expect(releases[0].browserVersion).toBe('10');
             expect(releases[1].browserName).toBe('Chrome');
             expect(releases[1].browserVersion).toBe('55');
-            expect(releases[2].browserName).toBe('Edge');
-            expect(releases[2].browserVersion).toBe('14');
+            expect(releases[2].browserName).toBe('Firefox');
+            expect(releases[2].browserVersion).toBe('34');
             done();
           });
         });
